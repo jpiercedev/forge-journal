@@ -1,8 +1,8 @@
-# A Next.js Blog with a Native Authoring Experience<!-- omit in toc -->
+# Forge Journal<!-- omit in toc -->
 
-This starter is a statically generated blog that uses [Next.js][nextjs] for the frontend and [Sanity][sanity-homepage] to handle its content. It comes with a native Sanity Studio that offers features like real-time collaboration and visual editing with live updates using [Presentation][presentation].
+Forge Journal is a modern journaling platform built with [Next.js][nextjs] for the frontend and [Sanity][sanity-homepage] for content management. It features a native Sanity Studio with real-time collaboration and visual editing capabilities using [Presentation][presentation].
 
-The Studio connects to Sanity Content Lake, which gives you hosted content APIs with a flexible query language, on-demand image transformations, powerful patching, and more. You can use this starter to kick-start a blog or learn these technologies.
+The platform connects to Sanity Content Lake, providing hosted content APIs with flexible querying, on-demand image transformations, and powerful content management. Forge Journal helps you craft your thoughts and forge your story with a beautiful, intuitive interface.
 
 [![Deploy with Vercel](https://vercel.com/button)][vercel-deploy]
 
@@ -11,14 +11,14 @@ The Studio connects to Sanity Content Lake, which gives you hosted content APIs 
 
 ## Features
 
-- A performant, static blog with editable posts, authors, and site settings
-- A native and customizable authoring environment, accessible on `yourblog.com/studio`
+- A performant, modern journaling platform with editable entries, authors, and site settings
+- A native and customizable authoring environment, accessible on `yourjournal.com/studio`
 - Real-time and collaborative content editing with fine-grained revision history
-- Side-by-side instant content preview that works across your whole site
-- Support for block content and the most advanced custom fields capability in the industry
-- Webhook-triggered Incremental Static Revalidation; no need to wait for a rebuild to publish new content
+- Side-by-side instant content preview that works across your entire journal
+- Support for rich block content and advanced custom fields for diverse journal entries
+- Webhook-triggered Incremental Static Revalidation; publish new entries instantly
 - Free and boosted Sanity project with unlimited admin users, free content updates, and pay-as-you-go for API overages
-- A project with starter-friendly and not too heavy-handed TypeScript and Tailwind.css
+- Built with TypeScript and Tailwind.css for a clean, maintainable codebase
 
 ## Table of Contents
 
@@ -39,9 +39,7 @@ The Studio connects to Sanity Content Lake, which gives you hosted content APIs 
 
 ## Project Overview
 
-| [Blog](https://nextjs-blog.sanity.build)                                                                          | [Studio](https://nextjs-blog.sanity.build/studio)                                                                          |
-| ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| ![Blog](https://github.com/sanity-io/nextjs-blog-cms-sanity-v3/assets/81981/adc1a90e-644e-456a-b630-ac44e4636e24) | ![Sanity Studio](https://github.com/sanity-io/nextjs-blog-cms-sanity-v3/assets/81981/93a39af1-a806-45ca-8648-0cc7e2295eea) |
+Forge Journal provides a clean, intuitive interface for journaling with powerful content management capabilities through Sanity Studio.
 
 ### Important files and folders
 
@@ -87,7 +85,7 @@ npm install && npm run dev
 
 When you run this development server, the changes you make in your frontend and studio configuration will be applied live using hot reloading.
 
-Your blog should be up and running on [http://localhost:3000][localhost-3000]! You can create and edit content on [http://localhost:3000/studio][localhost-3000-studio].
+Your Forge Journal should be up and running on [http://localhost:3000][localhost-3000]! You can create and edit journal entries on [http://localhost:3000/studio][localhost-3000-studio].
 
 ### Step 4. Deploy to production
 
@@ -115,7 +113,7 @@ In case of any issues or questions, you can post:
 - [Sanity's GitHub Discussions][sanity-github]
 - [Sanity's Community Slack][sanity-community]
 
-### How can I remove the "Next steps" block from my blog?
+### How can I remove the "Next steps" block from my journal?
 
 You can remove it by deleting the `IntroTemplate` component in `/components/IndexPage.tsx`.
 

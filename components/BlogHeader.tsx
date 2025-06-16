@@ -3,7 +3,7 @@ import { PortableText } from 'next-sanity'
 
 import styles from './BlogHeader.module.css'
 
-export default function BlogHeader({
+export default function Header({
   title,
   description,
   level,

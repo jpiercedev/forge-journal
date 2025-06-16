@@ -1,6 +1,6 @@
 // All the demo data that used as fallbacks when there's nothing in the dataset yet
 
-export const title = 'Blog.'
+export const title = 'Forge Journal'
 
 export const description = [
   {
@@ -11,7 +11,7 @@ export const description = [
         _key: '4a58edd077880',
         _type: 'span',
         marks: [],
-        text: 'A statically generated blog example using ',
+        text: 'A modern journaling platform built with ',
       },
       {
         _key: '4a58edd077881',
@@ -35,7 +35,7 @@ export const description = [
         _key: '4a58edd077884',
         _type: 'span',
         marks: [],
-        text: '.',
+        text: '. Craft your thoughts, forge your story.',
       },
     ],
     markDefs: [
@@ -54,4 +54,4 @@ export const description = [
   },
 ]
 
-export const ogImageTitle = 'A Next.js Blog with a Native Authoring Experience'
+export const ogImageTitle = 'Forge Journal - Craft Your Thoughts, Forge Your Story'

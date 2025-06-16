@@ -1,6 +1,8 @@
 import AlertBanner from 'components/AlertBanner'
+import Navigation from 'components/Navigation'
+import Footer from 'components/Footer'
 
-export default function BlogLayout({
+export default function Layout({
   preview,
   loading,
   children,
@@ -11,9 +13,11 @@ export default function BlogLayout({
 }) {
   return (
     <>
-      <div className="min-h-screen">
+      <div className="min-h-screen flex flex-col">
         <AlertBanner preview={preview} loading={loading} />
-        <main>{children}</main>
+        <Navigation />
+        <main className="flex-grow">{children}</main>
+        <Footer />
       </div>
     </>
   )
