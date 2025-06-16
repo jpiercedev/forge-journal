@@ -29,7 +29,7 @@ export default function AboutPage(props: PageProps) {
       >
         <div className="max-w-4xl">
           <div className="mb-8">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-6 font-sans">
               About The Forge Journal
             </h1>
             <div className="border-b-4 border-gray-900 w-16 mb-8"></div>
@@ -42,14 +42,14 @@ export default function AboutPage(props: PageProps) {
               theological principles.
             </p>
 
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Our Mission</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4 font-sans">Our Mission</h2>
             <p className="text-gray-700 leading-relaxed mb-6">
               We believe that strong churches are built by well-equipped leaders. Through in-depth
               articles, practical insights, and theological reflection, The Forge Journal serves as
               a resource for pastors seeking to grow in their calling and better serve their congregations.
             </p>
 
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">What We Offer</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4 font-sans">What We Offer</h2>
             <ul className="text-gray-700 leading-relaxed mb-6 space-y-2">
               <li>• Biblical exposition and theological insights</li>
               <li>• Practical ministry guidance and leadership principles</li>
@@ -58,7 +58,7 @@ export default function AboutPage(props: PageProps) {
               <li>• Resources for personal spiritual growth</li>
             </ul>
 
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Our Commitment</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4 font-sans">Our Commitment</h2>
             <p className="text-gray-700 leading-relaxed mb-6">
               Every article in The Forge Journal is carefully crafted to honor Scripture,
               encourage faithful ministry, and provide practical wisdom for the challenges
@@ -67,8 +67,8 @@ export default function AboutPage(props: PageProps) {
               your ministry library.
             </p>
 
-            <div className="bg-gray-50 p-6 mt-8">
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Get Involved</h3>
+            <div className="bg-white border border-gray-200 p-6 mt-8">
+              <h3 className="text-xl font-semibold text-gray-900 mb-3 font-sans">Get Involved</h3>
               <p className="text-gray-700 leading-relaxed">
                 We welcome contributions from pastors, theologians, and church leaders who
                 share our commitment to biblical faithfulness and practical ministry wisdom.

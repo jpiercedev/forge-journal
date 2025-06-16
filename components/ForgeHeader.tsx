@@ -1,8 +1,10 @@
 import Link from 'next/link'
 import { useState } from 'react'
+import SubscribeModal from './SubscribeModal'
 
 export default function ForgeHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isSubscribeModalOpen, setIsSubscribeModalOpen] = useState(false)
 
   return (
     <header className="bg-white border-b border-gray-200">
@@ -11,8 +13,8 @@ export default function ForgeHeader() {
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center">
-              <div className="text-3xl font-black text-gray-900 tracking-tight">
-                THE FORGE
+              <div className="text-3xl font-black text-gray-900 tracking-tight font-sans">
+                FORGE
               </div>
             </Link>
           </div>
@@ -21,28 +23,29 @@ export default function ForgeHeader() {
           <nav className="hidden md:flex items-center space-x-8">
             <Link
               href="/"
-              className="text-orange-500 hover:text-orange-600 px-3 py-2 text-sm font-semibold uppercase tracking-wider transition-colors duration-200"
+              className="text-amber-600 hover:text-amber-700 px-3 py-2 text-sm font-thin uppercase tracking-wider transition-colors duration-200 font-sans"
+              style={{ color: '#D4A574' }}
             >
               HOME
             </Link>
             <Link
-              href="/forge-pastors"
-              className="text-gray-700 hover:text-orange-500 px-3 py-2 text-sm font-semibold uppercase tracking-wider transition-colors duration-200"
+              href="/about"
+              className="text-gray-700 hover:text-amber-600 px-3 py-2 text-sm font-thin uppercase tracking-wider transition-colors duration-200 font-sans"
             >
-              FORGE PASTORS
+              ABOUT
             </Link>
             <Link
               href="/topics"
-              className="text-gray-700 hover:text-orange-500 px-3 py-2 text-sm font-semibold uppercase tracking-wider transition-colors duration-200"
+              className="text-gray-700 hover:text-amber-600 px-3 py-2 text-sm font-thin uppercase tracking-wider transition-colors duration-200 font-sans"
             >
               TOPICS
             </Link>
-            <Link
-              href="/subscribe"
-              className="text-gray-700 hover:text-orange-500 px-3 py-2 text-sm font-semibold uppercase tracking-wider transition-colors duration-200"
+            <button
+              onClick={() => setIsSubscribeModalOpen(true)}
+              className="text-gray-700 hover:text-amber-600 px-3 py-2 text-sm font-thin uppercase tracking-wider transition-colors duration-200 font-sans"
             >
               SUBSCRIBE
-            </Link>
+            </button>
           </nav>
 
           {/* Support Button */}
@@ -50,9 +53,12 @@ export default function ForgeHeader() {
             <Link
               href="/support"
               target="_blank"
-              className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 text-sm font-semibold uppercase tracking-wider transition-colors duration-200 rounded"
+              className="text-white px-6 py-3 text-sm font-thin uppercase tracking-wider transition-colors duration-200 font-sans"
+              style={{ backgroundColor: '#2D5A5A' }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#1F4444'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#2D5A5A'}
             >
-              SUPPORT THE FORGE JOURNAL
+              SUPPORT
             </Link>
           </div>
 
@@ -79,39 +85,47 @@ export default function ForgeHeader() {
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-gray-200">
               <Link
                 href="/"
-                className="text-orange-500 hover:text-orange-600 block px-3 py-2 text-sm font-semibold uppercase tracking-wider"
+                className="block px-3 py-2 text-sm font-thin uppercase tracking-wider font-sans"
+                style={{ color: '#D4A574' }}
               >
                 HOME
               </Link>
               <Link
-                href="/forge-pastors"
-                className="text-gray-700 hover:text-orange-500 block px-3 py-2 text-sm font-semibold uppercase tracking-wider"
+                href="/about"
+                className="text-gray-700 hover:text-amber-600 block px-3 py-2 text-sm font-thin uppercase tracking-wider font-sans"
               >
-                FORGE PASTORS
+                ABOUT
               </Link>
               <Link
                 href="/topics"
-                className="text-gray-700 hover:text-orange-500 block px-3 py-2 text-sm font-semibold uppercase tracking-wider"
+                className="text-gray-700 hover:text-amber-600 block px-3 py-2 text-sm font-thin uppercase tracking-wider font-sans"
               >
                 TOPICS
               </Link>
-              <Link
-                href="/subscribe"
-                className="text-gray-700 hover:text-orange-500 block px-3 py-2 text-sm font-semibold uppercase tracking-wider"
+              <button
+                onClick={() => setIsSubscribeModalOpen(true)}
+                className="text-gray-700 hover:text-amber-600 block px-3 py-2 text-sm font-thin uppercase tracking-wider font-sans w-full text-left"
               >
                 SUBSCRIBE
-              </Link>
+              </button>
               <Link
                 href="/support"
                 target="_blank"
-                className="bg-teal-600 hover:bg-teal-700 text-white block px-3 py-2 text-sm font-semibold uppercase tracking-wider transition-colors duration-200 mt-4 rounded"
+                className="text-white block px-3 py-2 text-sm font-thin uppercase tracking-wider transition-colors duration-200 mt-4 font-sans"
+                style={{ backgroundColor: '#2D5A5A' }}
               >
-                SUPPORT THE FORGE JOURNAL
+                SUPPORT
               </Link>
             </div>
           </div>
         )}
       </div>
+
+      {/* Subscribe Modal */}
+      <SubscribeModal
+        isOpen={isSubscribeModalOpen}
+        onClose={() => setIsSubscribeModalOpen(false)}
+      />
     </header>
   )
 }

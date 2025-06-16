@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import ImagePlaceholder from 'components/ImagePlaceholder'
 import { urlForImage } from 'lib/sanity.image'
 import type { Post } from 'lib/sanity.queries'
 
@@ -39,35 +40,14 @@ export default function ForgePostHeader({ post, volumeInfo }: ForgePostHeaderPro
                 {author.name}
               </h2>
               {/* Author title/bio could go here */}
-              <p className="text-orange-500 text-base font-medium">
+              <p className="text-base font-medium" style={{ color: '#D4A574' }}>
                 Author Title Goes Here
               </p>
             </div>
           )}
         </div>
 
-        {/* Author Image and Bio */}
-        {author?.picture && (
-          <div className="flex-shrink-0 lg:w-80">
-            <div className="w-full h-64 lg:h-72 overflow-hidden bg-gray-200 rounded-lg mb-4">
-              <Image
-                src={urlForImage(author.picture)?.width(320).height(288).url() || ''}
-                alt={author.name}
-                width={320}
-                height={288}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            {/* Author bio box */}
-            <div className="p-4 bg-gray-50 text-sm text-gray-700 leading-relaxed rounded-lg">
-              <p>
-                {author.name} holds a PhD in Church History,
-                focusing on historical theology and mentoring
-                future leaders.
-              </p>
-            </div>
-          </div>
-        )}
+
       </div>
 
       {/* Separator line */}

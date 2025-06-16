@@ -80,18 +80,6 @@ export default function ForgePastorsPage(props: PageProps) {
                 Apply for Membership
               </Link>
             </div>
-
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Current Members</h2>
-            <p className="text-gray-700 leading-relaxed mb-4">
-              If you're already a member of Forge Pastors, access your exclusive content and 
-              community resources through the member portal.
-            </p>
-            <Link 
-              href="/member-login"
-              className="inline-block border border-blue-800 text-blue-800 hover:bg-blue-800 hover:text-white px-6 py-2 text-sm font-medium uppercase tracking-wide transition-colors duration-200"
-            >
-              Member Login
-            </Link>
           </div>
         </div>
       </ForgeLayout>

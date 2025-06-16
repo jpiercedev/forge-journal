@@ -30,18 +30,19 @@ export default function ForgePostPage(props: ForgePostPageProps) {
     <>
       <PostPageHead settings={settings} post={post} />
 
-      <ForgeLayout 
-        preview={preview} 
+      <ForgeLayout
+        preview={preview}
         loading={loading}
         recentPosts={morePosts}
         showSidebar={true}
+        post={post}
       >
         {preview && !post ? (
           <div className="text-center py-12">
             <h1 className="text-2xl font-semibold text-gray-900">Loading…</h1>
           </div>
         ) : (
-          <article className="max-w-none">
+          <article className="max-w-none bg-white p-8 shadow-sm">
             <ForgePostHeader
               post={post}
               volumeInfo="FEBRUARY 2025 | VOLUME 54, ISSUE 2"

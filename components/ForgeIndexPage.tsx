@@ -1,7 +1,10 @@
 import ForgeLayout from 'components/ForgeLayout'
 import IndexPageHead from 'components/IndexPageHead'
+import SearchBar from 'components/SearchBar'
+import ImagePlaceholder from 'components/ImagePlaceholder'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useState, useEffect } from 'react'
 import { urlForImage } from 'lib/sanity.image'
 import type { Post, Settings } from 'lib/sanity.queries'
 
@@ -15,74 +18,128 @@ export interface ForgeIndexPageProps {
 export default function ForgeIndexPage(props: ForgeIndexPageProps) {
   const { preview, loading, posts, settings } = props
   const [featuredPost, ...otherPosts] = posts || []
+  const [filteredPosts, setFilteredPosts] = useState(otherPosts)
+
+  // Update filtered posts when otherPosts changes
+  useEffect(() => {
+    setFilteredPosts(otherPosts)
+  }, [otherPosts])
 
   return (
     <>
       <IndexPageHead settings={settings} />
 
-      <ForgeLayout 
-        preview={preview} 
+      <ForgeLayout
+        preview={preview}
         loading={loading}
         recentPosts={otherPosts.slice(0, 3)}
         showSidebar={true}
+        showTagline={true}
       >
         <div className="max-w-none">
-          {/* Featured Article */}
+          {/* Featured Article - Full Width Background with Overlay */}
           {featuredPost && (
             <section className="mb-16">
-              <article className="bg-white">
-                <div className="mb-8">
-                  <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-gray-900 leading-tight mb-6 tracking-tight">
-                    <Link
-                      href={`/posts/${featuredPost.slug}`}
-                      className="hover:text-orange-500 transition-colors duration-200"
-                    >
-                      {featuredPost.title}
-                    </Link>
-                  </h2>
-
-                  <div className="flex items-center space-x-4 text-base text-gray-600 mb-6">
-                    {featuredPost.author && (
-                      <span className="font-bold text-gray-900">{featuredPost.author.name}</span>
-                    )}
-                    <span>|</span>
-                    <span className="font-medium">
-                      {new Date(featuredPost.date).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long'
-                      })}
-                    </span>
-                  </div>
-
-                  {featuredPost.excerpt && (
-                    <p className="text-gray-700 leading-relaxed text-xl mb-8">
-                      {featuredPost.excerpt}
-                    </p>
-                  )}
-
-                  <Link
-                    href={`/posts/${featuredPost.slug}`}
-                    className="inline-block bg-teal-600 hover:bg-teal-700 text-white px-8 py-3 text-sm font-semibold uppercase tracking-wider transition-colors duration-200 rounded"
-                  >
-                    READ ISSUE
-                  </Link>
+              <div className="relative">
+                {/* Featured Badge */}
+                <div className="absolute top-4 left-4 z-20">
+                  <span className="inline-block px-3 py-1 text-xs font-bold uppercase tracking-wider text-white rounded-full font-sans"
+                        style={{ backgroundColor: '#D4A574' }}>
+                    Featured
+                  </span>
                 </div>
-              </article>
+
+                <article className="relative overflow-hidden group cursor-pointer">
+                  <Link href={`/posts/${featuredPost.slug}`}>
+                    {/* Background Image - Full Width 16:9 */}
+                    <div className="aspect-video w-full overflow-hidden bg-gray-200">
+                      {featuredPost.coverImage?.asset?._ref ? (
+                        <Image
+                          src={urlForImage(featuredPost.coverImage)?.width(1200).height(675).url() || ''}
+                          alt={featuredPost.coverImage.alt || featuredPost.title}
+                          width={1200}
+                          height={675}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      ) : (
+                        <ImagePlaceholder
+                          width={1200}
+                          height={675}
+                          aspectRatio="video"
+                          text="Featured Image"
+                          className="w-full h-full"
+                        />
+                      )}
+                    </div>
+
+                    {/* Semi-transparent Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent"></div>
+
+                    {/* Content Overlay */}
+                    <div className="absolute inset-0 flex items-end">
+                      <div className="p-6 md:p-8 lg:p-12 max-w-2xl">
+                        {/* Article Title */}
+                        <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black text-white leading-tight mb-4 tracking-tight font-sans">
+                          {featuredPost.title}
+                        </h1>
+
+                        {/* Author and Date */}
+                        <div className="flex items-center space-x-4 text-sm md:text-base text-gray-200 mb-4">
+                          {featuredPost.author && (
+                            <span className="font-bold text-white uppercase tracking-wider">
+                              {featuredPost.author.name}
+                            </span>
+                          )}
+                          <span className="text-gray-300">|</span>
+                          <span className="font-medium uppercase tracking-wider">
+                            {new Date(featuredPost.date).toLocaleDateString('en-US', {
+                              year: 'numeric',
+                              month: 'long'
+                            })}
+                          </span>
+                        </div>
+
+                        {/* Article Excerpt */}
+                        {featuredPost.excerpt && (
+                          <p className="text-gray-200 leading-relaxed text-base md:text-lg mb-6 max-w-xl">
+                            {featuredPost.excerpt}
+                          </p>
+                        )}
+
+                        {/* CTA Button */}
+                        <div className="inline-block">
+                          <span className="inline-block text-white px-6 py-3 text-sm font-semibold uppercase tracking-wider transition-all duration-200 font-sans border border-white hover:bg-white hover:text-gray-900">
+                            Read Issue
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                </article>
+              </div>
             </section>
           )}
 
-          {/* Other Articles Grid */}
+          {/* Search Bar */}
           {otherPosts.length > 0 && (
+            <SearchBar
+              posts={otherPosts}
+              onSearchResults={setFilteredPosts}
+            />
+          )}
+
+          {/* Other Articles Grid */}
+          {filteredPosts.length > 0 && (
             <section>
               <div className="grid gap-12 md:gap-16">
-                {otherPosts.map((post) => (
+                {filteredPosts.map((post) => (
                   <article key={post.slug} className="group">
                     <div className="flex flex-col md:flex-row gap-8">
-                      {/* Article Image */}
-                      {post.coverImage && (
-                        <div className="md:w-1/3 flex-shrink-0">
-                          <Link href={`/posts/${post.slug}`}>
-                            <div className="aspect-video overflow-hidden bg-gray-200 rounded-lg">
+                      {/* Article Image - 16:9 aspect ratio */}
+                      <div className="md:w-1/3 flex-shrink-0">
+                        <Link href={`/posts/${post.slug}`}>
+                          <div className="aspect-video overflow-hidden bg-gray-200">
+                            {post.coverImage?.asset?._ref ? (
                               <Image
                                 src={urlForImage(post.coverImage)?.width(400).height(225).url() || ''}
                                 alt={post.coverImage.alt || post.title}
@@ -90,17 +147,28 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
                                 height={225}
                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                               />
-                            </div>
-                          </Link>
-                        </div>
-                      )}
+                            ) : (
+                              <ImagePlaceholder
+                                width={400}
+                                height={225}
+                                aspectRatio="video"
+                                text="Featured Image"
+                                className="w-full h-full"
+                              />
+                            )}
+                          </div>
+                        </Link>
+                      </div>
 
                       {/* Article Content */}
                       <div className="flex-1">
-                        <h3 className="text-2xl md:text-3xl font-black text-gray-900 leading-tight mb-4 tracking-tight">
+                        <h3 className="text-2xl md:text-3xl font-black text-gray-900 leading-tight mb-4 tracking-tight font-sans">
                           <Link
                             href={`/posts/${post.slug}`}
-                            className="hover:text-orange-500 transition-colors duration-200"
+                            className="hover:text-amber-600 transition-colors duration-200"
+                            style={{ color: '#D4A574' }}
+                            onMouseEnter={(e) => e.currentTarget.style.color = '#C19660'}
+                            onMouseLeave={(e) => e.currentTarget.style.color = '#D4A574'}
                           >
                             {post.title}
                           </Link>
@@ -127,7 +195,10 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
 
                         <Link
                           href={`/posts/${post.slug}`}
-                          className="text-teal-600 hover:text-teal-700 font-semibold text-sm uppercase tracking-wider transition-colors duration-200"
+                          className="font-semibold text-sm uppercase tracking-wider transition-colors duration-200"
+                          style={{ color: '#2D5A5A' }}
+                          onMouseEnter={(e) => e.currentTarget.style.color = '#1F4444'}
+                          onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A5A'}
                         >
                           Read Issue
                         </Link>
