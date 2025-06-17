@@ -1,10 +1,10 @@
-import Error from 'next/error'
 import ForgeLayout from 'components/ForgeLayout'
 import ForgePostHeader from 'components/ForgePostHeader'
 import PostBody from 'components/PostBody'
 import PostPageHead from 'components/PostPageHead'
-import type { Post, Settings } from 'lib/sanity.queries'
 import * as demo from 'lib/demo.data'
+import type { Post, Settings } from 'lib/sanity.queries'
+import Error from 'next/error'
 
 const NO_POSTS: Post[] = []
 
