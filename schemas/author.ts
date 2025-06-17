@@ -14,6 +14,12 @@ export default defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'title',
+      title: 'Title',
+      type: 'string',
+      description: 'Professional title or role (e.g., Editor In Chief, Pastor, etc.)',
+    }),
+    defineField({
       name: 'picture',
       title: 'Picture',
       type: 'image',
