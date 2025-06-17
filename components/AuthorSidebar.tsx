@@ -36,10 +36,10 @@ export default function AuthorSidebar({ author }: AuthorSidebarProps) {
       </div>
       
       {/* Author Name */}
-      <h3 className="text-lg font-bold text-gray-900 mb-2 font-sans">{author.name}</h3>
+      <h3 className="text-lg font-bold text-gray-900 mb-2 font-serif">{author.name}</h3>
       
       {/* Author Bio */}
-      <div className="text-sm text-gray-700 leading-relaxed">
+      <div className="text-sm text-gray-700 leading-relaxed font-sans">
         <p>
           {author.name} holds a PhD in Church History,
           focusing on historical theology and mentoring

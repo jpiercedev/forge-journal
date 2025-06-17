@@ -35,6 +35,12 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
         recentPosts={otherPosts.slice(0, 3)}
         showSidebar={true}
         showTagline={true}
+        searchBar={otherPosts.length > 0 ? (
+          <SearchBar
+            posts={otherPosts}
+            onSearchResults={setFilteredPosts}
+          />
+        ) : undefined}
       >
         <div className="max-w-none">
           {/* Featured Article - Full Width Background with Overlay */}
@@ -44,7 +50,7 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
                 {/* Featured Badge */}
                 <div className="absolute top-4 left-4 z-20">
                   <span className="inline-block px-3 py-1 text-xs font-bold uppercase tracking-wider text-white rounded-full font-sans"
-                        style={{ backgroundColor: '#D4A574' }}>
+                        style={{ backgroundColor: '#be9d58' }}>
                     Featured
                   </span>
                 </div>
@@ -72,8 +78,13 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
                       )}
                     </div>
 
+                    {/* Accent Color Overlay */}
+                    <div className="absolute inset-0" style={{ backgroundColor: '#1e4356', opacity: 0.5 }}></div>
+
                     {/* Semi-transparent Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent"></div>
+                    <div className="absolute inset-0" style={{
+                      background: 'linear-gradient(to right, rgba(30, 67, 86, 0.85), rgba(30, 67, 86, 0.7), transparent)'
+                    }}></div>
 
                     {/* Content Overlay */}
                     <div className="absolute inset-0 flex items-end">
@@ -84,9 +95,9 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
                         </h1>
 
                         {/* Author and Date */}
-                        <div className="flex items-center space-x-4 text-sm md:text-base text-gray-200 mb-4">
+                        <div className="flex items-center space-x-4 text-sm md:text-base text-gray-300 mb-4 font-sans">
                           {featuredPost.author && (
-                            <span className="font-bold text-white uppercase tracking-wider">
+                            <span className="font-medium uppercase tracking-wider">
                               {featuredPost.author.name}
                             </span>
                           )}
@@ -101,7 +112,7 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
 
                         {/* Article Excerpt */}
                         {featuredPost.excerpt && (
-                          <p className="text-gray-200 leading-relaxed text-base md:text-lg mb-6 max-w-xl">
+                          <p className="text-gray-200 leading-relaxed text-base md:text-lg mb-6 max-w-xl font-serif">
                             {featuredPost.excerpt}
                           </p>
                         )}
@@ -120,20 +131,15 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
             </section>
           )}
 
-          {/* Search Bar */}
-          {otherPosts.length > 0 && (
-            <SearchBar
-              posts={otherPosts}
-              onSearchResults={setFilteredPosts}
-            />
-          )}
+
 
           {/* Other Articles Grid */}
           {filteredPosts.length > 0 && (
-            <section>
-              <div className="grid gap-12 md:gap-16">
-                {filteredPosts.map((post) => (
-                  <article key={post.slug} className="group">
+            <section className="bg-white p-6 md:p-8 shadow-sm border-t-8" style={{ borderTopColor: '#1e4356' }}>
+              <div className="space-y-12 md:space-y-16">
+                {filteredPosts.map((post, index) => (
+                  <div key={post.slug}>
+                    <article className="group">
                     <div className="flex flex-col md:flex-row gap-8">
                       {/* Article Image - 16:9 aspect ratio */}
                       <div className="md:w-1/3 flex-shrink-0">
@@ -166,20 +172,20 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
                           <Link
                             href={`/posts/${post.slug}`}
                             className="hover:text-amber-600 transition-colors duration-200"
-                            style={{ color: '#D4A574' }}
-                            onMouseEnter={(e) => e.currentTarget.style.color = '#C19660'}
-                            onMouseLeave={(e) => e.currentTarget.style.color = '#D4A574'}
+                            style={{ color: '#be9d58' }}
+                            onMouseEnter={(e) => e.currentTarget.style.color = '#a8894e'}
+                            onMouseLeave={(e) => e.currentTarget.style.color = '#be9d58'}
                           >
                             {post.title}
                           </Link>
                         </h3>
 
-                        <div className="flex items-center space-x-4 text-base text-gray-600 mb-4">
+                        <div className="flex items-center space-x-4 text-sm text-gray-300 mb-4 font-sans">
                           {post.author && (
-                            <span className="font-bold text-gray-900">{post.author.name}</span>
+                            <span className="font-medium uppercase tracking-wider">{post.author.name}</span>
                           )}
                           <span>|</span>
-                          <span className="font-medium">
+                          <span className="font-medium uppercase tracking-wider">
                             {new Date(post.date).toLocaleDateString('en-US', {
                               year: 'numeric',
                               month: 'long'
@@ -188,23 +194,34 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
                         </div>
 
                         {post.excerpt && (
-                          <p className="text-gray-700 leading-relaxed mb-6 text-lg">
+                          <p className="text-gray-700 leading-relaxed mb-6 text-lg font-serif">
                             {post.excerpt}
                           </p>
                         )}
 
-                        <Link
-                          href={`/posts/${post.slug}`}
-                          className="font-semibold text-sm uppercase tracking-wider transition-colors duration-200"
-                          style={{ color: '#2D5A5A' }}
-                          onMouseEnter={(e) => e.currentTarget.style.color = '#1F4444'}
-                          onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A5A'}
-                        >
-                          Read Issue
+                        <Link href={`/posts/${post.slug}`}>
+                          <span className="inline-block text-white px-6 py-3 text-sm font-semibold uppercase tracking-wider transition-all duration-200 font-sans border hover:bg-transparent"
+                                style={{ backgroundColor: '#1e4356', borderColor: '#1e4356' }}
+                                onMouseEnter={(e) => {
+                                  e.currentTarget.style.backgroundColor = 'transparent';
+                                  e.currentTarget.style.color = '#1e4356';
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.currentTarget.style.backgroundColor = '#1e4356';
+                                  e.currentTarget.style.color = 'white';
+                                }}>
+                            Read Issue
+                          </span>
                         </Link>
                       </div>
                     </div>
-                  </article>
+                    </article>
+
+                    {/* Subtle Divider - only show between articles, not after the last one */}
+                    {index < filteredPosts.length - 1 && (
+                      <div className="border-t border-gray-200 mt-12 md:mt-16"></div>
+                    )}
+                  </div>
                 ))}
               </div>
             </section>

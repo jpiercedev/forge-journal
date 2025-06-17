@@ -4,12 +4,12 @@ import { urlForImage } from 'lib/sanity.image'
 import type { Post } from 'lib/sanity.queries'
 
 interface ForgePostHeaderProps {
-  post: Pick<Post, 'title' | 'date' | 'author'>
+  post: Pick<Post, 'title' | 'date' | 'author' | 'coverImage'>
   volumeInfo?: string
 }
 
 export default function ForgePostHeader({ post, volumeInfo }: ForgePostHeaderProps) {
-  const { title, date, author } = post
+  const { title, date, author, coverImage } = post
 
   // Format date to match the design (e.g., "FEBRUARY 2025 | VOLUME 54, ISSUE 2")
   const formattedDate = new Date(date).toLocaleDateString('en-US', {
@@ -21,37 +21,62 @@ export default function ForgePostHeader({ post, volumeInfo }: ForgePostHeaderPro
 
   return (
     <div className="mb-12">
-      {/* Volume and Issue Info */}
-      <div className="text-sm text-gray-500 uppercase tracking-wider mb-6 font-medium">
-        {displayVolumeInfo}
-      </div>
-
-      {/* Article Title */}
-      <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-gray-900 leading-tight mb-8 tracking-tight">
-        {title}
-      </h1>
-
-      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8">
-        {/* Author Info */}
-        <div className="flex-1">
-          {author && (
-            <div className="space-y-3">
-              <h2 className="text-2xl font-bold text-gray-900">
-                {author.name}
-              </h2>
-              {/* Author title/bio could go here */}
-              <p className="text-base font-medium" style={{ color: '#D4A574' }}>
-                Author Title Goes Here
-              </p>
-            </div>
+      {/* Header with Background Image */}
+      <div className="relative overflow-hidden mb-8">
+        {/* Background Image */}
+        <div className="aspect-video w-full overflow-hidden bg-gray-200">
+          {coverImage?.asset?._ref ? (
+            <Image
+              src={urlForImage(coverImage)?.width(1200).height(675).url() || ''}
+              alt={coverImage.alt || title}
+              width={1200}
+              height={675}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <ImagePlaceholder
+              width={1200}
+              height={675}
+              aspectRatio="video"
+              text="Featured Image"
+              className="w-full h-full"
+            />
           )}
         </div>
 
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
 
+        {/* Content Overlay */}
+        <div className="absolute inset-0 flex items-end">
+          <div className="p-6 md:p-8 lg:p-12 w-full">
+            {/* Volume and Issue Info */}
+            <div className="text-sm text-gray-300 uppercase tracking-wider mb-4 font-medium font-serif">
+              {displayVolumeInfo}
+            </div>
+
+            {/* Article Title */}
+            <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black text-white leading-tight mb-6 tracking-tight font-sans">
+              {title}
+            </h1>
+
+            {/* Author Info */}
+            {author && (
+              <div className="space-y-2">
+                <h2 className="text-xl md:text-2xl font-bold text-white font-serif">
+                  {author.name}
+                </h2>
+                <p className="text-base font-medium font-serif" style={{ color: '#be9d58' }}>
+                  Author Title Goes Here
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Separator line */}
-      <div className="mt-12 border-b-4 border-teal-600 w-20"></div>
+      <div className="border-b-4 border-teal-600 w-20"></div>
     </div>
   )
 }

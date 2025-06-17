@@ -7,10 +7,10 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
-            <Link href="/" className="text-xl font-bold text-gray-900">
+            <Link href="/" className="text-xl font-bold text-gray-900 font-sans">
               Forge Journal
             </Link>
-            <p className="mt-2 text-gray-600 max-w-md">
+            <p className="mt-2 text-gray-600 max-w-md font-sans">
               A modern journaling platform built to help you craft your thoughts and forge your story with purpose and clarity.
             </p>
           </div>

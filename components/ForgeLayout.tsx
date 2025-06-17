@@ -13,6 +13,7 @@ interface ForgeLayoutProps {
   showSidebar?: boolean
   post?: Post
   showTagline?: boolean
+  searchBar?: React.ReactNode
 }
 
 export default function ForgeLayout({
@@ -23,6 +24,7 @@ export default function ForgeLayout({
   showSidebar = true,
   post,
   showTagline = false,
+  searchBar,
 }: ForgeLayoutProps) {
   return (
     <div className="min-h-screen bg-gray-100">
@@ -32,7 +34,7 @@ export default function ForgeLayout({
 
 
       <main className="w-[90%] mx-auto py-12 max-w-[1280px]">
-        <div className="flex flex-col lg:flex-row gap-12">
+        <div className="flex flex-col lg:flex-row gap-6">
           {/* Main Content Area - 3/4 width */}
           <div className={`${showSidebar ? 'lg:w-3/4' : 'w-full'}`}>
             {children}
@@ -43,10 +45,35 @@ export default function ForgeLayout({
             <div className="lg:w-1/4 space-y-6">
               {/* Tagline Section - Sidebar */}
               {showTagline && (
-                <div className="bg-white p-6 shadow-sm text-center" style={{ backgroundColor: '#2D5A5A' }}>
-                  <h2 className="text-xl md:text-2xl font-normal text-white leading-tight font-serif">
-                    Shaping leaders and Pastors that shape the Nation.
-                  </h2>
+                <div
+                  className="bg-white p-6 shadow-sm text-center relative overflow-hidden"
+                  style={{
+                    backgroundColor: '#1e4356',
+                    backgroundImage: 'url(https://kaypark.com/wp-content/uploads/2018/04/AmericanFlag.png)',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat'
+                  }}
+                >
+                  {/* Overlay to maintain color and readability */}
+                  <div
+                    className="absolute inset-0"
+                    style={{ backgroundColor: '#1e4356', opacity: 0.85 }}
+                  ></div>
+
+                  {/* Content */}
+                  <div className="relative z-10">
+                    <h2 className="text-sm md:text-base font-normal text-white leading-tight font-serif uppercase tracking-widest">
+                      Shaping leaders and Pastors that shape the Nation.
+                    </h2>
+                  </div>
+                </div>
+              )}
+
+              {/* Search Bar - Sidebar */}
+              {searchBar && (
+                <div>
+                  {searchBar}
                 </div>
               )}
 

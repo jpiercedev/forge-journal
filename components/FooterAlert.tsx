@@ -53,7 +53,7 @@ export default function FooterAlert() {
         isVisible ? 'translate-y-0' : 'translate-y-full'
       }`}
     >
-      <div className="bg-white border-t-2 shadow-lg" style={{ borderColor: '#D4A574' }}>
+      <div className="bg-white border-t-2 shadow-lg" style={{ borderColor: '#be9d58' }}>
         <div className="w-[90%] mx-auto py-4">
           <div className="flex items-center justify-between">
             {!isSubmitted ? (
@@ -83,9 +83,9 @@ export default function FooterAlert() {
                       type="submit"
                       disabled={isSubmitting}
                       className="px-4 py-2 text-sm font-thin uppercase tracking-wider text-white transition-colors duration-200 font-sans disabled:opacity-50"
-                      style={{ backgroundColor: '#2D5A5A' }}
-                      onMouseEnter={(e) => !isSubmitting && (e.currentTarget.style.backgroundColor = '#1F4444')}
-                      onMouseLeave={(e) => !isSubmitting && (e.currentTarget.style.backgroundColor = '#2D5A5A')}
+                      style={{ backgroundColor: '#1e4356' }}
+                      onMouseEnter={(e) => !isSubmitting && (e.currentTarget.style.backgroundColor = '#152e3f')}
+                      onMouseLeave={(e) => !isSubmitting && (e.currentTarget.style.backgroundColor = '#1e4356')}
                     >
                       {isSubmitting ? 'Signing up...' : 'Sign Up'}
                     </button>
@@ -94,7 +94,7 @@ export default function FooterAlert() {
               </>
             ) : (
               <div className="flex-1 flex items-center gap-3">
-                <div className="w-8 h-8 flex items-center justify-center" style={{ backgroundColor: '#D4A574' }}>
+                <div className="w-8 h-8 flex items-center justify-center" style={{ backgroundColor: '#be9d58' }}>
                   <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>

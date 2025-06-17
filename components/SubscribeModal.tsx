@@ -55,14 +55,14 @@ export default function SubscribeModal({ isOpen, onClose }: SubscribeModalProps)
             <h2 className="text-2xl font-bold text-gray-900 mb-2 font-sans">
               Subscribe to The Forge Journal
             </h2>
-            <p className="text-gray-600 mb-6">
+            <p className="text-gray-600 mb-6 font-sans">
               Stay connected with the latest articles, insights, and resources from The Forge Journal.
             </p>
 
             {!isSubmitted ? (
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label htmlFor="modal-email" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="modal-email" className="block text-sm font-medium text-gray-700 mb-2 font-sans">
                     Email Address
                   </label>
                   <input
@@ -71,7 +71,7 @@ export default function SubscribeModal({ isOpen, onClose }: SubscribeModalProps)
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors"
+                    className="w-full px-4 py-3 border border-gray-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors font-sans"
                     placeholder="Enter your email address"
                   />
                 </div>
@@ -79,30 +79,30 @@ export default function SubscribeModal({ isOpen, onClose }: SubscribeModalProps)
                   type="submit"
                   disabled={isSubmitting}
                   className="w-full text-white px-6 py-3 text-sm font-semibold uppercase tracking-wider transition-colors duration-200 font-sans disabled:opacity-50"
-                  style={{ backgroundColor: '#2D5A5A' }}
-                  onMouseEnter={(e) => !isSubmitting && (e.currentTarget.style.backgroundColor = '#1F4444')}
-                  onMouseLeave={(e) => !isSubmitting && (e.currentTarget.style.backgroundColor = '#2D5A5A')}
+                  style={{ backgroundColor: '#1e4356' }}
+                  onMouseEnter={(e) => !isSubmitting && (e.currentTarget.style.backgroundColor = '#152e3f')}
+                  onMouseLeave={(e) => !isSubmitting && (e.currentTarget.style.backgroundColor = '#1e4356')}
                 >
                   {isSubmitting ? 'Subscribing...' : 'Subscribe'}
                 </button>
               </form>
             ) : (
               <div className="text-center py-4">
-                <div className="w-16 h-16 mx-auto mb-4 flex items-center justify-center" style={{ backgroundColor: '#D4A574' }}>
+                <div className="w-16 h-16 mx-auto mb-4 flex items-center justify-center" style={{ backgroundColor: '#be9d58' }}>
                   <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Thank you for subscribing!</h3>
-                <p className="text-gray-600 mb-4">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2 font-sans">Thank you for subscribing!</h3>
+                <p className="text-gray-600 mb-4 font-sans">
                   You'll receive our latest articles and insights directly in your inbox.
                 </p>
                 <button
                   onClick={handleClose}
-                  className="text-sm font-medium uppercase tracking-wider transition-colors duration-200"
-                  style={{ color: '#2D5A5A' }}
-                  onMouseEnter={(e) => e.currentTarget.style.color = '#1F4444'}
-                  onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A5A'}
+                  className="text-sm font-medium uppercase tracking-wider transition-colors duration-200 font-sans"
+                  style={{ color: '#1e4356' }}
+                  onMouseEnter={(e) => e.currentTarget.style.color = '#152e3f'}
+                  onMouseLeave={(e) => e.currentTarget.style.color = '#1e4356'}
                 >
                   Close
                 </button>

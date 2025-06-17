@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap');
 @import 'tailwindcss';
 @plugin "@tailwindcss/typography";
 
@@ -18,12 +18,12 @@
   --color-amber-600: #d97706;
   --color-amber-500: #f59e0b;
   --color-amber-400: #fbbf24;
-  --color-forge-gold: #D4A574;
-  --color-forge-gold-hover: #C19660;
+  --color-forge-gold: #be9d58;
+  --color-forge-gold-hover: #a8894e;
   --color-teal-600: #0d9488;
   --color-teal-700: #0f766e;
-  --color-forge-teal: #2D5A5A;
-  --color-forge-teal-hover: #1F4444;
+  --color-forge-teal: #1e4356;
+  --color-forge-teal-hover: #152e3f;
   --color-gray-50: #f9fafb;
   --color-gray-100: #f3f4f6;
   --color-gray-200: #e5e7eb;
@@ -51,7 +51,7 @@
   --shadow-medium: 0 8px 30px rgba(0, 0, 0, 0.12);
 
   --font-family-sans: 'Montserrat', ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --font-family-serif: 'Crimson Text', ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-family-serif: 'Merriweather', ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
 }
 
 /*
@@ -72,7 +72,7 @@
   }
 
   body {
-    font-family: var(--font-family-serif);
+    font-family: var(--font-family-sans);
     line-height: 1.6;
     color: #374151;
   }

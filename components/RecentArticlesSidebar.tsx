@@ -15,12 +15,13 @@ export default function RecentArticlesSidebar({ posts }: RecentArticlesSidebarPr
   return (
     <aside className="w-full">
       <div className="bg-white p-6 shadow-sm">
-        <h2 className="text-xl font-bold text-gray-900 mb-6 font-sans">Recent Articles</h2>
+        <h2 className="text-sm font-bold text-gray-900 mb-6 font-sans uppercase tracking-wider">Recent Posts</h2>
 
         {recentPosts.length > 0 ? (
           <div className="space-y-6">
-            {recentPosts.map((post) => (
-            <article key={post.slug} className="group">
+            {recentPosts.map((post, index) => (
+            <div key={post.slug}>
+              <article className="group">
               <Link href={`/posts/${post.slug}`}>
                 <div className="space-y-3">
                   {/* Article Image - 1:1 aspect ratio */}
@@ -45,14 +46,13 @@ export default function RecentArticlesSidebar({ posts }: RecentArticlesSidebarPr
                   </div>
 
                   {/* Article Title */}
-                  <h3 className="text-lg font-bold text-gray-900 transition-colors duration-200 leading-tight group-hover:text-amber-600 font-sans"
-                      style={{ color: post === recentPosts[0] ? '#D4A574' : undefined }}>
+                  <h3 className="text-lg font-bold text-gray-900 transition-colors duration-200 leading-tight group-hover:text-amber-600 font-serif">
                     {post.title}
                   </h3>
 
                   {/* Article Date */}
                   <div className="text-sm uppercase tracking-wider font-medium"
-                       style={{ color: '#D4A574' }}>
+                       style={{ color: '#be9d58' }}>
                     {new Date(post.date).toLocaleDateString('en-US', {
                       year: 'numeric',
                       month: 'long',
@@ -61,7 +61,13 @@ export default function RecentArticlesSidebar({ posts }: RecentArticlesSidebarPr
                   </div>
                 </div>
               </Link>
-            </article>
+              </article>
+
+              {/* Subtle Divider - only show between articles, not after the last one */}
+              {index < recentPosts.length - 1 && (
+                <div className="border-t border-gray-200 mt-6"></div>
+              )}
+            </div>
           ))}
           </div>
         ) : (
@@ -75,9 +81,9 @@ export default function RecentArticlesSidebar({ posts }: RecentArticlesSidebarPr
           <Link
             href="/"
             className="font-semibold text-sm uppercase tracking-wider transition-colors duration-200"
-            style={{ color: '#2D5A5A' }}
-            onMouseEnter={(e) => e.currentTarget.style.color = '#1F4444'}
-            onMouseLeave={(e) => e.currentTarget.style.color = '#2D5A5A'}
+            style={{ color: '#1e4356' }}
+            onMouseEnter={(e) => e.currentTarget.style.color = '#152e3f'}
+            onMouseLeave={(e) => e.currentTarget.style.color = '#1e4356'}
           >
             View All Articles →
           </Link>
