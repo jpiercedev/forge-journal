@@ -2,11 +2,30 @@ import ForgeLayout from 'components/ForgeLayout'
 import ImagePlaceholder from 'components/ImagePlaceholder'
 import IndexPageHead from 'components/IndexPageHead'
 import SearchBar from 'components/SearchBar'
-import { urlForImage } from 'lib/sanity.image'
-import type { Post, Settings } from 'lib/sanity.queries'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect,useState } from 'react'
+
+// Define types for Supabase data
+interface Post {
+  id: string
+  title: string
+  slug: string
+  excerpt?: string
+  cover_image_url?: string
+  cover_image_alt?: string
+  published_at: string
+  author?: {
+    name: string
+    title?: string
+    avatar_url?: string
+  }
+}
+
+interface Settings {
+  title: string
+  description: any[]
+}
 
 export interface ForgeIndexPageProps {
   preview?: boolean
@@ -59,10 +78,10 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
                   <Link href={`/posts/${featuredPost.slug}`}>
                     {/* Background Image - Full Width 16:9 */}
                     <div className="aspect-video w-full overflow-hidden bg-gray-200">
-                      {featuredPost.coverImage?.asset?._ref ? (
+                      {featuredPost.cover_image_url ? (
                         <Image
-                          src={urlForImage(featuredPost.coverImage)?.width(1200).height(675).url() || ''}
-                          alt={featuredPost.coverImage.alt || featuredPost.title}
+                          src={featuredPost.cover_image_url}
+                          alt={featuredPost.cover_image_alt || featuredPost.title}
                           width={1200}
                           height={675}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -103,7 +122,7 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
                           )}
                           <span className="text-gray-300 hidden sm:inline">|</span>
                           <span className="font-medium uppercase tracking-wider">
-                            {new Date(featuredPost.date).toLocaleDateString('en-US', {
+                            {new Date(featuredPost.published_at).toLocaleDateString('en-US', {
                               year: 'numeric',
                               month: 'long'
                             })}
@@ -145,10 +164,10 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
                       <div className="md:w-1/3 flex-shrink-0">
                         <Link href={`/posts/${post.slug}`}>
                           <div className="aspect-video overflow-hidden bg-gray-200">
-                            {post.coverImage?.asset?._ref ? (
+                            {post.cover_image_url ? (
                               <Image
-                                src={urlForImage(post.coverImage)?.width(400).height(225).url() || ''}
-                                alt={post.coverImage.alt || post.title}
+                                src={post.cover_image_url}
+                                alt={post.cover_image_alt || post.title}
                                 width={400}
                                 height={225}
                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
@@ -186,7 +205,7 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
                           )}
                           <span>|</span>
                           <span className="font-medium uppercase tracking-wider">
-                            {new Date(post.date).toLocaleDateString('en-US', {
+                            {new Date(post.published_at).toLocaleDateString('en-US', {
                               year: 'numeric',
                               month: 'long'
                             })}

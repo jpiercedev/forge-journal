@@ -16,17 +16,16 @@ Smart Import is now fully configured and ready to use! Your OpenAI API key has b
    http://localhost:3000/admin/smart-import
    ```
 
-3. **Authenticate:**
-   - Enter your Sanity API write token: `skJNZhvOpGq0rX9kykU8Saf3qKddEJQQ4kH7Dp048VQMI1EW5QrCmpUC5n9GKrAfcUAM9AGNpbf3qAJ4pf9d8hvuRYc55w79qQxuifpJCpByzaopIBlZE9ZG27a7vYLlgKtqTTAoxiiRGq2JBq5Sw0Xq4rIbN0Ri8nhJvNKCNL4J4dQ6WLq0`
-
-4. **Start importing content!**
+3. **Start importing content!**
+   - The system automatically authenticates with Supabase
+   - No additional tokens required
 
 ## ✅ Setup Status
 
 All components are installed and configured:
 
 - ✅ **OpenAI API Key**: Configured for AI processing
-- ✅ **Sanity Integration**: Connected to your CMS
+- ✅ **Supabase Integration**: Connected to your database
 - ✅ **Dependencies**: All required packages installed
 - ✅ **API Routes**: 5 endpoints ready for import operations
 - ✅ **UI Components**: Complete user interface built
@@ -69,14 +68,14 @@ Smart Import uses **GPT-4** to:
 2. **Configure Options**: Set processing preferences
 3. **AI Processing**: Content is analyzed and enhanced
 4. **Preview & Edit**: Review and refine the results
-5. **Publish**: Create the final blog post in Sanity
+5. **Publish**: Create the final blog post in Supabase
 
 ## 🔒 Security Features
 
 - **Rate Limiting**: Prevents abuse with hourly limits
 - **Input Validation**: All content is sanitized and validated
 - **File Security**: Safe file upload with type and size restrictions
-- **Authentication**: Requires valid Sanity API token
+- **Authentication**: Secure Supabase integration
 - **Content Filtering**: Removes malicious scripts and unsafe content
 
 ## 📊 Rate Limits
@@ -90,9 +89,9 @@ Smart Import uses **GPT-4** to:
 
 ### Common Issues
 
-**"Invalid API token"**
-- Use the Sanity write token provided above
-- Ensure the token has "Editor" permissions
+**"Authentication failed"**
+- Check your Supabase environment variables
+- Ensure service role key has proper permissions
 
 **"Failed to extract content"**
 - Check that URLs are publicly accessible

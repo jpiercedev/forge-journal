@@ -7,7 +7,7 @@ The Smart Import feature enables users to import blog posts from various sources
 
 ### Access Points
 - Standalone admin interface at `/admin/smart-import`
-- Sanity Studio plugin integration (future enhancement)
+- Supabase admin dashboard integration (future enhancement)
 
 ### Import Methods
 1. **URL Import**: Extract content from web articles
@@ -18,7 +18,7 @@ The Smart Import feature enables users to import blog posts from various sources
 1. Input validation and preprocessing
 2. AI-powered content analysis and extraction
 3. Preview with editable fields
-4. Final review and import to Sanity CMS
+4. Final review and import to Supabase
 
 ## API Architecture
 
@@ -28,13 +28,13 @@ The Smart Import feature enables users to import blog posts from various sources
 ├── parse-url.ts      # Extract content from URLs
 ├── parse-text.ts     # Process raw text input
 ├── parse-file.ts     # Handle file uploads and extraction
-├── create-post.ts    # Create final Sanity document
+├── create-post.ts    # Create final Supabase post
 └── preview.ts        # Generate preview data
 ```
 
 ### Data Flow
 ```
-Input → Preprocessing → AI Analysis → Structured Data → Preview → Sanity Creation
+Input → Preprocessing → AI Analysis → Structured Data → Preview → Supabase Creation
 ```
 
 ### AI Integration
@@ -91,21 +91,21 @@ Content: ${rawContent}
 ```
 
 ### Data Transformation
-- Convert to Sanity post schema format
-- Transform rich text to block content
+- Convert to Supabase post schema format
+- Transform rich text to structured JSON
 - Handle image processing and upload
 - Generate URL-friendly slugs
 
 ## Integration Points
 
-### Sanity CMS Integration
+### Supabase Integration
 - Use existing client configuration
 - Follow current post schema
 - Integrate with author system
 - Maintain existing image patterns
 
 ### Security & Authentication
-- Require Sanity write token
+- Require Supabase service role key
 - Rate limiting for AI API calls
 - Input validation and sanitization
 - Secure file upload handling
@@ -134,7 +134,7 @@ Content: ${rawContent}
 ```env
 OPENAI_API_KEY=your_openai_key
 SMART_IMPORT_SECRET=your_import_secret
-# Existing Sanity variables will be reused
+# Existing Supabase variables will be reused
 ```
 
 ### File Structure
@@ -142,7 +142,7 @@ SMART_IMPORT_SECRET=your_import_secret
 /lib/smart-import/
 ├── content-extractor.ts    # Content extraction utilities
 ├── ai-processor.ts         # AI integration logic
-├── sanity-formatter.ts     # Data transformation
+├── supabase-formatter.ts   # Data transformation
 └── validators.ts           # Input validation
 
 /types/smart-import.ts      # TypeScript definitions
@@ -223,13 +223,13 @@ This architecture provides a comprehensive foundation for building the Smart Imp
 - `/api/smart-import/parse-url.ts` - URL content extraction
 - `/api/smart-import/parse-text.ts` - Text content processing
 - `/api/smart-import/parse-file.ts` - File upload and extraction
-- `/api/smart-import/create-post.ts` - Sanity post creation
+- `/api/smart-import/create-post.ts` - Supabase post creation
 - `/api/smart-import/preview.ts` - Content preview generation
 
 #### Core Libraries
 - `lib/smart-import/content-extractor.ts` - Content extraction utilities
 - `lib/smart-import/ai-processor.ts` - AI integration and processing
-- `lib/smart-import/sanity-formatter.ts` - Sanity data formatting
+- `lib/smart-import/supabase-formatter.ts` - Supabase data formatting
 - `lib/smart-import/validators.ts` - Input validation and security
 
 #### UI Components
@@ -255,10 +255,10 @@ This architecture provides a comprehensive foundation for building the Smart Imp
 # Required for AI processing
 OPENAI_API_KEY=your_openai_api_key
 
-# Required for Sanity integration (existing)
-NEXT_PUBLIC_SANITY_PROJECT_ID=your_project_id
-NEXT_PUBLIC_SANITY_DATASET=your_dataset
-SANITY_API_WRITE_TOKEN=your_write_token
+# Required for Supabase integration
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 ```
 
 #### Dependencies Installed
@@ -273,7 +273,7 @@ SANITY_API_WRITE_TOKEN=your_write_token
 
 1. **Environment Setup**
    - [ ] Add OpenAI API key to environment variables
-   - [ ] Verify Sanity write token permissions
+   - [ ] Verify Supabase service role key permissions
    - [ ] Configure rate limiting settings
 
 2. **Security Configuration**

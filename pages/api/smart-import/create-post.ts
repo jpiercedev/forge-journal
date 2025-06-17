@@ -2,7 +2,7 @@
 
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { createSanityPost, formatForSanity, validateSanityConfig } from '../../../lib/smart-import/sanity-formatter';
+import { createSupabasePost, formatForSupabase, validateSupabaseConfig } from '../../../lib/smart-import/supabase-formatter';
 import { CreatePostResponse, ParsedContent, PreviewFormData } from '../../../types/smart-import';
 
 export default async function handler(
@@ -33,7 +33,7 @@ export default async function handler(
     }
 
     const token = authHeader.substring(7);
-    if (token !== process.env.SANITY_API_WRITE_TOKEN) {
+    if (token !== process.env.SUPABASE_SERVICE_ROLE_KEY) {
       return res.status(401).json({
         success: false,
         error: {
@@ -43,13 +43,13 @@ export default async function handler(
       });
     }
 
-    // Validate Sanity configuration
-    if (!validateSanityConfig()) {
+    // Validate Supabase configuration
+    if (!validateSupabaseConfig()) {
       return res.status(500).json({
         success: false,
         error: {
-          code: 'SANITY_CONFIG_ERROR',
-          message: 'Sanity configuration is incomplete',
+          code: 'SUPABASE_CONFIG_ERROR',
+          message: 'Supabase configuration is incomplete',
         },
       });
     }
@@ -97,30 +97,33 @@ export default async function handler(
       });
     }
 
-    // Format content for Sanity
-    let sanityData;
+    // Format content for Supabase
+    let supabaseData;
     try {
-      sanityData = await formatForSanity(parsedContent, options);
+      supabaseData = await formatForSupabase(parsedContent, {
+        ...options,
+        status: 'published' // Default to published for Smart Import
+      });
     } catch (error) {
       return res.status(400).json({
         success: false,
         error: {
           code: 'FORMAT_FAILED',
-          message: `Failed to format content for Sanity: ${error.message}`,
+          message: `Failed to format content for Supabase: ${error.message}`,
         },
       });
     }
 
-    // Create post in Sanity
+    // Create post in Supabase
     let createdPost;
     try {
-      createdPost = await createSanityPost(sanityData);
+      createdPost = await createSupabasePost(supabaseData);
     } catch (error) {
       return res.status(500).json({
         success: false,
         error: {
-          code: 'SANITY_CREATE_FAILED',
-          message: `Failed to create post in Sanity: ${error.message}`,
+          code: 'SUPABASE_CREATE_FAILED',
+          message: `Failed to create post in Supabase: ${error.message}`,
         },
       });
     }
@@ -130,8 +133,8 @@ export default async function handler(
       success: true,
       data: {
         success: true,
-        postId: createdPost._id,
-        slug: createdPost.slug.current,
+        postId: createdPost.id,
+        slug: createdPost.slug,
       },
       message: 'Post created successfully',
     });

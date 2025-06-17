@@ -1,7 +1,24 @@
 import Link from 'next/link'
-import { PortableText } from 'next-sanity'
 
 import styles from './BlogHeader.module.css'
+
+// Simple portable text renderer for legacy content
+function SimplePortableText({ value }: { value: any[] }) {
+  if (!value || !Array.isArray(value)) {
+    return null
+  }
+
+  return (
+    <>
+      {value.map((block, index) => {
+        if (block._type === 'block') {
+          return <p key={index}>{block.children?.map((child: any) => child.text).join('')}</p>
+        }
+        return null
+      })}
+    </>
+  )
+}
 
 export default function Header({
   title,
@@ -22,7 +39,7 @@ export default function Header({
           <h4
             className={`mt-5 text-center text-lg md:pl-8 md:text-left ${styles.portableText}`}
           >
-            <PortableText value={description} />
+            <SimplePortableText value={description} />
           </h4>
         </header>
       )

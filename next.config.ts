@@ -3,8 +3,9 @@ import type { NextConfig } from 'next'
 const config: NextConfig = {
   images: {
     remotePatterns: [
-      { hostname: 'cdn.sanity.io' },
       { hostname: 'picsum.photos' },
+      { hostname: '*.supabase.co' }, // Supabase storage images
+      { hostname: 'uvnbfnobyqbonuxztjuz.supabase.co' }, // Your specific Supabase project
     ],
   },
   typescript: {

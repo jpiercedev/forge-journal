@@ -61,7 +61,7 @@ export default function SmartImportInterface({ onComplete }: SmartImportInterfac
         message: 'Generating preview...',
       });
 
-      const token = localStorage.getItem('sanity_token') || '';
+      const token = localStorage.getItem('supabase_admin_token') || '';
       const response = await fetch('/api/smart-import/preview', {
         method: 'POST',
         headers: {

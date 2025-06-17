@@ -1,7 +1,7 @@
-import { getClient } from 'lib/sanity.client'
-import { LiveQueryProvider } from 'next-sanity/preview'
-import { useMemo } from 'react'
-
+// Legacy preview provider - now just passes through children
+function LiveQueryProvider({ children }: { children: React.ReactNode }) {
+  return <>{children}</>
+}
 export default function PreviewProvider({
   children,
   token,
@@ -9,6 +9,5 @@ export default function PreviewProvider({
   children: React.ReactNode
   token: string
 }) {
-  const client = useMemo(() => getClient({ token }), [token])
-  return <LiveQueryProvider client={client}>{children}</LiveQueryProvider>
+  return <LiveQueryProvider>{children}</LiveQueryProvider>
 }

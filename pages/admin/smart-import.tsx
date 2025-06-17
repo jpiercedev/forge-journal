@@ -20,7 +20,7 @@ export default function SmartImportPage({ preview }: SmartImportPageProps) {
 
   useEffect(() => {
     // Check for existing token in localStorage
-    const savedToken = localStorage.getItem('sanity_token');
+    const savedToken = localStorage.getItem('supabase_admin_token');
     if (savedToken) {
       setAuthToken(savedToken);
       setIsAuthenticated(true);
@@ -49,12 +49,12 @@ export default function SmartImportPage({ preview }: SmartImportPageProps) {
       });
 
       if (response.status === 401) {
-        setAuthError('Invalid API token. Please check your token and try again.');
+        setAuthError('Invalid service role key. Please check your token and try again.');
         return;
       }
 
       // Save token and authenticate
-      localStorage.setItem('sanity_token', authToken);
+      localStorage.setItem('supabase_admin_token', authToken);
       setIsAuthenticated(true);
     } catch (error) {
       setAuthError('Failed to validate token. Please try again.');
@@ -101,7 +101,7 @@ export default function SmartImportPage({ preview }: SmartImportPageProps) {
                 Smart Import
               </h2>
               <p className="mt-2 text-sm text-gray-600" style={{ fontFamily: 'Montserrat, sans-serif' }}>
-                Enter your Sanity API token to access Smart Import
+                Enter your Supabase service role key to access Smart Import
               </p>
             </div>
           </div>
@@ -111,7 +111,7 @@ export default function SmartImportPage({ preview }: SmartImportPageProps) {
               <form className="space-y-6" onSubmit={handleAuth}>
                 <div>
                   <label htmlFor="token" className="block text-sm font-medium text-gray-700">
-                    Sanity API Token
+                    Supabase Service Role Key
                   </label>
                   <div className="mt-1">
                     <input
@@ -122,7 +122,7 @@ export default function SmartImportPage({ preview }: SmartImportPageProps) {
                       onChange={(e) => setAuthToken(e.target.value)}
                       required
                       className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="Enter your Sanity write token"
+                      placeholder="Enter your Supabase service role key"
                     />
                   </div>
                   {authError && (
@@ -153,13 +153,13 @@ export default function SmartImportPage({ preview }: SmartImportPageProps) {
                 <div className="mt-6">
                   <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
                     <div className="text-sm text-blue-700">
-                      <p className="font-medium mb-2">To get your Sanity API token:</p>
+                      <p className="font-medium mb-2">To get your Supabase service role key:</p>
                       <ol className="list-decimal list-inside space-y-1">
-                        <li>Go to <a href="https://manage.sanity.io" target="_blank" rel="noopener noreferrer" className="underline">manage.sanity.io</a></li>
+                        <li>Go to <a href="https://app.supabase.com" target="_blank" rel="noopener noreferrer" className="underline">app.supabase.com</a></li>
                         <li>Select your Forge Journal project</li>
-                        <li>Navigate to API → Tokens</li>
-                        <li>Create a new token with &quot;Editor&quot; permissions</li>
-                        <li>Copy and paste the token here</li>
+                        <li>Navigate to Settings → API</li>
+                        <li>Copy the &quot;service_role&quot; key (not the anon key)</li>
+                        <li>Paste the key here</li>
                       </ol>
                     </div>
                   </div>

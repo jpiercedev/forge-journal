@@ -1,15 +1,12 @@
 // Test Smart Import Setup
 
-const { createClient } = require('@sanity/client')
+const { createClient } = require('@supabase/supabase-js')
 require('dotenv').config({ path: '.env.local' })
 
-const client = createClient({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
-  token: process.env.SANITY_API_WRITE_TOKEN,
-  apiVersion: '2025-02-27',
-  useCdn: false,
-})
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+)
 
 async function testSmartImportSetup() {
   console.log('🧪 Testing Smart Import Setup...\n')
@@ -17,9 +14,9 @@ async function testSmartImportSetup() {
   // Test 1: Environment Variables
   console.log('1. Checking Environment Variables:')
   const requiredEnvVars = [
-    'NEXT_PUBLIC_SANITY_PROJECT_ID',
-    'NEXT_PUBLIC_SANITY_DATASET', 
-    'SANITY_API_WRITE_TOKEN',
+    'NEXT_PUBLIC_SUPABASE_URL',
+    'NEXT_PUBLIC_SUPABASE_ANON_KEY',
+    'SUPABASE_SERVICE_ROLE_KEY',
     'OPENAI_API_KEY'
   ]
 
@@ -27,7 +24,7 @@ async function testSmartImportSetup() {
   for (const envVar of requiredEnvVars) {
     const value = process.env[envVar]
     if (value) {
-      console.log(`   ✅ ${envVar}: ${envVar === 'OPENAI_API_KEY' || envVar === 'SANITY_API_WRITE_TOKEN' ? '[HIDDEN]' : value}`)
+      console.log(`   ✅ ${envVar}: ${envVar === 'OPENAI_API_KEY' || envVar === 'SUPABASE_SERVICE_ROLE_KEY' ? '[HIDDEN]' : value}`)
     } else {
       console.log(`   ❌ ${envVar}: Missing`)
       envVarsOk = false
@@ -39,14 +36,20 @@ async function testSmartImportSetup() {
     return
   }
 
-  // Test 2: Sanity Connection
-  console.log('\n2. Testing Sanity Connection:')
+  // Test 2: Supabase Connection
+  console.log('\n2. Testing Supabase Connection:')
   try {
-    const projects = await client.fetch('*[_type == "post"][0...1]{_id, title}')
-    console.log(`   ✅ Sanity connection successful`)
-    console.log(`   📊 Found ${projects.length} sample posts`)
+    const { data: posts, error } = await supabase
+      .from('posts')
+      .select('id, title')
+      .limit(1)
+
+    if (error) throw error
+
+    console.log(`   ✅ Supabase connection successful`)
+    console.log(`   📊 Found ${posts?.length || 0} sample posts`)
   } catch (error) {
-    console.log(`   ❌ Sanity connection failed: ${error.message}`)
+    console.log(`   ❌ Supabase connection failed: ${error.message}`)
     return
   }
 
@@ -96,7 +99,7 @@ async function testSmartImportSetup() {
     'types/smart-import.ts',
     'lib/smart-import/content-extractor.ts',
     'lib/smart-import/ai-processor.ts', 
-    'lib/smart-import/sanity-formatter.ts',
+    'lib/smart-import/supabase-formatter.ts',
     'lib/smart-import/validators.ts',
     'pages/api/smart-import/parse-url.ts',
     'pages/api/smart-import/parse-text.ts',
@@ -127,8 +130,7 @@ async function testSmartImportSetup() {
   console.log('\n📋 Next Steps:')
   console.log('   1. Start your development server: npm run dev')
   console.log('   2. Navigate to: http://localhost:3000/admin/smart-import')
-  console.log('   3. Enter your Sanity API write token when prompted')
-  console.log('   4. Start importing content!')
+  console.log('   3. Start importing content to Supabase!')
   console.log('\n📚 Documentation:')
   console.log('   • User Guide: SMART_IMPORT_USER_GUIDE.md')
   console.log('   • Technical Guide: SMART_IMPORT_TECHNICAL_GUIDE.md')

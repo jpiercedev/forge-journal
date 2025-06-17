@@ -1,150 +1,172 @@
-# Forge Journal<!-- omit in toc -->
+# Forge Journal
 
-Forge Journal is a modern journaling platform built with [Next.js][nextjs] for the frontend and [Sanity][sanity-homepage] for content management. It features a native Sanity Studio with real-time collaboration and visual editing capabilities using [Presentation][presentation].
-
-The platform connects to Sanity Content Lake, providing hosted content APIs with flexible querying, on-demand image transformations, and powerful content management. Forge Journal helps you craft your thoughts and forge your story with a beautiful, intuitive interface.
-
-[![Deploy with Vercel](https://vercel.com/button)][vercel-deploy]
-
-> [!NOTE]  
-> This starter uses the Next.js [Pages Router](https://nextjs.org/docs/pages). [An App Router example is also available.](https://github.com/vercel/next.js/tree/canary/examples/cms-sanity#readme)
+A modern blog platform built with Next.js and Supabase, designed specifically for pastors and leadership who are helping to shape the nation.
 
 ## Features
 
-- A performant, modern journaling platform with editable entries, authors, and site settings
-- A native and customizable authoring environment, accessible on `yourjournal.com/studio`
-- Real-time and collaborative content editing with fine-grained revision history
-- Side-by-side instant content preview that works across your entire journal
-- Support for rich block content and advanced custom fields for diverse journal entries
-- Webhook-triggered Incremental Static Revalidation; publish new entries instantly
-- Free and boosted Sanity project with unlimited admin users, free content updates, and pay-as-you-go for API overages
-- Built with TypeScript and Tailwind.css for a clean, maintainable codebase
+- **Modern Blog Platform**: Clean, responsive design optimized for reading
+- **Supabase Backend**: Powerful PostgreSQL database with real-time capabilities
+- **Smart Import**: AI-powered content import from URLs, files, and text
+- **Content Management**: Full-featured admin dashboard for managing posts and authors
+- **SEO Optimized**: Built-in SEO features and meta tag management
+- **Responsive Design**: Mobile-first design that works on all devices
 
-## Table of Contents
+## Tech Stack
 
-- [Features](#features)
-- [Table of Contents](#table-of-contents)
-- [Project Overview](#project-overview)
-  - [Important files and folders](#important-files-and-folders)
-- [Configuration](#configuration)
-  - [Step 1. Set up the environment](#step-1-set-up-the-environment)
-  - [Step 2. Set up the project locally](#step-2-set-up-the-project-locally)
-  - [Step 3. Run Next.js locally in development mode](#step-3-run-nextjs-locally-in-development-mode)
-  - [Step 4. Deploy to production](#step-4-deploy-to-production)
-- [Questions and Answers](#questions-and-answers)
-  - [It doesn't work! Where can I get help?](#it-doesnt-work-where-can-i-get-help)
-  - [How can I remove the "Next steps" block from my blog?](#how-can-i-remove-the-next-steps-block-from-my-blog)
-  - [How can I set up Incremental Static Revalidation?](#how-can-i-set-up-incremental-static-revalidation)
-- [Next steps](#next-steps)
+- **Frontend**: Next.js 15, React 19, TypeScript
+- **Backend**: Supabase (PostgreSQL, Auth, Storage)
+- **Styling**: Tailwind CSS
+- **AI Integration**: OpenAI GPT-4 for smart content processing
+- **Deployment**: Vercel
 
-## Project Overview
+## Quick Start
 
-Forge Journal provides a clean, intuitive interface for journaling with powerful content management capabilities through Sanity Studio.
+### Prerequisites
 
-### Important files and folders
+- Node.js 20 or later
+- A Supabase account
+- An OpenAI API key (for Smart Import features)
 
-| File(s)                                     | Description                                              |
-| ------------------------------------------- | -------------------------------------------------------- |
-| `sanity.config.ts`                          |  Config file for Sanity Studio                           |
-| `sanity.cli.ts`                             |  Config file for Sanity CLI                              |
-| `/app/api/draft-mode/enable/route.ts`       |  Serverless route for triggering Draft mode              |
-| `/app/studio/[[...index]]/page.tsx`         |  Where Sanity Studio is mounted                          |
-| `/pages/api/revalidate.ts`                  |  Serverless route for triggering ISR                     |
-| `/schemas`                                  |  Where Sanity Studio gets its content types from         |
-| `/plugins`                                  |  Where the advanced Sanity Studio customization is setup |
-| `/lib/sanity.api.ts`,`/lib/sanity.image.ts` | Configuration for the Sanity Content Lake client         |
-| `/components/PreviewProvider.tsx`           | Configuration for the live Preview Mode                  |
-
-## Configuration
-
-### Step 1. Set up the environment
-
-Use the Deploy Button below. It will let you deploy the starter using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-sanity-example) as well as connect it to your Sanity Content Lake using [the Sanity Vercel Integration][integration].
-
-[![Deploy with Vercel](https://vercel.com/button)][vercel-deploy]
-
-### Step 2. Set up the project locally
-
-[Clone the repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) that was created for you on your GitHub account. Once cloned, run the following command from the project's root directory:
+### 1. Clone and Install
 
 ```bash
-npx vercel link
+git clone https://github.com/jpiercedev/nextjs-blog-cms-sanity-v3.git forge-journal
+cd forge-journal
+npm install
 ```
 
-Download the environment variables needed to connect Next.js and the Studio to your Sanity project:
+### 2. Set up Supabase
+
+1. Create a new project at [supabase.com](https://supabase.com)
+2. Run the database migrations from the `supabase/migrations` folder
+3. Copy your project URL and API keys
+
+### 3. Configure Environment Variables
+
+Copy `.env.local.example` to `.env.local` and fill in your values:
+
+```env
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+
+# OpenAI for Smart Import (optional)
+OPENAI_API_KEY=your_openai_api_key
+```
+
+### 4. Run the Development Server
 
 ```bash
-npx vercel env pull
+npm run dev
 ```
 
-### Step 3. Run Next.js locally in development mode
+Your Forge Journal will be running at [http://localhost:3000](http://localhost:3000)!
+
+## Project Structure
+
+### Important Files and Folders
+
+| File/Folder | Description |
+| ----------- | ----------- |
+| `/pages/` | Next.js pages and API routes |
+| `/components/` | React components |
+| `/lib/supabase/` | Supabase client and database utilities |
+| `/lib/smart-import/` | Smart Import AI processing logic |
+| `/supabase/migrations/` | Database schema and migrations |
+| `/types/` | TypeScript type definitions |
+
+### Key Features
+
+- **Admin Dashboard**: Access at `/admin/dashboard` for content management
+- **Smart Import**: Access at `/admin/smart-import` for AI-powered content import
+- **Blog Posts**: Managed through Supabase with rich content support
+- **Author Management**: Full author profiles with images and bios
+
+## Smart Import
+
+The Smart Import feature allows you to import content from various sources using AI:
+
+- **URL Import**: Extract and format content from web pages
+- **File Import**: Process PDF, Word documents, and text files
+- **Text Import**: Paste text content for AI processing
+
+### How it Works
+
+1. Content is extracted from the source
+2. OpenAI processes and structures the content
+3. Metadata is automatically generated (title, excerpt, categories)
+4. Content is formatted for Supabase storage
+5. Posts are created as drafts for review
+
+## Database Schema
+
+The Supabase database includes these main tables:
+
+- `posts` - Blog posts with rich content
+- `authors` - Author profiles and information
+- `categories` - Content categorization
+- `post_categories` - Many-to-many relationship for post categories
+
+## Deployment
+
+### Vercel Deployment
+
+1. Connect your GitHub repository to Vercel
+2. Add environment variables in Vercel dashboard
+3. Deploy automatically on git push
+
+### Environment Variables for Production
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_production_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_production_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_production_service_role_key
+OPENAI_API_KEY=your_openai_api_key
+```
+
+## Development
+
+### Running Tests
 
 ```bash
-npm install && npm run dev
+npm run test
 ```
 
-When you run this development server, the changes you make in your frontend and studio configuration will be applied live using hot reloading.
-
-Your Forge Journal should be up and running on [http://localhost:3000][localhost-3000]! You can create and edit journal entries on [http://localhost:3000/studio][localhost-3000-studio].
-
-### Step 4. Deploy to production
-
-To deploy your changes to production you use `git`:
+### Code Formatting
 
 ```bash
-git add .
-git commit
-git push
+npm run format
 ```
 
-Alternatively, you can deploy without a `git` hosting provider using the Vercel CLI:
+### Type Checking
 
 ```bash
-npx vercel --prod
+npm run type-check
 ```
 
-## Questions and Answers
+## Contributing
 
-### It doesn't work! Where can I get help?
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Run tests and formatting
+5. Submit a pull request
 
-In case of any issues or questions, you can post:
+## License
 
-- [GitHub Discussions for Next.js][vercel-github]
-- [Sanity's GitHub Discussions][sanity-github]
-- [Sanity's Community Slack][sanity-community]
+This project is licensed under the MIT License.
 
-### How can I remove the "Next steps" block from my journal?
+## Support
 
-You can remove it by deleting the `IntroTemplate` component in `/components/IndexPage.tsx`.
+For questions and support:
 
-### How can I set up Incremental Static Revalidation?
+- Create an issue on GitHub
+- Check the documentation in the `/docs` folder
+- Review the Smart Import guides for AI features
 
-Go to the serverless function code in `/pages/api/revalidate.ts`. In the code comments, you'll find instructions for how to set up [ISR][vercel-isr].
+## Acknowledgments
 
-## Next steps
-
-- [Join our Slack community to ask questions and get help][sanity-community]
-- [How to edit my content structure?][sanity-schema-types]
-- [How to query content?][sanity-groq]
-- [What is content modelling?][sanity-content-modelling]
-
-[vercel-deploy]: https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fsanity-io%2Fnextjs-blog-cms-sanity-v3&repository-name=blog-nextjs-sanity&project-name=blog-nextjs-sanity&demo-title=Blog%20with%20Built-in%20Content%20Editing&demo-description=A%20Sanity-powered%20blog%20with%20built-in%20content%20editing%20%26%20instant%20previews&demo-url=https%3A%2F%2Fnextjs-blog.sanity.build%2F%3Futm_source%3Dvercel%26utm_medium%3Dreferral&demo-image=https%3A%2F%2Fuser-images.githubusercontent.com%2F81981%2F197501516-c7c8092d-0305-4abe-afb7-1e896ef7b90a.png&integration-ids=oac_hb2LITYajhRQ0i4QznmKH7gx&external-id=nextjs;template=nextjs-blog-cms-sanity-v3
-[integration]: https://www.sanity.io/docs/vercel-integration?utm_source=github.com&utm_medium=referral&utm_campaign=nextjs-v3vercelstarter
-[`.env.local.example`]: .env.local.example
-[nextjs]: https://github.com/vercel/next.js
-[sanity-create]: https://www.sanity.io/get-started/create-project?utm_source=github.com&utm_medium=referral&utm_campaign=nextjs-v3vercelstarter
-[sanity-deployment]: https://www.sanity.io/docs/deployment?utm_source=github.com&utm_medium=referral&utm_campaign=nextjs-v3vercelstarter
-[sanity-homepage]: https://www.sanity.io?utm_source=github.com&utm_medium=referral&utm_campaign=nextjs-v3vercelstarter
-[sanity-community]: https://slack.sanity.io/
-[sanity-schema-types]: https://www.sanity.io/docs/schema-types?utm_source=github.com&utm_medium=referral&utm_campaign=nextjs-v3vercelstarter
-[sanity-github]: https://github.com/sanity-io/sanity/discussions
-[sanity-groq]: https://www.sanity.io/docs/groq?utm_source=github.com&utm_medium=referral&utm_campaign=nextjs-v3vercelstarter
-[sanity-content-modelling]: https://www.sanity.io/docs/content-modelling?utm_source=github.com&utm_medium=referral&utm_campaign=nextjs-v3vercelstarter
-[sanity-webhooks]: https://www.sanity.io/docs/webhooks?utm_source=github.com&utm_medium=referral&utm_campaign=nextjs-v3vercelstarter
-[localhost-3000]: http://localhost:3000
-[localhost-3000-studio]: http://localhost:3000/studio
-[vercel-isr]: https://nextjs.org/blog/next-12-1#on-demand-incremental-static-regeneration-beta
-[vercel]: https://vercel.com
-[vercel-github]: https://github.com/vercel/next.js/discussions
-[app-dir]: https://beta.nextjs.org/docs/routing/fundamentals#the-app-directory
-[presentation]: https://www.sanity.io/docs/presentation
+- Built with Next.js and Supabase
+- AI features powered by OpenAI
+- Design inspired by modern publishing platforms

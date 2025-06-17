@@ -2,7 +2,7 @@
 
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { formatForSanity } from '../../../lib/smart-import/sanity-formatter';
+import { formatForSupabase } from '../../../lib/smart-import/supabase-formatter';
 import { ImportPreview,ParsedContent, PreviewResponse } from '../../../types/smart-import';
 
 export default async function handler(
@@ -57,12 +57,12 @@ export default async function handler(
     }
 
     // Generate preview data
-    let sanityData;
+    let supabaseData;
     const warnings: string[] = [];
     const suggestions: string[] = [];
 
     try {
-      sanityData = await formatForSanity(parsedContent, options);
+      supabaseData = await formatForSupabase(parsedContent, options);
     } catch (error) {
       return res.status(400).json({
         success: false,
@@ -99,15 +99,15 @@ export default async function handler(
     }
 
     // Check for potential issues with the slug
-    if (sanityData.slug.current.length > 96) {
+    if (supabaseData.slug.length > 96) {
       warnings.push('Generated slug is quite long. Consider shortening the title.');
     }
 
     // Check content structure
-    const hasHeadings = sanityData.content.some((block: any) => 
-      block._type === 'block' && block.style && block.style.startsWith('h')
-    );
-    
+    const hasHeadings = supabaseData.content.content && Array.isArray(supabaseData.content.content)
+      ? supabaseData.content.content.some((block: any) => block.type === 'heading')
+      : false;
+
     if (!hasHeadings && parsedContent.content.length > 1000) {
       suggestions.push('Consider adding headings to improve content structure and readability.');
     }
@@ -115,7 +115,7 @@ export default async function handler(
     // Create preview object
     const preview: ImportPreview = {
       parsedContent,
-      sanityData,
+      supabaseData,
       warnings: warnings.length > 0 ? warnings : undefined,
       suggestions: suggestions.length > 0 ? suggestions : undefined,
     };

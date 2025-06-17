@@ -1,9 +1,12 @@
 import Meta from 'components/BlogMeta'
 import * as demo from 'lib/demo.data'
-import { urlForImage } from 'lib/sanity.image'
+import { urlForImage } from 'lib/image'
 import { Post, Settings } from 'lib/sanity.queries'
 import Head from 'next/head'
-import { stegaClean } from 'next-sanity'
+// Legacy stega clean function
+function stegaClean(value: any) {
+  return value
+}
 
 export interface PostPageHeadProps {
   settings: Settings

@@ -1,4 +1,4 @@
-import { getAllPosts, getClient } from 'lib/sanity.client'
+// Sitemap generation without Sanity dependency
 
 type SitemapLocation = {
   url: string
@@ -53,23 +53,11 @@ export default function SiteMap() {
 }
 
 export async function getServerSideProps({ res }) {
-  const client = getClient()
+  // For now, just use default URLs since we're migrating from Sanity
+  // TODO: Add Supabase integration to fetch dynamic post URLs
+  const postUrls: SitemapLocation[] = []
 
-  // Get list of Post urls
-  const [posts = []] = await Promise.all([getAllPosts(client)])
-  const postUrls: SitemapLocation[] = posts
-    .filter(({ slug = '' }) => slug)
-    .map((post) => {
-      return {
-        url: `/posts/${post.slug}`,
-        priority: 0.5,
-        lastmod: new Date(post._updatedAt),
-      }
-    })
-
-  // ... get more routes here
-
-  // Return the default urls, combined with dynamic urls above
+  // Return the default urls for now
   const locations = [...defaultUrls, ...postUrls]
 
   // Set response to XML

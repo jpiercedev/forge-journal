@@ -1,0 +1,300 @@
+// Supabase Client Configuration for Forge Journal
+
+import { createClient } from '@supabase/supabase-js'
+
+// Environment variables
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Missing Supabase environment variables')
+}
+
+// Client for browser/frontend use
+export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+
+// Admin client for server-side operations (has elevated permissions)
+export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false
+  }
+})
+
+// Database types
+export interface Author {
+  id: string
+  name: string
+  title?: string
+  bio?: string
+  image_url?: string
+  image_alt?: string
+  slug: string
+  created_at: string
+  updated_at: string
+}
+
+export interface Category {
+  id: string
+  title: string
+  slug: string
+  description?: string
+  created_at: string
+  updated_at: string
+}
+
+export interface Post {
+  id: string
+  title: string
+  slug: string
+  content: any // JSONB content
+  excerpt?: string
+  cover_image_url?: string
+  cover_image_alt?: string
+  author_id?: string
+  published_at?: string
+  created_at: string
+  updated_at: string
+  seo_title?: string
+  seo_description?: string
+  word_count: number
+  reading_time: number
+  status: 'draft' | 'published' | 'archived'
+  
+  // Relations (when joined)
+  author?: Author
+  categories?: Category[]
+}
+
+export interface PostCategory {
+  post_id: string
+  category_id: string
+}
+
+export interface Image {
+  id: string
+  filename: string
+  original_name: string
+  url: string
+  alt_text?: string
+  caption?: string
+  width?: number
+  height?: number
+  file_size?: number
+  mime_type?: string
+  created_at: string
+}
+
+// Database helper functions
+export const db = {
+  // Posts
+  async getPosts(options: {
+    status?: 'draft' | 'published' | 'archived'
+    limit?: number
+    offset?: number
+    includeAuthor?: boolean
+    includeCategories?: boolean
+  } = {}) {
+    let query = supabase
+      .from('posts')
+      .select(`
+        *,
+        ${options.includeAuthor ? 'author:authors(*)' : ''},
+        ${options.includeCategories ? 'categories:post_categories(category:categories(*))' : ''}
+      `)
+      .order('published_at', { ascending: false, nullsFirst: false })
+      .order('created_at', { ascending: false })
+
+    if (options.status) {
+      query = query.eq('status', options.status)
+    }
+
+    if (options.limit) {
+      query = query.limit(options.limit)
+    }
+
+    if (options.offset) {
+      query = query.range(options.offset, options.offset + (options.limit || 10) - 1)
+    }
+
+    return query
+  },
+
+  async getPostBySlug(slug: string, includeAuthor = true, includeCategories = true) {
+    return supabase
+      .from('posts')
+      .select(`
+        *,
+        ${includeAuthor ? 'author:authors(*)' : ''},
+        ${includeCategories ? 'categories:post_categories(category:categories(*))' : ''}
+      `)
+      .eq('slug', slug)
+      .single()
+  },
+
+  async getPostById(id: string, includeAuthor = true, includeCategories = true) {
+    return supabase
+      .from('posts')
+      .select(`
+        *,
+        ${includeAuthor ? 'author:authors(*)' : ''},
+        ${includeCategories ? 'categories:post_categories(category:categories(*))' : ''}
+      `)
+      .eq('id', id)
+      .single()
+  },
+
+  // Authors
+  async getAuthors() {
+    return supabase
+      .from('authors')
+      .select('*')
+      .order('name')
+  },
+
+  async getAuthorBySlug(slug: string) {
+    return supabase
+      .from('authors')
+      .select('*')
+      .eq('slug', slug)
+      .single()
+  },
+
+  // Categories
+  async getCategories() {
+    return supabase
+      .from('categories')
+      .select('*')
+      .order('title')
+  },
+
+  async getCategoryBySlug(slug: string) {
+    return supabase
+      .from('categories')
+      .select('*')
+      .eq('slug', slug)
+      .single()
+  }
+}
+
+// Admin database operations (server-side only)
+export const adminDb = {
+  // Posts
+  async createPost(postData: Partial<Post>) {
+    return supabaseAdmin
+      .from('posts')
+      .insert(postData)
+      .select()
+      .single()
+  },
+
+  async updatePost(id: string, postData: Partial<Post>) {
+    return supabaseAdmin
+      .from('posts')
+      .update(postData)
+      .eq('id', id)
+      .select()
+      .single()
+  },
+
+  async deletePost(id: string) {
+    return supabaseAdmin
+      .from('posts')
+      .delete()
+      .eq('id', id)
+  },
+
+  // Authors
+  async createAuthor(authorData: Partial<Author>) {
+    return supabaseAdmin
+      .from('authors')
+      .insert(authorData)
+      .select()
+      .single()
+  },
+
+  async updateAuthor(id: string, authorData: Partial<Author>) {
+    return supabaseAdmin
+      .from('authors')
+      .update(authorData)
+      .eq('id', id)
+      .select()
+      .single()
+  },
+
+  async deleteAuthor(id: string) {
+    return supabaseAdmin
+      .from('authors')
+      .delete()
+      .eq('id', id)
+  },
+
+  // Categories
+  async createCategory(categoryData: Partial<Category>) {
+    return supabaseAdmin
+      .from('categories')
+      .insert(categoryData)
+      .select()
+      .single()
+  },
+
+  async updateCategory(id: string, categoryData: Partial<Category>) {
+    return supabaseAdmin
+      .from('categories')
+      .update(categoryData)
+      .eq('id', id)
+      .select()
+      .single()
+  },
+
+  async deleteCategory(id: string) {
+    return supabaseAdmin
+      .from('categories')
+      .delete()
+      .eq('id', id)
+  },
+
+  // Post Categories
+  async setPostCategories(postId: string, categoryIds: string[]) {
+    // First, remove existing categories
+    await supabaseAdmin
+      .from('post_categories')
+      .delete()
+      .eq('post_id', postId)
+
+    // Then add new categories
+    if (categoryIds.length > 0) {
+      const postCategories = categoryIds.map(categoryId => ({
+        post_id: postId,
+        category_id: categoryId
+      }))
+
+      return supabaseAdmin
+        .from('post_categories')
+        .insert(postCategories)
+    }
+
+    return { data: [], error: null }
+  }
+}
+
+// Utility functions
+export function generateSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .trim()
+}
+
+export function calculateReadingTime(content: string): number {
+  const wordsPerMinute = 200
+  const wordCount = content.split(/\s+/).length
+  return Math.max(1, Math.round(wordCount / wordsPerMinute))
+}
+
+export function validateSupabaseConfig(): boolean {
+  return !!(supabaseUrl && supabaseAnonKey && supabaseServiceKey)
+}

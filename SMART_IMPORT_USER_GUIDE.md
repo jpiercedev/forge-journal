@@ -9,10 +9,10 @@ Smart Import is an AI-powered content import feature for Forge Journal that allo
 ### Accessing Smart Import
 
 1. Navigate to `/admin/smart-import` in your browser
-2. Enter your Sanity API token when prompted
-3. Click "Access Smart Import" to begin
+2. The system will automatically authenticate with Supabase
+3. Start importing content immediately
 
-### Getting Your Sanity API Token
+### Authentication
 
 1. Go to [manage.sanity.io](https://manage.sanity.io)
 2. Select your Forge Journal project
@@ -239,4 +239,4 @@ Smart Import is regularly updated with:
 - Enhanced error handling and user feedback
 - Support for additional file formats
 
-Check the system status and updates in the Sanity Studio or contact your administrator for the latest features and improvements.
+Check the system status and updates in the admin dashboard or contact your administrator for the latest features and improvements.

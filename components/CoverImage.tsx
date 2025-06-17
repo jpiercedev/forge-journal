@@ -1,18 +1,17 @@
 import cn from 'classnames'
-import { urlForImage } from 'lib/sanity.image'
 import Image from 'next/image'
 import Link from 'next/link'
 
 interface CoverImageProps {
   title: string
   slug?: string
-  image: any
+  image: string | null // Now expects a direct URL string from Supabase
   priority?: boolean
 }
 
 export default function CoverImage(props: CoverImageProps) {
-  const { title, slug, image: source, priority } = props
-  const image = source?.asset?._ref ? (
+  const { title, slug, image: imageUrl, priority } = props
+  const image = imageUrl ? (
     <div
       className={cn('shadow-small', {
         'transition-shadow duration-200 hover:shadow-medium': slug,
@@ -23,7 +22,7 @@ export default function CoverImage(props: CoverImageProps) {
         width={2000}
         height={1000}
         alt=""
-        src={urlForImage(source).height(1000).width(2000).url()}
+        src={imageUrl}
         sizes="100vw"
         priority={priority}
       />

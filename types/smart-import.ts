@@ -65,9 +65,26 @@ export interface SanityPostData {
   };
 }
 
+export interface SupabasePostData {
+  title: string;
+  slug: string;
+  content: any; // Rich content as JSON
+  excerpt?: string;
+  cover_image_url?: string;
+  cover_image_alt?: string;
+  author_id?: string;
+  published_at?: string;
+  seo_title?: string;
+  seo_description?: string;
+  word_count: number;
+  reading_time: number;
+  status: 'draft' | 'published' | 'archived';
+}
+
 export interface ImportPreview {
   parsedContent: ParsedContent;
-  sanityData: SanityPostData;
+  sanityData?: SanityPostData; // Legacy support
+  supabaseData?: SupabasePostData;
   warnings?: string[];
   suggestions?: string[];
 }

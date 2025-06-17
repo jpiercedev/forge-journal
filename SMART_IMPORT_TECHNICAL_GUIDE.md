@@ -21,7 +21,7 @@ Backend (Next.js API Routes)
 
 External Services
 ├── OpenAI API (AI processing)
-├── Sanity CMS (content storage)
+├── Supabase (content storage)
 └── File Processing Libraries
 ```
 
@@ -152,19 +152,19 @@ const enhancedContent = await processWithAI(parsedContent, options);
 - Content adaptation for Christian leadership contexts
 - Structured prompt engineering
 
-### Sanity Formatter (`lib/smart-import/sanity-formatter.ts`)
+### Supabase Formatter (`lib/smart-import/supabase-formatter.ts`)
 
-Converts content to Sanity CMS format:
+Converts content to Supabase database format:
 
 ```typescript
-const sanityData = await formatForSanity(parsedContent, options);
-const createdPost = await createSanityPost(sanityData);
+const supabaseData = await formatForSupabase(parsedContent, options);
+const createdPost = await createSupabasePost(supabaseData);
 ```
 
 **Key Functions:**
-- `formatForSanity()` - Convert to Sanity schema
-- `createSanityPost()` - Create post in Sanity
-- `convertToBlockContent()` - Transform text to block content
+- `formatForSupabase()` - Convert to Supabase schema
+- `createSupabasePost()` - Create post in Supabase
+- `convertToStructuredContent()` - Transform text to structured JSON
 - `createOrGetAuthor()` - Author management
 
 ### Validators (`lib/smart-import/validators.ts`)
@@ -185,10 +185,10 @@ const fileValidation = validateFileUpload(file);
 # AI Processing
 OPENAI_API_KEY=sk-...
 
-# Sanity Integration
-NEXT_PUBLIC_SANITY_PROJECT_ID=your_project_id
-NEXT_PUBLIC_SANITY_DATASET=production
-SANITY_API_WRITE_TOKEN=sk...
+# Supabase Integration
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 
 # Optional: Custom configuration
 SMART_IMPORT_MAX_FILE_SIZE=10485760

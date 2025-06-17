@@ -2,7 +2,20 @@ import Meta from 'components/BlogMeta'
 import * as demo from 'lib/demo.data'
 import { Settings } from 'lib/sanity.queries'
 import Head from 'next/head'
-import { stegaClean, toPlainText } from 'next-sanity'
+// Legacy stega clean and toPlainText functions
+function stegaClean(value: any) {
+  return value
+}
+
+function toPlainText(value: any) {
+  if (typeof value === 'string') return value
+  if (Array.isArray(value)) {
+    return value.map(block =>
+      block.children?.map((child: any) => child.text).join('') || ''
+    ).join(' ')
+  }
+  return ''
+}
 
 export interface IndexPageHeadProps {
   settings: Settings

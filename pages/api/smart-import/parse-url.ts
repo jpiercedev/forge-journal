@@ -34,7 +34,7 @@ export default async function handler(
     }
 
     const token = authHeader.substring(7);
-    if (token !== process.env.SANITY_API_WRITE_TOKEN) {
+    if (token !== process.env.SUPABASE_SERVICE_ROLE_KEY) {
       return res.status(401).json({
         success: false,
         error: {
