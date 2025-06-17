@@ -131,15 +131,23 @@ export function getSessionToken(req: NextApiRequest): string | null {
 
 // Helper function to set session cookie
 export function setSessionCookie(res: NextApiResponse, sessionToken: string, maxAge: number = 24 * 60 * 60) {
+  const isProduction = process.env.NODE_ENV === 'production'
+  const secureFlag = isProduction ? 'Secure; ' : ''
+  const sameSite = isProduction ? 'SameSite=Strict' : 'SameSite=Lax'
+
   res.setHeader('Set-Cookie', [
-    `admin_session=${sessionToken}; HttpOnly; Secure; SameSite=Strict; Max-Age=${maxAge}; Path=/admin`,
+    `admin_session=${sessionToken}; HttpOnly; ${secureFlag}${sameSite}; Max-Age=${maxAge}; Path=/`,
   ])
 }
 
 // Helper function to clear session cookie
 export function clearSessionCookie(res: NextApiResponse) {
+  const isProduction = process.env.NODE_ENV === 'production'
+  const secureFlag = isProduction ? 'Secure; ' : ''
+  const sameSite = isProduction ? 'SameSite=Strict' : 'SameSite=Lax'
+
   res.setHeader('Set-Cookie', [
-    'admin_session=; HttpOnly; Secure; SameSite=Strict; Max-Age=0; Path=/admin',
+    `admin_session=; HttpOnly; ${secureFlag}${sameSite}; Max-Age=0; Path=/`,
   ])
 }
 

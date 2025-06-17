@@ -22,30 +22,25 @@ async function setupAdmin() {
   try {
     console.log('🔍 Checking database tables...');
     
-    // Check if admin tables exist
-    const { data: tables, error: tablesError } = await supabase
-      .from('information_schema.tables')
-      .select('table_name')
-      .eq('table_schema', 'public')
-      .in('table_name', ['admin_users', 'admin_roles', 'admin_sessions']);
-
-    if (tablesError) {
-      console.error('❌ Error checking tables:', tablesError);
-      return;
-    }
-
-    const tableNames = tables.map(t => t.table_name);
-    console.log('📋 Found tables:', tableNames);
-
-    if (!tableNames.includes('admin_users') || !tableNames.includes('admin_roles')) {
+    // Check if admin tables exist by trying to query them
+    let tablesExist = true;
+    try {
+      await supabase.from('admin_users').select('id').limit(1);
+      await supabase.from('admin_roles').select('id').limit(1);
+      await supabase.from('admin_sessions').select('id').limit(1);
+      console.log('✅ Admin tables found');
+    } catch (error) {
       console.error('❌ Admin tables not found. Please run the migration first:');
       console.error('   1. Go to your Supabase dashboard');
       console.error('   2. Navigate to SQL Editor');
       console.error('   3. Run the contents of supabase/migrations/002_admin_users.sql');
-      return;
+      console.error('   Error:', error.message);
+      tablesExist = false;
     }
 
-    console.log('✅ Admin tables found');
+    if (!tablesExist) {
+      return;
+    }
 
     // Check if roles exist
     console.log('🔍 Checking admin roles...');
