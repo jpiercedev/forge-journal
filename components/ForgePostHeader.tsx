@@ -49,24 +49,24 @@ export default function ForgePostHeader({ post, volumeInfo }: ForgePostHeaderPro
 
         {/* Content Overlay */}
         <div className="absolute inset-0 flex items-end">
-          <div className="p-6 md:p-8 lg:p-12 w-full">
+          <div className="p-4 sm:p-6 md:p-8 lg:p-12 w-full">
             {/* Volume and Issue Info */}
-            <div className="text-sm text-gray-300 uppercase tracking-wider mb-4 font-medium font-serif">
+            <div className="text-xs sm:text-sm text-gray-300 uppercase tracking-wider mb-3 sm:mb-4 font-medium font-serif">
               {displayVolumeInfo}
             </div>
 
             {/* Article Title */}
-            <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black text-white leading-tight mb-6 tracking-tight font-sans">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black text-white leading-tight mb-4 sm:mb-6 tracking-tight font-sans">
               {title}
             </h1>
 
             {/* Author Info */}
             {author && (
-              <div className="space-y-2">
-                <h2 className="text-xl md:text-2xl font-bold text-white font-serif">
+              <div className="space-y-1 sm:space-y-2">
+                <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white font-serif">
                   {author.name}
                 </h2>
-                <p className="text-base font-medium font-serif" style={{ color: '#be9d58' }}>
+                <p className="text-sm sm:text-base font-medium font-serif" style={{ color: '#be9d58' }}>
                   Author Title Goes Here
                 </p>
               </div>

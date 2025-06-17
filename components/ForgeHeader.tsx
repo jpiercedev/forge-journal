@@ -8,13 +8,13 @@ export default function ForgeHeader() {
 
   return (
     <header className="bg-white border-b border-gray-200" style={{ borderBottomWidth: '7px', borderBottomColor: '#1e4356' }}>
-      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-[90%] mx-auto max-w-[1280px]">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center">
               <div className="text-3xl font-black text-gray-900 tracking-tight font-sans">
-                FORGE
+                FORGE JOURNAL
               </div>
             </Link>
           </div>
@@ -89,9 +89,13 @@ export default function ForgeHeader() {
         </div>
 
         {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-gray-200">
+        <div className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+          isMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+        }`}>
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-gray-200 transform transition-transform duration-300 ease-in-out"
+               style={{
+                 transform: isMenuOpen ? 'translateY(0)' : 'translateY(-10px)'
+               }}>
               <Link
                 href="/"
                 className="block px-3 py-2 text-sm font-bold uppercase tracking-wider font-sans"
@@ -134,9 +138,8 @@ export default function ForgeHeader() {
               >
                 SUPPORT
               </Link>
-            </div>
           </div>
-        )}
+        </div>
       </div>
 
       {/* Subscribe Modal */}

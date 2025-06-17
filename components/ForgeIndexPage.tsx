@@ -88,20 +88,20 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
 
                     {/* Content Overlay */}
                     <div className="absolute inset-0 flex items-end">
-                      <div className="p-6 md:p-8 lg:p-12 max-w-2xl">
+                      <div className="p-4 sm:p-6 md:p-8 lg:p-12 max-w-2xl w-full">
                         {/* Article Title */}
-                        <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black text-white leading-tight mb-4 tracking-tight font-sans">
+                        <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black text-white leading-tight mb-3 sm:mb-4 tracking-tight font-sans">
                           {featuredPost.title}
                         </h1>
 
                         {/* Author and Date */}
-                        <div className="flex items-center space-x-4 text-sm md:text-base text-gray-300 mb-4 font-sans">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 text-xs sm:text-sm md:text-base text-gray-300 mb-3 sm:mb-4 font-sans space-y-1 sm:space-y-0">
                           {featuredPost.author && (
                             <span className="font-medium uppercase tracking-wider">
                               {featuredPost.author.name}
                             </span>
                           )}
-                          <span className="text-gray-300">|</span>
+                          <span className="text-gray-300 hidden sm:inline">|</span>
                           <span className="font-medium uppercase tracking-wider">
                             {new Date(featuredPost.date).toLocaleDateString('en-US', {
                               year: 'numeric',
@@ -112,14 +112,14 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
 
                         {/* Article Excerpt */}
                         {featuredPost.excerpt && (
-                          <p className="text-gray-200 leading-relaxed text-base md:text-lg mb-6 max-w-xl font-serif">
+                          <p className="text-gray-200 leading-relaxed text-sm sm:text-base md:text-lg mb-4 sm:mb-6 max-w-xl font-serif line-clamp-3 sm:line-clamp-none">
                             {featuredPost.excerpt}
                           </p>
                         )}
 
                         {/* CTA Button */}
                         <div className="inline-block">
-                          <span className="inline-block text-white px-6 py-3 text-sm font-semibold uppercase tracking-wider transition-all duration-200 font-sans border border-white hover:bg-white hover:text-gray-900">
+                          <span className="inline-block text-white px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-semibold uppercase tracking-wider transition-all duration-200 font-sans border border-white hover:bg-white hover:text-gray-900">
                             Read Issue
                           </span>
                         </div>
