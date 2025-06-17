@@ -48,7 +48,7 @@ export default function TextImportForm({ onContentParsed, onError, onBack }: Tex
     setTextError('');
 
     try {
-      const token = process.env.NEXT_PUBLIC_SANITY_API_WRITE_TOKEN || localStorage.getItem('sanity_token') || '';
+      const token = localStorage.getItem('supabase_admin_token') || '';
       const response = await fetch('/api/smart-import/parse-text', {
         method: 'POST',
         headers: {

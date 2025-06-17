@@ -2,45 +2,9 @@
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { adminDb, db, generateSlug, calculateReadingTime, type Post } from '../../../lib/supabase/client'
+import { withAdminAuth, validateMethod, successResponse, errorResponse, ApiResponse } from '../../../lib/auth/middleware'
 
-interface ApiResponse<T = any> {
-  success: boolean
-  data?: T
-  error?: {
-    code: string
-    message: string
-    details?: string
-  }
-  message?: string
-}
-
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<ApiResponse>
-) {
-  // Validate authentication
-  const authHeader = req.headers.authorization
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({
-      success: false,
-      error: {
-        code: 'AUTHENTICATION_FAILED',
-        message: 'Valid authorization token required',
-      },
-    })
-  }
-
-  const token = authHeader.substring(7)
-  if (token !== process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    return res.status(401).json({
-      success: false,
-      error: {
-        code: 'AUTHENTICATION_FAILED',
-        message: 'Invalid authorization token',
-      },
-    })
-  }
-
+export default withAdminAuth(async (req, res) => {
   try {
     switch (req.method) {
       case 'GET':
@@ -71,10 +35,10 @@ export default async function handler(
       },
     })
   }
-}
+})
 
 // GET /api/content/posts - List posts with optional filters
-async function handleGetPosts(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
+async function handleGetPosts(req: any, res: NextApiResponse<ApiResponse>) {
   const { 
     status, 
     limit = '10', 
@@ -160,7 +124,7 @@ async function handleGetPosts(req: NextApiRequest, res: NextApiResponse<ApiRespo
 }
 
 // POST /api/content/posts - Create new post
-async function handleCreatePost(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
+async function handleCreatePost(req: any, res: NextApiResponse<ApiResponse>) {
   const postData = req.body
 
   // Validate required fields
@@ -219,7 +183,7 @@ async function handleCreatePost(req: NextApiRequest, res: NextApiResponse<ApiRes
 }
 
 // PUT /api/content/posts - Update existing post
-async function handleUpdatePost(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
+async function handleUpdatePost(req: any, res: NextApiResponse<ApiResponse>) {
   const { id } = req.query
   const updateData = req.body
 
@@ -275,7 +239,7 @@ async function handleUpdatePost(req: NextApiRequest, res: NextApiResponse<ApiRes
 }
 
 // DELETE /api/content/posts - Delete post
-async function handleDeletePost(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
+async function handleDeletePost(req: any, res: NextApiResponse<ApiResponse>) {
   const { id } = req.query
 
   if (!id) {

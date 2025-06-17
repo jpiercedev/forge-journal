@@ -1,6 +1,20 @@
 import ImagePlaceholder from 'components/ImagePlaceholder'
-import { urlForImage } from 'lib/image'
-import type { Post } from 'lib/sanity.queries'
+// Removed Sanity image import - now using direct URLs
+// Define types for Supabase data
+interface Post {
+  id: string
+  title: string
+  slug: string
+  excerpt?: string
+  cover_image_url?: string
+  cover_image_alt?: string
+  published_at: string
+  author?: {
+    name: string
+    title?: string
+    avatar_url?: string
+  }
+}
 import Image from 'next/image'
 
 interface AuthorSidebarProps {
@@ -16,9 +30,9 @@ export default function AuthorSidebar({ author }: AuthorSidebarProps) {
       
       {/* Author Image */}
       <div className="w-full h-48 overflow-hidden bg-gray-200 mb-4">
-        {author.picture?.asset?._ref ? (
+        {author.avatar_url ? (
           <Image
-            src={urlForImage(author.picture)?.width(280).height(192).url() || '/placeholder-author.jpg'}
+            src={author.avatar_url || '/placeholder-author.jpg'}
             alt={author.name}
             width={280}
             height={192}

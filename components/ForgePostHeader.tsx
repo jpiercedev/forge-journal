@@ -1,6 +1,21 @@
 import ImagePlaceholder from 'components/ImagePlaceholder'
-import { urlForImage } from 'lib/image'
-import type { Post } from 'lib/sanity.queries'
+// Removed Sanity image import - now using direct URLs
+// Define types for Supabase data
+interface Post {
+  id: string
+  title: string
+  slug: string
+  excerpt?: string
+  cover_image_url?: string
+  cover_image_alt?: string
+  published_at: string
+  content?: any
+  author?: {
+    name: string
+    title?: string
+    avatar_url?: string
+  }
+}
 import Image from 'next/image'
 
 interface ForgePostHeaderProps {
@@ -25,10 +40,10 @@ export default function ForgePostHeader({ post, volumeInfo }: ForgePostHeaderPro
       <div className="relative overflow-hidden mb-8">
         {/* Background Image */}
         <div className="aspect-video w-full overflow-hidden bg-gray-200">
-          {coverImage?.asset?._ref ? (
+          {coverImage ? (
             <Image
-              src={urlForImage(coverImage)?.width(1200).height(675).url() || ''}
-              alt={coverImage.alt || title}
+              src={coverImage || ''}
+              alt={title}
               width={1200}
               height={675}
               className="w-full h-full object-cover"

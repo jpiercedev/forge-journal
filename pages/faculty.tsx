@@ -2,13 +2,16 @@ import Container from 'components/BlogContainer'
 import Header from 'components/BlogHeader'
 import Layout from 'components/BlogLayout'
 import * as demo from 'lib/demo.data'
-import { readToken } from 'lib/sanity.api'
-import { getClient, getSettings } from 'lib/sanity.client'
-import { Settings } from 'lib/sanity.queries'
+// Removed Sanity imports - now using static data
 import { GetStaticProps } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
 import type { SharedPageProps } from 'pages/_app'
+
+interface Settings {
+  title: string
+  description: any[]
+}
 
 interface PageProps extends SharedPageProps {
   settings: Settings
@@ -66,7 +69,7 @@ const facultyMembers = [
 ]
 
 export default function FacultyPage(props: PageProps) {
-  const { settings, draftMode } = props
+  const { settings } = props
   const { title = demo.title } = settings || {}
 
   return (
@@ -76,7 +79,7 @@ export default function FacultyPage(props: PageProps) {
         <meta name="description" content="Meet our team of expert writers and contributors who share their knowledge and insights on Forge Journal." />
       </Head>
 
-      <Layout preview={draftMode} loading={false}>
+      <Layout preview={false} loading={false}>
         <Container>
           <Header title={title} level={2} />
           <article className="mx-auto max-w-6xl">
@@ -169,17 +172,16 @@ export default function FacultyPage(props: PageProps) {
   )
 }
 
-export const getStaticProps: GetStaticProps<PageProps> = async (ctx) => {
-  const { draftMode = false } = ctx
-  const client = getClient(draftMode ? { token: readToken } : undefined)
-
-  const settings = await getSettings(client)
+export const getStaticProps: GetStaticProps<PageProps> = async () => {
+  const settings: Settings = {
+    title: 'Forge Journal',
+    description: []
+  }
 
   return {
     props: {
       settings,
-      draftMode,
-      token: draftMode ? readToken : '',
     },
+    revalidate: 60,
   }
 }

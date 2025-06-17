@@ -1,6 +1,6 @@
 // Posts Management Page
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
@@ -31,13 +31,13 @@ export default function PostsManagement() {
 
   useEffect(() => {
     loadPosts()
-  }, [filter])
+  }, [filter, loadPosts])
 
   const getAuthToken = () => {
     return localStorage.getItem('supabase_admin_token')
   }
 
-  const loadPosts = async () => {
+  const loadPosts = useCallback(async () => {
     const token = getAuthToken()
     if (!token) {
       router.push('/admin/dashboard')
@@ -62,7 +62,7 @@ export default function PostsManagement() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [filter, router])
 
   const handleDeletePost = async (postId: string) => {
     if (!confirm('Are you sure you want to delete this post?')) {

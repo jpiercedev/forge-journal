@@ -1,5 +1,5 @@
 import ImagePlaceholder from 'components/ImagePlaceholder'
-import { urlForImage } from 'lib/image'
+// Removed Sanity image import - now using direct URLs
 import type { Post } from 'lib/sanity.queries'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -26,10 +26,10 @@ export default function RecentArticlesSidebar({ posts }: RecentArticlesSidebarPr
                 <div className="space-y-3">
                   {/* Article Image - 1:1 aspect ratio */}
                   <div className="aspect-square overflow-hidden bg-gray-200">
-                    {post.coverImage?.asset?._ref ? (
+                    {post.coverImage ? (
                       <Image
-                        src={urlForImage(post.coverImage)?.width(320).height(320).url() || ''}
-                        alt={post.coverImage.alt || post.title}
+                        src={post.coverImage || ''}
+                        alt={post.title}
                         width={320}
                         height={320}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"

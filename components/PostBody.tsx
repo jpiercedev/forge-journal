@@ -7,7 +7,7 @@
  * https://portabletext.org/
  *
  */
-import { SanityImage } from './SanityImage'
+import Image from 'next/image'
 
 // Simple portable text renderer for legacy content
 function SimplePortableText({ value, components }: { value: any[], components?: any }) {
@@ -52,7 +52,20 @@ function SimplePortableText({ value, components }: { value: any[], components?: 
 const myPortableTextComponents = {
   types: {
     image: ({ value }) => {
-      return <SanityImage {...value} />
+      if (value?.url) {
+        return (
+          <div className="my-6">
+            <Image
+              src={value.url}
+              alt={value.alt || ''}
+              width={800}
+              height={600}
+              className="w-full h-auto rounded-lg"
+            />
+          </div>
+        )
+      }
+      return null
     },
   },
 }

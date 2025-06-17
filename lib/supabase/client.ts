@@ -95,19 +95,29 @@ export const db = {
     offset?: number
     includeAuthor?: boolean
     includeCategories?: boolean
+    slug?: string
   } = {}) {
+    // Build the select clause dynamically to avoid trailing commas
+    const selectFields = ['*']
+    if (options.includeAuthor) {
+      selectFields.push('author:authors(*)')
+    }
+    if (options.includeCategories) {
+      selectFields.push('categories:post_categories(category:categories(*))')
+    }
+
     let query = supabase
       .from('posts')
-      .select(`
-        *,
-        ${options.includeAuthor ? 'author:authors(*)' : ''},
-        ${options.includeCategories ? 'categories:post_categories(category:categories(*))' : ''}
-      `)
+      .select(selectFields.join(', '))
       .order('published_at', { ascending: false, nullsFirst: false })
       .order('created_at', { ascending: false })
 
     if (options.status) {
       query = query.eq('status', options.status)
+    }
+
+    if (options.slug) {
+      query = query.eq('slug', options.slug)
     }
 
     if (options.limit) {
@@ -122,25 +132,35 @@ export const db = {
   },
 
   async getPostBySlug(slug: string, includeAuthor = true, includeCategories = true) {
+    // Build the select clause dynamically to avoid trailing commas
+    const selectFields = ['*']
+    if (includeAuthor) {
+      selectFields.push('author:authors(*)')
+    }
+    if (includeCategories) {
+      selectFields.push('categories:post_categories(category:categories(*))')
+    }
+
     return supabase
       .from('posts')
-      .select(`
-        *,
-        ${includeAuthor ? 'author:authors(*)' : ''},
-        ${includeCategories ? 'categories:post_categories(category:categories(*))' : ''}
-      `)
+      .select(selectFields.join(', '))
       .eq('slug', slug)
       .single()
   },
 
   async getPostById(id: string, includeAuthor = true, includeCategories = true) {
+    // Build the select clause dynamically to avoid trailing commas
+    const selectFields = ['*']
+    if (includeAuthor) {
+      selectFields.push('author:authors(*)')
+    }
+    if (includeCategories) {
+      selectFields.push('categories:post_categories(category:categories(*))')
+    }
+
     return supabase
       .from('posts')
-      .select(`
-        *,
-        ${includeAuthor ? 'author:authors(*)' : ''},
-        ${includeCategories ? 'categories:post_categories(category:categories(*))' : ''}
-      `)
+      .select(selectFields.join(', '))
       .eq('id', id)
       .single()
   },

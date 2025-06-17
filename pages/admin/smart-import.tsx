@@ -33,7 +33,7 @@ export default function SmartImportPage({ preview }: SmartImportPageProps) {
     setAuthError('');
 
     if (!authToken.trim()) {
-      setAuthError('Please enter your Sanity API token');
+      setAuthError('Please enter your Supabase service role key');
       return;
     }
 

@@ -3,7 +3,21 @@ import AuthorSidebar from 'components/AuthorSidebar'
 import FooterAlert from 'components/FooterAlert'
 import ForgeHeader from 'components/ForgeHeader'
 import RecentArticlesSidebar from 'components/RecentArticlesSidebar'
-import type { Post } from 'lib/sanity.queries'
+// Define types for Supabase data
+interface Post {
+  id: string
+  title: string
+  slug: string
+  excerpt?: string
+  cover_image_url?: string
+  cover_image_alt?: string
+  published_at: string
+  author?: {
+    name: string
+    title?: string
+    avatar_url?: string
+  }
+}
 
 interface ForgeLayoutProps {
   children: React.ReactNode

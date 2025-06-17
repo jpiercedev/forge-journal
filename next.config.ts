@@ -6,6 +6,7 @@ const config: NextConfig = {
       { hostname: 'picsum.photos' },
       { hostname: '*.supabase.co' }, // Supabase storage images
       { hostname: 'uvnbfnobyqbonuxztjuz.supabase.co' }, // Your specific Supabase project
+      { hostname: 'cdn.sanity.io' }, // Sanity CDN for migrated images
     ],
   },
   typescript: {

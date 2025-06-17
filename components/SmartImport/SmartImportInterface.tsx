@@ -97,7 +97,7 @@ export default function SmartImportInterface({ onComplete }: SmartImportInterfac
         message: 'Creating post...',
       });
 
-      const token = localStorage.getItem('sanity_token') || '';
+      const token = localStorage.getItem('supabase_admin_token') || '';
       const response = await fetch('/api/smart-import/create-post', {
         method: 'POST',
         headers: {
