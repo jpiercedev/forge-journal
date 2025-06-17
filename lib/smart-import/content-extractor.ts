@@ -2,9 +2,10 @@
 
 import * as cheerio from 'cheerio';
 import { convert } from 'html-to-text';
-import pdfParse from 'pdf-parse';
 import mammoth from 'mammoth';
-import { ParsedContent, ExtractedImage, ContentMetadata, FileUpload } from '../../types/smart-import';
+import pdfParse from 'pdf-parse';
+
+import { ContentMetadata, ExtractedImage, FileUpload,ParsedContent } from '../../types/smart-import';
 
 /**
  * Extract content from a URL

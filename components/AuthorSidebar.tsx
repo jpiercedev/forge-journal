@@ -1,7 +1,7 @@
-import Image from 'next/image'
 import ImagePlaceholder from 'components/ImagePlaceholder'
 import { urlForImage } from 'lib/sanity.image'
 import type { Post } from 'lib/sanity.queries'
+import Image from 'next/image'
 
 interface AuthorSidebarProps {
   author: Post['author']

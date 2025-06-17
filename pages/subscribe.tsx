@@ -4,8 +4,8 @@ import { getAllPosts, getClient, getSettings } from 'lib/sanity.client'
 import { Post, Settings } from 'lib/sanity.queries'
 import { GetStaticProps } from 'next'
 import Head from 'next/head'
-import { useState } from 'react'
 import type { SharedPageProps } from 'pages/_app'
+import { useState } from 'react'
 
 interface PageProps extends SharedPageProps {
   posts: Post[]
@@ -87,12 +87,12 @@ export default function SubscribePage(props: PageProps) {
               <div className="bg-green-50 border border-green-200 p-8 mb-8">
                 <h2 className="text-2xl font-semibold text-green-800 mb-4">Thank You for Subscribing!</h2>
                 <p className="text-green-700">
-                  You'll receive a confirmation email shortly. Welcome to The Forge Journal community!
+                  You&apos;ll receive a confirmation email shortly. Welcome to The Forge Journal community!
                 </p>
               </div>
             )}
 
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">What You'll Receive</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">What You&apos;ll Receive</h2>
             <ul className="text-gray-700 leading-relaxed mb-6 space-y-2">
               <li>• Monthly digest of our latest articles</li>
               <li>• Exclusive subscriber-only content</li>
@@ -124,7 +124,7 @@ export default function SubscribePage(props: PageProps) {
                   <li>• Everything in Digital</li>
                   <li>• Quarterly print edition</li>
                   <li>• Premium binding and paper</li>
-                  <li>• Collector's edition articles</li>
+                  <li>• Collector&apos;s edition articles</li>
                 </ul>
                 <button className="w-full bg-blue-800 hover:bg-blue-900 text-white px-4 py-2 text-sm font-medium uppercase tracking-wide transition-colors duration-200">
                   Coming Soon

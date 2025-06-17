@@ -1,8 +1,9 @@
 // Smart Import - Preview API Route
 
 import type { NextApiRequest, NextApiResponse } from 'next';
+
 import { formatForSanity } from '../../../lib/smart-import/sanity-formatter';
-import { PreviewResponse, ParsedContent, ImportPreview } from '../../../types/smart-import';
+import { ImportPreview,ParsedContent, PreviewResponse } from '../../../types/smart-import';
 
 export default async function handler(
   req: NextApiRequest,

@@ -200,6 +200,7 @@ export interface ImportFormData {
 
 export interface PreviewFormData extends SanityPostData {
   // Additional fields for editing
+  parsedContent: ParsedContent;
   generateSlug?: boolean;
   createAuthor?: boolean;
   authorName?: string;

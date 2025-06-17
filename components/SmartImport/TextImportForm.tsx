@@ -1,7 +1,8 @@
 // Text Import Form Component
 
 import { useState } from 'react';
-import { ParsedContent, ImportOptions } from '../../types/smart-import';
+
+import { ImportOptions,ParsedContent } from '../../types/smart-import';
 
 interface TextImportFormProps {
   onContentParsed: (content: ParsedContent) => void;
@@ -203,7 +204,7 @@ export default function TextImportForm({ onContentParsed, onError, onBack }: Tex
               disabled={isLoading}
             />
             <p className="mt-1 text-sm text-gray-500">
-              Example: "Structure as a sermon outline" or "Focus on practical ministry applications"
+              Example: &quot;Structure as a sermon outline&quot; or &quot;Focus on practical ministry applications&quot;
             </p>
           </div>
 

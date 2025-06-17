@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect,useState } from 'react'
 
 export default function FooterAlert() {
   const [isVisible, setIsVisible] = useState(false)
@@ -101,7 +101,7 @@ export default function FooterAlert() {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-gray-900 font-sans">Thank you for subscribing!</h3>
-                  <p className="text-sm text-gray-600">You'll receive The Forge Journal in your inbox every week.</p>
+                  <p className="text-sm text-gray-600">You&apos;ll receive The Forge Journal in your inbox every week.</p>
                 </div>
               </div>
             )}

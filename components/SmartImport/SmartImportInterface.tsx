@@ -1,20 +1,20 @@
 // Smart Import Interface - Main Component
 
 import { useState } from 'react';
-import ImportMethodSelector from './ImportMethodSelector';
-import UrlImportForm from './UrlImportForm';
-import TextImportForm from './TextImportForm';
+
+import { 
+  ImportMethod, 
+  ImportPreview as ImportPreviewType,
+  ImportProgress as ImportProgressType, 
+  ImportResult,
+  ParsedContent} from '../../types/smart-import';
 import FileImportForm from './FileImportForm';
+import ImportMethodSelector from './ImportMethodSelector';
 import ImportPreview from './ImportPreview';
 import ImportProgress from './ImportProgress';
 import ImportResults from './ImportResults';
-import { 
-  ImportMethod, 
-  ParsedContent, 
-  ImportPreview as ImportPreviewType,
-  ImportResult,
-  ImportProgress as ImportProgressType 
-} from '../../types/smart-import';
+import TextImportForm from './TextImportForm';
+import UrlImportForm from './UrlImportForm';
 
 interface SmartImportInterfaceProps {
   onComplete?: (result: ImportResult) => void;

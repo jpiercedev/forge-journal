@@ -1,12 +1,12 @@
 import ForgeLayout from 'components/ForgeLayout'
+import ImagePlaceholder from 'components/ImagePlaceholder'
 import IndexPageHead from 'components/IndexPageHead'
 import SearchBar from 'components/SearchBar'
-import ImagePlaceholder from 'components/ImagePlaceholder'
-import Link from 'next/link'
-import Image from 'next/image'
-import { useState, useEffect } from 'react'
 import { urlForImage } from 'lib/sanity.image'
 import type { Post, Settings } from 'lib/sanity.queries'
+import Image from 'next/image'
+import Link from 'next/link'
+import { useEffect,useState } from 'react'
 
 export interface ForgeIndexPageProps {
   preview?: boolean

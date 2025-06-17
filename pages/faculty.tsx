@@ -1,6 +1,7 @@
 import Container from 'components/BlogContainer'
 import Header from 'components/BlogHeader'
 import Layout from 'components/BlogLayout'
+import * as demo from 'lib/demo.data'
 import { readToken } from 'lib/sanity.api'
 import { getClient, getSettings } from 'lib/sanity.client'
 import { Settings } from 'lib/sanity.queries'
@@ -8,7 +9,6 @@ import { GetStaticProps } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
 import type { SharedPageProps } from 'pages/_app'
-import * as demo from 'lib/demo.data'
 
 interface PageProps extends SharedPageProps {
   settings: Settings
@@ -143,7 +143,7 @@ export default function FacultyPage(props: PageProps) {
               <div className="text-center">
                 <h2 className="text-2xl font-bold mb-4">Join Our Faculty</h2>
                 <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-                  Are you an expert in your field with insights to share? We're always looking for 
+                  Are you an expert in your field with insights to share? We&apos;re always looking for
                   passionate writers and educators to join our faculty and contribute to our community.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">

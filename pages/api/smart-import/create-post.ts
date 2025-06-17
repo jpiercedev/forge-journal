@@ -1,7 +1,8 @@
 // Smart Import - Create Post API Route
 
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { formatForSanity, createSanityPost, validateSanityConfig } from '../../../lib/smart-import/sanity-formatter';
+
+import { createSanityPost, formatForSanity, validateSanityConfig } from '../../../lib/smart-import/sanity-formatter';
 import { CreatePostResponse, ParsedContent, PreviewFormData } from '../../../types/smart-import';
 
 export default async function handler(

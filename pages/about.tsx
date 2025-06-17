@@ -62,7 +62,7 @@ export default function AboutPage(props: PageProps) {
             <p className="text-gray-700 leading-relaxed mb-6">
               Every article in The Forge Journal is carefully crafted to honor Scripture,
               encourage faithful ministry, and provide practical wisdom for the challenges
-              facing today's church leaders. We are committed to excellence in both content
+              facing today&apos;s church leaders. We are committed to excellence in both content
               and presentation, ensuring that each issue serves as a valuable resource for
               your ministry library.
             </p>
@@ -72,7 +72,7 @@ export default function AboutPage(props: PageProps) {
               <p className="text-gray-700 leading-relaxed">
                 We welcome contributions from pastors, theologians, and church leaders who
                 share our commitment to biblical faithfulness and practical ministry wisdom.
-                If you're interested in contributing to The Forge Journal, please contact us
+                If you&apos;re interested in contributing to The Forge Journal, please contact us
                 to learn more about our submission guidelines.
               </p>
             </div>

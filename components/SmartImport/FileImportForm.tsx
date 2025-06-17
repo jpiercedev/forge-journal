@@ -1,7 +1,8 @@
 // File Import Form Component
 
-import { useState, useRef } from 'react';
-import { ParsedContent, ImportOptions } from '../../types/smart-import';
+import { useRef,useState } from 'react';
+
+import { ImportOptions,ParsedContent } from '../../types/smart-import';
 
 interface FileImportFormProps {
   onContentParsed: (content: ParsedContent) => void;

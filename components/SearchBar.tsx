@@ -1,5 +1,5 @@
-import { useState } from 'react'
 import type { Post } from 'lib/sanity.queries'
+import { useState } from 'react'
 
 interface SearchBarProps {
   posts: Post[]
@@ -42,7 +42,7 @@ export default function SearchBar({ posts, onSearchResults }: SearchBarProps) {
 
   return (
     <div className="bg-white p-6 shadow-sm">
-      <h3 className="text-sm font-bold text-gray-900 mb-4 font-sans uppercase tracking-wider">Find What You're Looking For</h3>
+      <h3 className="text-sm font-bold text-gray-900 mb-4 font-sans uppercase tracking-wider">Find What You&apos;re Looking For</h3>
       <div className="relative">
         {/* Search Icon */}
         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -69,7 +69,6 @@ export default function SearchBar({ posts, onSearchResults }: SearchBarProps) {
           placeholder="Search articles..."
           className="w-full pl-12 pr-12 py-3 text-base border border-gray-300 focus:ring-2 focus:border-gray-400 transition-colors bg-white font-sans"
           style={{
-            focusRingColor: '#1e4356',
             borderColor: isSearching ? '#1e4356' : undefined
           }}
           onFocus={(e) => e.currentTarget.style.borderColor = '#1e4356'}
@@ -104,7 +103,7 @@ export default function SearchBar({ posts, onSearchResults }: SearchBarProps) {
               `${posts.length} articles found`
             )}
             {searchTerm && (
-              <span> for "<span className="font-medium" style={{ color: '#1e4356' }}>{searchTerm}</span>"</span>
+              <span> for &quot;<span className="font-medium" style={{ color: '#1e4356' }}>{searchTerm}</span>&quot;</span>
             )}
           </p>
         </div>

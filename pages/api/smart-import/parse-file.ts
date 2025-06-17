@@ -1,10 +1,11 @@
 // Smart Import - Parse File API Route
 
-import type { NextApiRequest, NextApiResponse } from 'next';
 import multer from 'multer';
-import { extractFromFile, validateFileUpload } from '../../../lib/smart-import/content-extractor';
+import type { NextApiRequest, NextApiResponse } from 'next';
+
 import { processWithAI } from '../../../lib/smart-import/ai-processor';
-import { ParseFileResponse, FileUpload } from '../../../types/smart-import';
+import { extractFromFile, validateFileUpload } from '../../../lib/smart-import/content-extractor';
+import { FileUpload,ParseFileResponse } from '../../../types/smart-import';
 
 // Configure multer for file uploads
 const upload = multer({

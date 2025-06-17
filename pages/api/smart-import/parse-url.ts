@@ -1,8 +1,9 @@
 // Smart Import - Parse URL API Route
 
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { extractFromUrl } from '../../../lib/smart-import/content-extractor';
+
 import { processWithAI } from '../../../lib/smart-import/ai-processor';
+import { extractFromUrl } from '../../../lib/smart-import/content-extractor';
 import { ParseUrlResponse, UrlImportRequest } from '../../../types/smart-import';
 
 export default async function handler(

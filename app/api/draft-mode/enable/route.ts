@@ -3,17 +3,29 @@ import { createClient } from 'next-sanity'
 import { defineEnableDraftMode } from 'next-sanity/draft-mode'
 
 const token = process.env.SANITY_API_READ_TOKEN
-if (!token) {
-  throw new Error(
-    'A secret is provided but there is no `SANITY_API_READ_TOKEN` environment variable setup.',
+
+// Create a fallback GET handler for when token is not available
+const fallbackGET = () => {
+  return new Response(
+    JSON.stringify({
+      error: 'SANITY_API_READ_TOKEN environment variable is not configured'
+    }),
+    {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    }
   )
 }
-const client = createClient({
-  projectId,
-  dataset,
-  apiVersion,
-  useCdn: false,
-  token,
-})
 
-export const { GET } = defineEnableDraftMode({ client })
+// Export GET handler based on token availability
+export const GET = token ? (() => {
+  const client = createClient({
+    projectId,
+    dataset,
+    apiVersion,
+    useCdn: false,
+    token,
+  })
+
+  return defineEnableDraftMode({ client }).GET
+})() : fallbackGET

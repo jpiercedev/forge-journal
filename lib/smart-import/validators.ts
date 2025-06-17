@@ -1,6 +1,6 @@
 // Validation utilities for Smart Import
 
-import { ImportOptions, FileUpload, ParsedContent } from '../../types/smart-import';
+import { FileUpload, ImportOptions, ParsedContent } from '../../types/smart-import';
 
 /**
  * Validate URL format and accessibility

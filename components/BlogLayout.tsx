@@ -1,6 +1,6 @@
 import AlertBanner from 'components/AlertBanner'
-import Navigation from 'components/Navigation'
 import Footer from 'components/Footer'
+import Navigation from 'components/Navigation'
 
 export default function Layout({
   preview,

@@ -1,8 +1,8 @@
+import AlertBanner from 'components/AlertBanner'
+import AuthorSidebar from 'components/AuthorSidebar'
+import FooterAlert from 'components/FooterAlert'
 import ForgeHeader from 'components/ForgeHeader'
 import RecentArticlesSidebar from 'components/RecentArticlesSidebar'
-import AuthorSidebar from 'components/AuthorSidebar'
-import AlertBanner from 'components/AlertBanner'
-import FooterAlert from 'components/FooterAlert'
 import type { Post } from 'lib/sanity.queries'
 
 interface ForgeLayoutProps {

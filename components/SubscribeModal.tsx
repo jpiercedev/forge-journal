@@ -95,7 +95,7 @@ export default function SubscribeModal({ isOpen, onClose }: SubscribeModalProps)
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2 font-sans">Thank you for subscribing!</h3>
                 <p className="text-gray-600 mb-4 font-sans">
-                  You'll receive our latest articles and insights directly in your inbox.
+                  You&apos;ll receive our latest articles and insights directly in your inbox.
                 </p>
                 <button
                   onClick={handleClose}

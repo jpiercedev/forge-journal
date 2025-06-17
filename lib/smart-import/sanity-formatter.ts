@@ -1,7 +1,8 @@
 // Sanity Data Formatting for Smart Import
 
 import { createClient } from '@sanity/client';
-import { ParsedContent, SanityPostData, ExtractedImage } from '../../types/smart-import';
+
+import { ExtractedImage,ParsedContent, SanityPostData } from '../../types/smart-import';
 import { apiVersion, dataset, projectId } from '../sanity.api';
 
 // Create Sanity client for write operations

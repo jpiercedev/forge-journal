@@ -74,7 +74,7 @@ export default function ForgePostPage(props: ForgePostPageProps) {
 
               <p className="text-gray-700 leading-relaxed mb-6 text-lg">
                 Mindfulness can be practiced in numerous ways, each offering a unique opportunity to connect with the present
-                moment. Whether it's savoring a meal with full attention, enjoying a quiet moment with a book, or simply taking a
+                moment. Whether it&apos;s savoring a meal with full attention, enjoying a quiet moment with a book, or simply taking a
                 deep breath and appreciating the world around us, these activities allow us to slow down and truly experience life.
               </p>
 
@@ -86,7 +86,7 @@ export default function ForgePostPage(props: ForgePostPageProps) {
 
               {/* Quote section */}
               <blockquote className="mt-12 mb-8 pl-8 border-l-4 border-teal-600 italic text-xl text-gray-800 bg-gray-50 py-6 rounded-r-lg font-serif">
-                "Slow down and everything you are chasing will come around and catch you."
+                &quot;Slow down and everything you are chasing will come around and catch you.&quot;
                 <cite className="block mt-4 text-lg font-semibold not-italic text-gray-900 font-sans">— John De Paola</cite>
               </blockquote>
 

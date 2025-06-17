@@ -2,7 +2,8 @@
 
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
-import { useState, useEffect } from 'react';
+import { useEffect,useState } from 'react';
+
 import ForgeLayout from '../../components/ForgeLayout';
 import SmartImportInterface from '../../components/SmartImport/SmartImportInterface';
 import { ImportResult } from '../../types/smart-import';
@@ -157,7 +158,7 @@ export default function SmartImportPage({ preview }: SmartImportPageProps) {
                         <li>Go to <a href="https://manage.sanity.io" target="_blank" rel="noopener noreferrer" className="underline">manage.sanity.io</a></li>
                         <li>Select your Forge Journal project</li>
                         <li>Navigate to API → Tokens</li>
-                        <li>Create a new token with "Editor" permissions</li>
+                        <li>Create a new token with &quot;Editor&quot; permissions</li>
                         <li>Copy and paste the token here</li>
                       </ol>
                     </div>

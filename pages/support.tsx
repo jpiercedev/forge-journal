@@ -13,7 +13,7 @@ export default function SupportPage() {
           Redirecting to Support...
         </h1>
         <p className="text-gray-600 mb-6">
-          You're being redirected to our support page.
+          You&apos;re being redirected to our support page.
         </p>
         <a 
           href="https://support.forgejournal.org"

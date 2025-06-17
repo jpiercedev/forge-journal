@@ -1,7 +1,8 @@
 // URL Import Form Component
 
 import { useState } from 'react';
-import { ParsedContent, ImportOptions } from '../../types/smart-import';
+
+import { ImportOptions,ParsedContent } from '../../types/smart-import';
 
 interface UrlImportFormProps {
   onContentParsed: (content: ParsedContent) => void;
@@ -191,7 +192,7 @@ export default function UrlImportForm({ onContentParsed, onError, onBack }: UrlI
               disabled={isLoading}
             />
             <p className="mt-1 text-sm text-gray-500">
-              Example: "Focus on leadership principles" or "Emphasize practical applications"
+              Example: &quot;Focus on leadership principles&quot; or &quot;Emphasize practical applications&quot;
             </p>
           </div>
 

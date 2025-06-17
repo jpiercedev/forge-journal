@@ -1,7 +1,8 @@
 // AI Processing for Smart Import
 
 import OpenAI from 'openai';
-import { ParsedContent, AIProcessingRequest, AIProcessingResponse, ImportOptions } from '../../types/smart-import';
+
+import { AIProcessingRequest, AIProcessingResponse, ImportOptions,ParsedContent } from '../../types/smart-import';
 
 // Initialize OpenAI client
 const openai = new OpenAI({

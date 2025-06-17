@@ -112,7 +112,7 @@ export default function TopicsPage(props: PageProps) {
           </div>
 
           <div className="mt-12 bg-gray-50 p-6">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Can't Find What You're Looking For?</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Can&apos;t Find What You&apos;re Looking For?</h2>
             <p className="text-gray-700 leading-relaxed mb-4">
               Our archive contains articles spanning multiple years of publication. Use our search
               feature or browse all articles to find specific content that meets your needs.

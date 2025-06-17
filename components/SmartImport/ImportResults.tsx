@@ -171,7 +171,7 @@ export default function ImportResults({ result, onStartNew }: ImportResultsProps
           <h3 className="text-sm font-medium text-gray-900 mb-3">Need Help?</h3>
           <div className="text-sm text-gray-600 space-y-2">
             <p>
-              If you're experiencing issues with Smart Import, try these troubleshooting steps:
+              If you&apos;re experiencing issues with Smart Import, try these troubleshooting steps:
             </p>
             <ul className="list-disc list-inside space-y-1 ml-4">
               <li>Check that your content source is accessible</li>

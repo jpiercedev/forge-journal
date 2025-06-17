@@ -44,7 +44,7 @@ export default function ForgePastorsPage(props: PageProps) {
 
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">What is Forge Pastors?</h2>
             <p className="text-gray-700 leading-relaxed mb-6">
-              Forge Pastors is more than just a collection of articles—it's a community of pastors 
+              Forge Pastors is more than just a collection of articles—it&apos;s a community of pastors
               dedicated to sharpening one another in ministry. Through exclusive content, discussion 
               forums, and networking opportunities, we provide a space where pastors can grow together 
               in their calling.

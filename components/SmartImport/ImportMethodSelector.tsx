@@ -165,17 +165,17 @@ export default function ImportMethodSelector({ onMethodSelect }: ImportMethodSel
             <div className="text-blue-800 space-y-2" style={{ fontFamily: 'Montserrat, sans-serif' }}>
               <p>
                 Smart Import uses advanced AI to analyze and structure your content automatically. 
-                Here's what happens:
+                Here&apos;s what happens:
               </p>
               <ol className="list-decimal list-inside space-y-1 ml-4">
                 <li>Content is extracted and cleaned from your chosen source</li>
                 <li>AI analyzes the content to identify key elements like title, author, and structure</li>
-                <li>Content is formatted according to Forge Journal's standards</li>
+                <li>Content is formatted according to Forge Journal&apos;s standards</li>
                 <li>You review and edit the results before publishing</li>
               </ol>
               <p className="text-sm mt-3">
                 <strong>Note:</strong> All imported content will be formatted for Christian leadership and ministry contexts, 
-                ensuring it aligns with Forge Journal's mission and audience.
+                ensuring it aligns with Forge Journal&apos;s mission and audience.
               </p>
             </div>
           </div>
