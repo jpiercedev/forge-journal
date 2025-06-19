@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { useState } from 'react'
 
 import SubscribeModal from './SubscribeModal'
@@ -14,9 +15,14 @@ export default function ForgeHeader() {
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center">
-              <div className="text-3xl font-black text-gray-900 tracking-tight font-sans">
-                FORGE JOURNAL
-              </div>
+              <Image
+                src="https://uvnbfnobyqbonuxztjuz.supabase.co/storage/v1/object/public/assets/logo-horizontal.png"
+                alt="The Forge Journal"
+                width={240}
+                height={60}
+                className="h-12 w-auto"
+                priority
+              />
             </Link>
           </div>
 
@@ -47,6 +53,15 @@ export default function ForgeHeader() {
             >
               TOPICS
             </Link>
+            <Link
+              href="/contributors"
+              className="text-gray-700 px-3 py-2 text-sm font-bold uppercase tracking-wider transition-colors duration-200 font-sans"
+              style={{ color: 'inherit' }}
+              onMouseEnter={(e) => e.currentTarget.style.color = '#be9d58'}
+              onMouseLeave={(e) => e.currentTarget.style.color = '#374151'}
+            >
+              CONTRIBUTORS
+            </Link>
             <button
               onClick={() => setIsSubscribeModalOpen(true)}
               className="text-gray-700 px-3 py-2 text-sm font-bold uppercase tracking-wider transition-colors duration-200 font-sans"
@@ -64,11 +79,11 @@ export default function ForgeHeader() {
               href="/support"
               target="_blank"
               className="text-white px-6 py-3 text-sm font-bold uppercase tracking-wider transition-colors duration-200 font-sans"
-              style={{ backgroundColor: '#1e4356' }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#152e3f'}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#1e4356'}
+              style={{ backgroundColor: '#B91C1C' }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#991B1B'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#B91C1C'}
             >
-              SUPPORT
+              SUPPORT THE MISSION
             </Link>
           </div>
 
@@ -122,6 +137,15 @@ export default function ForgeHeader() {
               >
                 TOPICS
               </Link>
+              <Link
+                href="/contributors"
+                className="text-gray-700 block px-3 py-2 text-sm font-bold uppercase tracking-wider font-sans"
+                style={{ color: 'inherit' }}
+                onMouseEnter={(e) => e.currentTarget.style.color = '#be9d58'}
+                onMouseLeave={(e) => e.currentTarget.style.color = '#374151'}
+              >
+                CONTRIBUTORS
+              </Link>
               <button
                 onClick={() => setIsSubscribeModalOpen(true)}
                 className="text-gray-700 block px-3 py-2 text-sm font-bold uppercase tracking-wider font-sans w-full text-left"
@@ -135,9 +159,9 @@ export default function ForgeHeader() {
                 href="/support"
                 target="_blank"
                 className="text-white block px-3 py-2 text-sm font-bold uppercase tracking-wider transition-colors duration-200 mt-4 font-sans"
-                style={{ backgroundColor: '#1e4356' }}
+                style={{ backgroundColor: '#B91C1C' }}
               >
-                SUPPORT
+                SUPPORT THE MISSION
               </Link>
           </div>
         </div>

@@ -1,6 +1,6 @@
 import ImagePlaceholder from 'components/ImagePlaceholder'
 // Removed Sanity image import - now using direct URLs
-import type { Post } from 'lib/sanity.queries'
+import type { Post } from 'lib/supabase/client'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -26,9 +26,9 @@ export default function RecentArticlesSidebar({ posts }: RecentArticlesSidebarPr
                 <div className="space-y-3">
                   {/* Article Image - 1:1 aspect ratio */}
                   <div className="aspect-square overflow-hidden bg-gray-200">
-                    {post.coverImage ? (
+                    {post.cover_image_url ? (
                       <Image
-                        src={post.coverImage || ''}
+                        src={post.cover_image_url || ''}
                         alt={post.title}
                         width={320}
                         height={320}
@@ -53,11 +53,11 @@ export default function RecentArticlesSidebar({ posts }: RecentArticlesSidebarPr
                   {/* Article Date */}
                   <div className="text-sm uppercase tracking-wider font-medium"
                        style={{ color: '#be9d58' }}>
-                    {new Date(post.date).toLocaleDateString('en-US', {
+                    {post.published_at ? new Date(post.published_at).toLocaleDateString('en-US', {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric'
-                    })}
+                    }) : 'Draft'}
                   </div>
                 </div>
               </Link>

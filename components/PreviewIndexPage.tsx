@@ -7,7 +7,7 @@ export default function PreviewIndexPage(props: IndexPageProps) {
       preview
       loading={false}
       posts={props.posts || []}
-      settings={props.settings || {}}
+      settings={props.settings || { title: 'The Forge Journal', description: [] }}
     />
   )
 }

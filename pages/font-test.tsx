@@ -115,7 +115,7 @@ export default function FontTest() {
             </div>
           </div>
           <p className="text-sm text-gray-600 mt-4 font-sans">
-            If the fonts above don't look different from system fonts, there may be an issue with the Adobe Fonts loading.
+            If the fonts above don&apos;t look different from system fonts, there may be an issue with the Adobe Fonts loading.
           </p>
         </div>
 

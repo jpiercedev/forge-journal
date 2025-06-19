@@ -5,21 +5,7 @@ import ForgeHeader from 'components/ForgeHeader'
 import DynamicBanner from 'components/DynamicBanner'
 import RecentArticlesSidebar from 'components/RecentArticlesSidebar'
 import SidebarAd from 'components/SidebarAd'
-// Define types for Supabase data
-interface Post {
-  id: string
-  title: string
-  slug: string
-  excerpt?: string
-  cover_image_url?: string
-  cover_image_alt?: string
-  published_at: string
-  author?: {
-    name: string
-    title?: string
-    avatar_url?: string
-  }
-}
+import type { Post } from 'lib/supabase/client'
 
 interface ForgeLayoutProps {
   children: React.ReactNode
@@ -46,18 +32,21 @@ export default function ForgeLayout({
     <div className="min-h-screen bg-gray-100">
       <AlertBanner preview={preview} loading={loading} />
       <ForgeHeader />
-      <DynamicBanner />
 
-      <main className="w-[90%] mx-auto py-6 max-w-[1280px]">
-        <div className="flex flex-col lg:flex-row gap-6">
+      <div className="pt-3">
+        <DynamicBanner />
+      </div>
+
+      <main className="w-[90%] mx-auto pt-3 pb-6 max-w-[1280px]">
+        <div className={`${showSidebar ? 'lg:grid lg:grid-cols-4 lg:gap-6' : ''} flex flex-col lg:flex-row gap-6`}>
           {/* Main Content Area - 3/4 width */}
-          <div className={`${showSidebar ? 'lg:w-3/4' : 'w-full'}`}>
+          <div className={`${showSidebar ? 'lg:col-span-3' : 'w-full'}`}>
             {children}
           </div>
 
           {/* Sidebar - 1/4 width */}
           {showSidebar && (
-            <div className="lg:w-1/4 space-y-6">
+            <div className="lg:col-span-1 space-y-6">
               {/* Tagline Section - Sidebar */}
               {showTagline && (
                 <div
@@ -108,7 +97,7 @@ export default function ForgeLayout({
 
       {/* Footer */}
       <footer className="bg-white border-t border-gray-200 mt-16">
-        <div className="w-[90%] mx-auto py-8">
+        <div className="w-[90%] mx-auto py-8 max-w-[1280px]">
           <div className="text-center text-gray-600">
             <p className="text-sm">
               © {new Date().getFullYear()} The Forge Journal. All rights reserved.

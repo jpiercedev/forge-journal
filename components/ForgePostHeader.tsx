@@ -19,18 +19,18 @@ interface Post {
 import Image from 'next/image'
 
 interface ForgePostHeaderProps {
-  post: Pick<Post, 'title' | 'date' | 'author' | 'coverImage'>
+  post: Pick<Post, 'title' | 'author' | 'cover_image_url'> & { published_at?: string }
   volumeInfo?: string
 }
 
 export default function ForgePostHeader({ post, volumeInfo }: ForgePostHeaderProps) {
-  const { title, date, author, coverImage } = post
+  const { title, published_at, author, cover_image_url } = post
 
   // Format date to match the design (e.g., "FEBRUARY 2025 | VOLUME 54, ISSUE 2")
-  const formattedDate = new Date(date).toLocaleDateString('en-US', {
+  const formattedDate = published_at ? new Date(published_at).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long'
-  }).toUpperCase()
+  }).toUpperCase() : ''
 
   const displayVolumeInfo = volumeInfo || `${formattedDate} | VOLUME 1, ISSUE 1`
 
@@ -40,9 +40,9 @@ export default function ForgePostHeader({ post, volumeInfo }: ForgePostHeaderPro
       <div className="relative overflow-hidden mb-8">
         {/* Background Image */}
         <div className="aspect-video w-full overflow-hidden bg-gray-200">
-          {coverImage ? (
+          {cover_image_url ? (
             <Image
-              src={coverImage || ''}
+              src={cover_image_url || ''}
               alt={title}
               width={1200}
               height={675}

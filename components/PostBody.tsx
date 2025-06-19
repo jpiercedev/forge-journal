@@ -4,6 +4,7 @@
  * Legacy Sanity format uses Portable Text.
  * New Supabase format uses a custom JSON structure from Smart Import.
  */
+import React from 'react'
 import Image from 'next/image'
 
 // Simple portable text renderer for legacy Sanity content
@@ -57,14 +58,27 @@ function SupabaseContentRenderer({ content }: { content: any }) {
       {content.content.map((block: any, index: number) => {
         switch (block.type) {
           case 'heading':
-            const HeadingTag = `h${Math.min(block.attrs?.level || 2, 6)}` as keyof JSX.IntrinsicElements
-            return (
-              <HeadingTag key={index} className="mb-4 font-sans font-bold text-gray-900">
-                {block.content?.map((textNode: any, textIndex: number) => (
-                  <span key={textIndex}>{textNode.text}</span>
-                ))}
-              </HeadingTag>
-            )
+            const level = Math.min(block.attrs?.level || 2, 6)
+            const headingContent = block.content?.map((textNode: any, textIndex: number) => (
+              <span key={textIndex}>{textNode.text}</span>
+            ))
+
+            switch (level) {
+              case 1:
+                return <h1 key={index} className="mb-4 font-sans font-bold text-gray-900">{headingContent}</h1>
+              case 2:
+                return <h2 key={index} className="mb-4 font-sans font-bold text-gray-900">{headingContent}</h2>
+              case 3:
+                return <h3 key={index} className="mb-4 font-sans font-bold text-gray-900">{headingContent}</h3>
+              case 4:
+                return <h4 key={index} className="mb-4 font-sans font-bold text-gray-900">{headingContent}</h4>
+              case 5:
+                return <h5 key={index} className="mb-4 font-sans font-bold text-gray-900">{headingContent}</h5>
+              case 6:
+                return <h6 key={index} className="mb-4 font-sans font-bold text-gray-900">{headingContent}</h6>
+              default:
+                return <h2 key={index} className="mb-4 font-sans font-bold text-gray-900">{headingContent}</h2>
+            }
 
           case 'paragraph':
             return (

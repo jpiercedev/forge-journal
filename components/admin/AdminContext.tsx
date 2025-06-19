@@ -151,7 +151,7 @@ function adminReducer(state: AdminState, action: AdminAction): AdminState {
 
     case 'LOGOUT':
       newState = {
-        ...getInitialState(),
+        ...defaultInitialState,
         isLoading: false,
         isAuthenticated: false,
         user: null,

@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 
@@ -6,8 +7,9 @@ const navigationItems = [
   { name: 'Home', href: '/' },
   { name: 'About', href: '/about' },
   { name: 'Topics', href: '/topics' },
+  { name: 'Contributors', href: '/contributors' },
   { name: 'Faculty', href: '/faculty' },
-  { name: 'Support', href: 'https://github.com/sanity-io/nextjs-blog-cms-sanity-v3/issues', external: true },
+  { name: 'Support The Mission', href: 'https://github.com/sanity-io/nextjs-blog-cms-sanity-v3/issues', external: true, special: true },
 ]
 
 export default function Navigation() {
@@ -23,11 +25,18 @@ export default function Navigation() {
 
   return (
     <nav className="bg-white border-b border-gray-200">
-      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-[90%] mx-auto max-w-[1280px]">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0">
-              <span className="text-xl font-bold text-gray-900 font-sans">Forge Journal</span>
+              <Image
+                src="https://uvnbfnobyqbonuxztjuz.supabase.co/storage/v1/object/public/assets/logo-horizontal.png"
+                alt="The Forge Journal"
+                width={180}
+                height={45}
+                className="h-8 w-auto"
+                priority
+              />
             </Link>
           </div>
 
@@ -40,10 +49,13 @@ export default function Navigation() {
                 target={item.external ? '_blank' : undefined}
                 rel={item.external ? 'noopener noreferrer' : undefined}
                 className={`px-3 py-2 text-sm font-medium transition-colors duration-200 font-sans ${
-                  isActive(item.href)
+                  item.special
+                    ? 'text-red-900 hover:text-red-800 hover:border-b-2 hover:border-red-800'
+                    : isActive(item.href)
                     ? 'text-blue-600 border-b-2 border-blue-600'
                     : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600'
                 }`}
+                style={item.special ? { color: '#B91C1C' } : {}}
               >
                 {item.name}
                 {item.external && (
@@ -114,7 +126,8 @@ export default function Navigation() {
       {/* Mobile Navigation Menu */}
       {isMenuOpen && (
         <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
+          <div className="w-[90%] mx-auto max-w-[1280px]">
+            <div className="pt-2 pb-3 space-y-1 bg-white border-t border-gray-200">
             {navigationItems.map((item) => (
               <Link
                 key={item.name}
@@ -122,10 +135,13 @@ export default function Navigation() {
                 target={item.external ? '_blank' : undefined}
                 rel={item.external ? 'noopener noreferrer' : undefined}
                 className={`block px-3 py-2 text-base font-medium transition-colors duration-200 font-sans ${
-                  isActive(item.href)
+                  item.special
+                    ? 'text-red-900 hover:text-red-800 hover:bg-red-50'
+                    : isActive(item.href)
                     ? 'text-blue-600 bg-blue-50'
                     : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
                 }`}
+                style={item.special ? { color: '#B91C1C' } : {}}
                 onClick={() => setIsMenuOpen(false)}
               >
                 {item.name}
@@ -146,6 +162,7 @@ export default function Navigation() {
                 )}
               </Link>
             ))}
+            </div>
           </div>
         </div>
       )}

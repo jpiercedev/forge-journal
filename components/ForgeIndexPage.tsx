@@ -5,22 +5,7 @@ import SearchBar from 'components/SearchBar'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect,useState } from 'react'
-
-// Define types for Supabase data
-interface Post {
-  id: string
-  title: string
-  slug: string
-  excerpt?: string
-  cover_image_url?: string
-  cover_image_alt?: string
-  published_at: string
-  author?: {
-    name: string
-    title?: string
-    avatar_url?: string
-  }
-}
+import type { Post } from 'lib/supabase/client'
 
 interface Settings {
   title: string
@@ -122,10 +107,10 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
                           )}
                           <span className="text-gray-300 hidden sm:inline">|</span>
                           <span className="font-medium uppercase tracking-wider">
-                            {new Date(featuredPost.published_at).toLocaleDateString('en-US', {
+                            {featuredPost.published_at ? new Date(featuredPost.published_at).toLocaleDateString('en-US', {
                               year: 'numeric',
                               month: 'long'
-                            })}
+                            }) : 'Draft'}
                           </span>
                         </div>
 
@@ -205,10 +190,10 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
                           )}
                           <span>|</span>
                           <span className="font-medium uppercase tracking-wider">
-                            {new Date(post.published_at).toLocaleDateString('en-US', {
+                            {post.published_at ? new Date(post.published_at).toLocaleDateString('en-US', {
                               year: 'numeric',
                               month: 'long'
-                            })}
+                            }) : 'Draft'}
                           </span>
                         </div>
 

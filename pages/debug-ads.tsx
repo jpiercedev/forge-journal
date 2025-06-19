@@ -101,8 +101,8 @@ export default function DebugAds() {
           <h2 className="text-xl font-semibold mb-4">Instructions:</h2>
           <ol className="list-decimal list-inside space-y-2">
             <li>First, create the ads table by running the SQL in <code>CREATE_ADS_TABLE.sql</code> in your Supabase dashboard</li>
-            <li>Then click "Setup Sample Ads" to create sample data</li>
-            <li>Finally, click "Test Ads API" to verify everything works</li>
+            <li>Then click &quot;Setup Sample Ads&quot; to create sample data</li>
+            <li>Finally, click &quot;Test Ads API&quot; to verify everything works</li>
           </ol>
         </div>
       </div>

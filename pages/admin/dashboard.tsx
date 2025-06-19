@@ -47,7 +47,7 @@ function Dashboard() {
   useEffect(() => {
     // Refresh stats when component mounts
     refreshStats()
-  }, [])
+  }, [refreshStats])
 
   const loadDashboardData = async () => {
     setLoading(true)

@@ -1,6 +1,6 @@
 // Post Edit Page - /admin/posts/[id]
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import AdminLayout from 'components/admin/AdminLayout'
@@ -74,13 +74,31 @@ function PostEditPage() {
     cover_image: '',
   })
 
+  const loadPost = useCallback(async () => {
+    try {
+      const response = await fetch(`/api/content/posts/${id}`, {
+        credentials: 'include',
+      })
+      const data = await response.json()
+
+      if (data.success) {
+        setPost(data.data)
+      } else {
+        setError('Failed to load post')
+      }
+    } catch (error) {
+      console.error('Failed to load post:', error)
+      setError('Failed to load post')
+    }
+  }, [id])
+
   useEffect(() => {
     if (id) {
       loadPost()
       loadAuthors()
       loadCategories()
     }
-  }, [id])
+  }, [id, loadPost])
 
   useEffect(() => {
     if (post) {
@@ -105,24 +123,6 @@ function PostEditPage() {
       })
     }
   }, [post])
-
-  const loadPost = async () => {
-    try {
-      const response = await fetch(`/api/content/posts/${id}`, {
-        credentials: 'include',
-      })
-      const data = await response.json()
-
-      if (data.success) {
-        setPost(data.data)
-      } else {
-        setError('Failed to load post')
-      }
-    } catch (error) {
-      console.error('Failed to load post:', error)
-      setError('Failed to load post')
-    }
-  }
 
   const loadAuthors = async () => {
     try {
@@ -315,7 +315,7 @@ function PostEditPage() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
           <h2 className="text-xl font-bold text-gray-900 font-sans mb-2">Post Not Found</h2>
-          <p className="text-gray-600 font-sans mb-4">The post you're looking for doesn't exist or has been deleted.</p>
+          <p className="text-gray-600 font-sans mb-4">The post you&apos;re looking for doesn&apos;t exist or has been deleted.</p>
           <Link
             href="/admin/posts"
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-forge-teal hover:bg-forge-teal-hover font-sans"

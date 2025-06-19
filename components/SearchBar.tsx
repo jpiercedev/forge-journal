@@ -1,4 +1,4 @@
-import type { Post } from 'lib/sanity.queries'
+import type { Post } from 'lib/supabase/client'
 import { useState } from 'react'
 
 interface SearchBarProps {

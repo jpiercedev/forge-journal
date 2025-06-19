@@ -1,6 +1,13 @@
 import Meta from 'components/BlogMeta'
 import * as demo from 'lib/demo.data'
-import { Settings } from 'lib/sanity.queries'
+// Settings type for compatibility
+interface Settings {
+  title?: string
+  description?: any[]
+  ogImage?: {
+    title?: string
+  }
+}
 import Head from 'next/head'
 // Legacy stega clean and toPlainText functions
 function stegaClean(value: any) {

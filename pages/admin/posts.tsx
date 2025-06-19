@@ -32,10 +32,6 @@ function PostsManagement() {
   const [searchTerm, setSearchTerm] = useState('')
   const router = useRouter()
 
-  useEffect(() => {
-    loadPosts()
-  }, [filter])
-
   const loadPosts = useCallback(async () => {
     setLoading(true)
     try {
@@ -55,7 +51,11 @@ function PostsManagement() {
     } finally {
       setLoading(false)
     }
-  }, [filter, router])
+  }, [filter])
+
+  useEffect(() => {
+    loadPosts()
+  }, [filter, loadPosts])
 
   const handleDeletePost = async (postId: string) => {
     if (!confirm('Are you sure you want to delete this post?')) {

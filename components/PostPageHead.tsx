@@ -1,7 +1,13 @@
 import Meta from 'components/BlogMeta'
 import * as demo from 'lib/demo.data'
 // Removed Sanity image import - now using direct URLs
-import { Post, Settings } from 'lib/sanity.queries'
+import type { Post } from 'lib/supabase/client'
+
+// Settings type for compatibility
+interface Settings {
+  title?: string
+  description?: any[]
+}
 import Head from 'next/head'
 // Legacy stega clean function
 function stegaClean(value: any) {
@@ -21,10 +27,10 @@ export default function PostPageHead({ settings, post }: PostPageHeadProps) {
         {stegaClean(post.title ? `${post.title} | ${title}` : title)}
       </title>
       <Meta />
-      {post.coverImage && (
+      {post.cover_image_url && (
         <meta
           property="og:image"
-          content={post.coverImage}
+          content={post.cover_image_url}
         />
       )}
     </Head>

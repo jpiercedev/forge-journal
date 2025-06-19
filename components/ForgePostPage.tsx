@@ -3,8 +3,14 @@ import ForgePostHeader from 'components/ForgePostHeader'
 import PostBody from 'components/PostBody'
 import PostPageHead from 'components/PostPageHead'
 import * as demo from 'lib/demo.data'
-import type { Post, Settings } from 'lib/sanity.queries'
+import type { Post } from 'lib/supabase/client'
 import Error from 'next/error'
+
+// Settings type for compatibility
+interface Settings {
+  title?: string
+  description?: any[]
+}
 
 const NO_POSTS: Post[] = []
 

@@ -1,7 +1,7 @@
 import Avatar from 'components/AuthorAvatar'
 import CoverImage from 'components/CoverImage'
 import Date from 'components/PostDate'
-import type { Post } from 'lib/sanity.queries'
+import type { Post } from 'lib/supabase/client'
 import Link from 'next/link'
 
 export default function PostPreview({
@@ -11,7 +11,14 @@ export default function PostPreview({
   excerpt,
   author,
   slug,
-}: Omit<Post, '_id'>) {
+}: {
+  title: string
+  coverImage?: string
+  date?: string
+  excerpt?: string
+  author?: { name: string; picture?: string }
+  slug: string
+}) {
   return (
     <div>
       <div className="mb-5">

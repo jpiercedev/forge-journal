@@ -1,20 +1,20 @@
 import AuthorAvatar from 'components/AuthorAvatar'
 import CoverImage from 'components/CoverImage'
 import Date from 'components/PostDate'
-import type { Post } from 'lib/sanity.queries'
+import type { Post } from 'lib/supabase/client'
 import Link from 'next/link'
 
 export default function HeroPost(
   props: Pick<
     Post,
-    'title' | 'coverImage' | 'date' | 'excerpt' | 'author' | 'slug'
+    'title' | 'cover_image_url' | 'published_at' | 'excerpt' | 'author' | 'slug'
   >,
 ) {
-  const { title, coverImage, date, excerpt, author, slug } = props
+  const { title, cover_image_url, published_at, excerpt, author, slug } = props
   return (
     <section>
       <div className="mb-8 md:mb-16">
-        <CoverImage slug={slug} title={title} image={coverImage} priority />
+        <CoverImage slug={slug} title={title} image={cover_image_url} priority />
       </div>
       <div className="mb-20 md:mb-28 md:grid md:grid-cols-2 md:gap-x-16 lg:gap-x-8">
         <div>
@@ -24,7 +24,7 @@ export default function HeroPost(
             </Link>
           </h3>
           <div className="mb-4 text-lg md:mb-0">
-            <Date dateString={date} />
+            <Date dateString={published_at || ''} />
           </div>
         </div>
         <div>
@@ -34,7 +34,7 @@ export default function HeroPost(
             </p>
           )}
           {author && (
-            <AuthorAvatar name={author.name} picture={author.picture} />
+            <AuthorAvatar name={author.name} picture={author.image_url} />
           )}
         </div>
       </div>

@@ -31,7 +31,7 @@ export default withAdminAuth(async (req, res) => {
       error: {
         code: 'INTERNAL_ERROR',
         message: 'Internal server error',
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined,
+        ...(process.env.NODE_ENV === 'development' && { details: error.message }),
       },
     })
   }
@@ -176,7 +176,7 @@ async function handleCreatePost(req: any, res: NextApiResponse<ApiResponse>) {
       error: {
         code: 'CREATE_FAILED',
         message: 'Failed to create post',
-        details: error.message,
+        ...(process.env.NODE_ENV === 'development' && { details: error.message }),
       },
     })
   }
@@ -232,7 +232,7 @@ async function handleUpdatePost(req: any, res: NextApiResponse<ApiResponse>) {
       error: {
         code: 'UPDATE_FAILED',
         message: 'Failed to update post',
-        details: error.message,
+        ...(process.env.NODE_ENV === 'development' && { details: error.message }),
       },
     })
   }
@@ -269,7 +269,7 @@ async function handleDeletePost(req: any, res: NextApiResponse<ApiResponse>) {
       error: {
         code: 'DELETE_FAILED',
         message: 'Failed to delete post',
-        details: error.message,
+        ...(process.env.NODE_ENV === 'development' && { details: error.message }),
       },
     })
   }

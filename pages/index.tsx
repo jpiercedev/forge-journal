@@ -1,23 +1,7 @@
 import IndexPage from 'components/IndexPage'
-import { db } from 'lib/supabase/client'
+import { db, type Post } from 'lib/supabase/client'
 import { GetStaticProps } from 'next'
 import type { SharedPageProps } from 'pages/_app'
-
-// Define types for Supabase data
-interface Post {
-  id: string
-  title: string
-  slug: string
-  excerpt?: string
-  cover_image_url?: string
-  cover_image_alt?: string
-  published_at: string
-  author?: {
-    name: string
-    title?: string
-    avatar_url?: string
-  }
-}
 
 interface Settings {
   title: string
@@ -45,6 +29,16 @@ export const getStaticProps: GetStaticProps<PageProps> = async () => {
 
     if (postsError) {
       console.error('Error fetching posts:', postsError)
+      return {
+        props: {
+          posts: [],
+          settings: {
+            title: 'Forge Journal',
+            description: []
+          },
+        },
+        revalidate: 60,
+      }
     }
 
     // Default settings
@@ -53,9 +47,27 @@ export const getStaticProps: GetStaticProps<PageProps> = async () => {
       description: []
     }
 
+    // Ensure posts is an array of Post objects
+    const validPosts: Post[] = []
+    if (Array.isArray(posts)) {
+      for (const post of posts) {
+        try {
+          if (post &&
+              typeof post === 'object' &&
+              typeof (post as any).id === 'string' &&
+              typeof (post as any).title === 'string' &&
+              typeof (post as any).slug === 'string') {
+            validPosts.push(post as Post)
+          }
+        } catch (e) {
+          // Skip invalid posts
+        }
+      }
+    }
+
     return {
       props: {
-        posts: posts || [],
+        posts: validPosts,
         settings,
       },
       revalidate: 60, // Revalidate every minute

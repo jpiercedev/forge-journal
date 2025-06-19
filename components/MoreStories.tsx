@@ -1,5 +1,5 @@
 import PostPreview from 'components/PostPreview'
-import type { Post } from 'lib/sanity.queries'
+import type { Post } from 'lib/supabase/client'
 
 export default function MoreStories({ posts }: { posts: Post[] }) {
   return (
@@ -10,10 +10,10 @@ export default function MoreStories({ posts }: { posts: Post[] }) {
       <div className="mb-32 grid grid-cols-1 gap-y-20 md:grid-cols-2 md:gap-x-16 md:gap-y-32 lg:gap-x-32">
         {posts.map((post) => (
           <PostPreview
-            key={post._id}
+            key={post.id}
             title={post.title}
-            coverImage={post.coverImage}
-            date={post.date}
+            coverImage={post.cover_image_url}
+            date={post.published_at}
             author={post.author}
             slug={post.slug}
             excerpt={post.excerpt}

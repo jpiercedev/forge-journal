@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function Footer() {
   return (
@@ -7,8 +8,14 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
-            <Link href="/" className="text-xl font-bold text-gray-900 font-sans">
-              Forge Journal
+            <Link href="/" className="inline-block">
+              <Image
+                src="https://uvnbfnobyqbonuxztjuz.supabase.co/storage/v1/object/public/assets/logo-horizontal.png"
+                alt="The Forge Journal"
+                width={200}
+                height={50}
+                className="h-10 w-auto"
+              />
             </Link>
             <p className="mt-2 text-gray-600 max-w-md font-sans">
               A modern journaling platform built to help you craft your thoughts and forge your story with purpose and clarity.

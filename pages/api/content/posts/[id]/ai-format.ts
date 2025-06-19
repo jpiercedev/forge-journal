@@ -64,7 +64,7 @@ async function handler(
     }
 
     // Store original content
-    const originalContent = post.content;
+    const originalContent = (post as any).content;
 
     // Format content using AI (simple one-step process)
     let formattedContent;
@@ -120,8 +120,10 @@ async function handler(
         originalContent,
         formattedContent,
         changes: Array.from({ length: changesCount }, (_, i) => ({
-          type: 'formatting',
-          action: 'improved',
+          type: 'paragraph' as const,
+          action: 'formatted' as const,
+          originalText: 'Content formatted',
+          formattedStructure: { type: 'paragraph', content: 'Formatted content' },
           confidence: 0.9
         })),
       },

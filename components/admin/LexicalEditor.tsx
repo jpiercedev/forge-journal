@@ -142,7 +142,7 @@ function ToolbarPlugin() {
     editor.update(() => {
       const selection = $getSelection()
       if ($isRangeSelection(selection)) {
-        selection.formatText(format)
+        selection.formatText(format as any)
       }
     })
   }
@@ -154,7 +154,7 @@ function ToolbarPlugin() {
         if (blockType === 'paragraph') {
           $setBlocksType(selection, () => $createParagraphNode())
         } else if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(blockType)) {
-          $setBlocksType(selection, () => $createHeadingNode(blockType))
+          $setBlocksType(selection, () => $createHeadingNode(blockType as any))
         } else if (blockType === 'bullet') {
           formatBulletList()
         } else if (blockType === 'number') {
@@ -421,7 +421,7 @@ function convertBlockToLexicalNode(block: any): any {
 
   switch (block.type) {
     case 'heading':
-      const headingNode = $createHeadingNode(`h${block.attrs?.level || 2}`)
+      const headingNode = $createHeadingNode(`h${block.attrs?.level || 2}` as any)
       if (block.content) {
         block.content.forEach((inline: any) => {
           if (inline.type === 'text' && inline.text) {

@@ -1,22 +1,5 @@
 import PostPage from 'components/PostPage'
-import { db } from 'lib/supabase/client'
-
-// Define types for Supabase data
-interface Post {
-  id: string
-  title: string
-  slug: string
-  excerpt?: string
-  cover_image_url?: string
-  cover_image_alt?: string
-  published_at: string
-  content?: any
-  author?: {
-    name: string
-    title?: string
-    avatar_url?: string
-  }
-}
+import { db, type Post } from 'lib/supabase/client'
 
 interface Settings {
   title: string
@@ -59,7 +42,25 @@ export const getStaticProps: GetStaticProps<PageProps, Query> = async (ctx) => {
       }
     }
 
-    const post = posts[0]
+    const postData = posts[0]
+
+    // Validate post data
+    if (!postData ||
+        typeof postData !== 'object') {
+      return {
+        notFound: true,
+      }
+    }
+
+    if (!('id' in (postData as any)) ||
+        !('title' in (postData as any)) ||
+        !('slug' in (postData as any))) {
+      return {
+        notFound: true,
+      }
+    }
+
+    const post = postData as Post
 
     // Get more posts for sidebar
     const { data: morePosts, error: morePostsError } = await db.getPosts({
@@ -78,10 +79,29 @@ export const getStaticProps: GetStaticProps<PageProps, Query> = async (ctx) => {
       description: []
     }
 
+    // Filter and validate more posts
+    const validMorePosts: Post[] = []
+    if (Array.isArray(morePosts) && !morePostsError) {
+      for (const morePost of morePosts) {
+        try {
+          if (morePost &&
+              typeof morePost === 'object' &&
+              typeof (morePost as any).id === 'string' &&
+              typeof (morePost as any).title === 'string' &&
+              typeof (morePost as any).slug === 'string' &&
+              (morePost as any).id !== post.id) {
+            validMorePosts.push(morePost as Post)
+          }
+        } catch (e) {
+          // Skip invalid posts
+        }
+      }
+    }
+
     return {
       props: {
         post,
-        morePosts: morePosts?.filter(p => p.id !== post.id) || [],
+        morePosts: validMorePosts,
         settings,
       },
       revalidate: 60,
@@ -110,7 +130,10 @@ export const getStaticPaths = async () => {
       }
     }
 
-    const paths = posts?.map(post => `/posts/${post.slug}`) || []
+    const paths = Array.isArray(posts) && !error ?
+      posts
+        .filter((post: any) => post && typeof post === 'object' && 'slug' in post)
+        .map((post: any) => `/posts/${post.slug}`) : []
 
     return {
       paths,

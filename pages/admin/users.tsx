@@ -51,6 +51,9 @@ function AdminUsers() {
   })
   const [createLoading, setCreateLoading] = useState(false)
 
+  // Get current user from admin state
+  const currentUser = state.user
+
   useEffect(() => {
     loadData()
   }, [])
@@ -234,173 +237,172 @@ function AdminUsers() {
           </h3>
         </div>
 
-            <div className="divide-y divide-gray-200">
-              {users.length === 0 ? (
-                <div className="px-6 py-8 text-center text-gray-500">
-                  No users found
-                </div>
-              ) : (
-                users.map((user) => (
-                  <div key={user.id} className="px-6 py-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-3">
-                          <h4 className="text-lg font-medium text-gray-900" style={{ fontFamily: 'Merriweather, serif' }}>
-                            {user.first_name} {user.last_name}
-                          </h4>
-                          <span
-                            className={`px-2 py-1 text-xs rounded-full ${
-                              user.is_active
-                                ? 'bg-green-100 text-green-800'
-                                : 'bg-red-100 text-red-800'
-                            }`}
-                          >
-                            {user.is_active ? 'Active' : 'Inactive'}
-                          </span>
-                          {user.role && (
-                            <span className="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
-                              {user.role.name}
-                            </span>
-                          )}
-                        </div>
-                        <div className="mt-1 text-sm text-gray-600" style={{ fontFamily: 'Montserrat, sans-serif' }}>
-                          <p>{user.email}</p>
-                          <p>
-                            Created: {formatDate(user.created_at)}
-                            {user.last_login_at && ` • Last login: ${formatDate(user.last_login_at)}`}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <button
-                          onClick={() => handleToggleActive(user.id, user.is_active)}
-                          className={`text-sm px-3 py-1 rounded ${
-                            user.is_active
-                              ? 'text-red-600 hover:text-red-900 hover:bg-red-50'
-                              : 'text-green-600 hover:text-green-900 hover:bg-green-50'
-                          }`}
-                          style={{ fontFamily: 'Montserrat, sans-serif' }}
-                        >
-                          {user.is_active ? 'Deactivate' : 'Activate'}
-                        </button>
-                        {user.id !== currentUser?.id && (
-                          <button
-                            onClick={() => handleDeleteUser(user.id)}
-                            className="text-red-600 hover:text-red-900 text-sm px-3 py-1 rounded hover:bg-red-50"
-                            style={{ fontFamily: 'Montserrat, sans-serif' }}
-                          >
-                            Delete
-                          </button>
-                        )}
-                      </div>
+        <div className="divide-y divide-gray-200">
+          {users.length === 0 ? (
+            <div className="px-6 py-8 text-center text-gray-500">
+              No users found
+            </div>
+          ) : (
+            users.map((user) => (
+              <div key={user.id} className="px-6 py-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-3">
+                      <h4 className="text-lg font-medium text-gray-900" style={{ fontFamily: 'Merriweather, serif' }}>
+                        {user.first_name} {user.last_name}
+                      </h4>
+                      <span
+                        className={`px-2 py-1 text-xs rounded-full ${
+                          user.is_active
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-red-100 text-red-800'
+                        }`}
+                      >
+                        {user.is_active ? 'Active' : 'Inactive'}
+                      </span>
+                      {user.role && (
+                        <span className="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
+                          {user.role.name}
+                        </span>
+                      )}
+                    </div>
+                    <div className="mt-1 text-sm text-gray-600" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                      <p>{user.email}</p>
+                      <p>
+                        Created: {formatDate(user.created_at)}
+                        {user.last_login_at && ` • Last login: ${formatDate(user.last_login_at)}`}
+                      </p>
                     </div>
                   </div>
-                ))
-              )}
-            </div>
-          </div>
-        </main>
-
-        {/* Create User Modal */}
-        {showCreateForm && (
-          <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-            <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-              <div className="mt-3">
-                <h3 className="text-lg font-medium text-gray-900 mb-4" style={{ fontFamily: 'Merriweather, serif' }}>
-                  Create New Admin User
-                </h3>
-                <form onSubmit={handleCreateUser} className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700" style={{ fontFamily: 'Montserrat, sans-serif' }}>
-                      First Name
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={createForm.first_name}
-                      onChange={(e) => setCreateForm(prev => ({ ...prev, first_name: e.target.value }))}
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700" style={{ fontFamily: 'Montserrat, sans-serif' }}>
-                      Last Name
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={createForm.last_name}
-                      onChange={(e) => setCreateForm(prev => ({ ...prev, last_name: e.target.value }))}
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700" style={{ fontFamily: 'Montserrat, sans-serif' }}>
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      required
-                      value={createForm.email}
-                      onChange={(e) => setCreateForm(prev => ({ ...prev, email: e.target.value }))}
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700" style={{ fontFamily: 'Montserrat, sans-serif' }}>
-                      Password
-                    </label>
-                    <input
-                      type="password"
-                      required
-                      minLength={8}
-                      value={createForm.password}
-                      onChange={(e) => setCreateForm(prev => ({ ...prev, password: e.target.value }))}
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                    />
-                    <p className="mt-1 text-xs text-gray-500">Minimum 8 characters</p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700" style={{ fontFamily: 'Montserrat, sans-serif' }}>
-                      Role
-                    </label>
-                    <select
-                      required
-                      value={createForm.role_id}
-                      onChange={(e) => setCreateForm(prev => ({ ...prev, role_id: e.target.value }))}
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                    >
-                      <option value="">Select a role</option>
-                      {roles.map((role) => (
-                        <option key={role.id} value={role.id}>
-                          {role.name} {role.description && `- ${role.description}`}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="flex justify-end space-x-3 pt-4">
+                  <div className="flex items-center space-x-2">
                     <button
-                      type="button"
-                      onClick={() => setShowCreateForm(false)}
-                      className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                      onClick={() => handleToggleActive(user.id, user.is_active)}
+                      className={`text-sm px-3 py-1 rounded ${
+                        user.is_active
+                          ? 'text-red-600 hover:text-red-900 hover:bg-red-50'
+                          : 'text-green-600 hover:text-green-900 hover:bg-green-50'
+                      }`}
                       style={{ fontFamily: 'Montserrat, sans-serif' }}
                     >
-                      Cancel
+                      {user.is_active ? 'Deactivate' : 'Activate'}
                     </button>
-                    <button
-                      type="submit"
-                      disabled={createLoading}
-                      className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                      style={{ fontFamily: 'Montserrat, sans-serif' }}
-                    >
-                      {createLoading ? 'Creating...' : 'Create User'}
-                    </button>
+                    {user.id !== currentUser?.id && (
+                      <button
+                        onClick={() => handleDeleteUser(user.id)}
+                        className="text-red-600 hover:text-red-900 text-sm px-3 py-1 rounded hover:bg-red-50"
+                        style={{ fontFamily: 'Montserrat, sans-serif' }}
+                      >
+                        Delete
+                      </button>
+                    )}
                   </div>
-                </form>
+                </div>
               </div>
+            ))
+          )}
+        </div>
+      </div>
+
+      {/* Create User Modal */}
+      {showCreateForm && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div className="mt-3">
+              <h3 className="text-lg font-medium text-gray-900 mb-4" style={{ fontFamily: 'Merriweather, serif' }}>
+                Create New Admin User
+              </h3>
+              <form onSubmit={handleCreateUser} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                    First Name
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={createForm.first_name}
+                    onChange={(e) => setCreateForm(prev => ({ ...prev, first_name: e.target.value }))}
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                    Last Name
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={createForm.last_name}
+                    onChange={(e) => setCreateForm(prev => ({ ...prev, last_name: e.target.value }))}
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={createForm.email}
+                    onChange={(e) => setCreateForm(prev => ({ ...prev, email: e.target.value }))}
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    required
+                    minLength={8}
+                    value={createForm.password}
+                    onChange={(e) => setCreateForm(prev => ({ ...prev, password: e.target.value }))}
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  />
+                  <p className="mt-1 text-xs text-gray-500">Minimum 8 characters</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                    Role
+                  </label>
+                  <select
+                    required
+                    value={createForm.role_id}
+                    onChange={(e) => setCreateForm(prev => ({ ...prev, role_id: e.target.value }))}
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    <option value="">Select a role</option>
+                    {roles.map((role) => (
+                      <option key={role.id} value={role.id}>
+                        {role.name} {role.description && `- ${role.description}`}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="flex justify-end space-x-3 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setShowCreateForm(false)}
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                    style={{ fontFamily: 'Montserrat, sans-serif' }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={createLoading}
+                    className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={{ fontFamily: 'Montserrat, sans-serif' }}
+                  >
+                    {createLoading ? 'Creating...' : 'Create User'}
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
-        )}
+        </div>
+      )}
     </AdminLayout>
   )
 }
