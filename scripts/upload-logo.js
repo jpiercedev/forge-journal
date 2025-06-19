@@ -63,7 +63,7 @@ async function uploadLogo() {
     }
 
     // Read the logo file
-    const logoPath = path.join(__dirname, '..', '.assets', 'LOGO - the FORGE Journal Horizontal.png')
+    const logoPath = path.join(__dirname, '..', '.assets', 'LOGO - the FORGE Journal Horizontal NEW - colored.png')
     
     if (!fs.existsSync(logoPath)) {
       console.error(`❌ Logo file not found at: ${logoPath}`)

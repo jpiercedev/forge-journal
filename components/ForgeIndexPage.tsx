@@ -85,21 +85,21 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
                     {/* Accent Color Overlay */}
                     <div className="absolute inset-0" style={{ backgroundColor: '#1e4356', opacity: 0.5 }}></div>
 
-                    {/* Semi-transparent Overlay */}
+                    {/* Semi-transparent Overlay - stronger on mobile for better text readability */}
                     <div className="absolute inset-0" style={{
-                      background: 'linear-gradient(to right, rgba(30, 67, 86, 0.85), rgba(30, 67, 86, 0.7), transparent)'
+                      background: 'linear-gradient(to right, rgba(30, 67, 86, 0.9), rgba(30, 67, 86, 0.8), rgba(30, 67, 86, 0.3))'
                     }}></div>
 
                     {/* Content Overlay */}
                     <div className="absolute inset-0 flex items-end">
-                      <div className="p-4 sm:p-6 md:p-8 lg:p-12 max-w-2xl w-full">
+                      <div className="p-6 sm:p-6 md:p-8 lg:p-12 max-w-2xl w-full pb-8 sm:pb-6 md:pb-8 lg:pb-12">
                         {/* Article Title */}
-                        <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black text-white leading-tight mb-3 sm:mb-4 tracking-tight font-sans">
+                        <h1 className="text-lg sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black text-white leading-tight mb-2 sm:mb-3 md:mb-4 tracking-tight font-sans">
                           {featuredPost.title}
                         </h1>
 
                         {/* Author and Date */}
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 text-xs sm:text-sm md:text-base text-gray-300 mb-3 sm:mb-4 font-sans space-y-1 sm:space-y-0">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 text-xs sm:text-sm md:text-base text-gray-300 mb-2 sm:mb-3 md:mb-4 font-sans space-y-1 sm:space-y-0">
                           {featuredPost.author && (
                             <span className="font-medium uppercase tracking-wider">
                               {featuredPost.author.name}
@@ -116,7 +116,7 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
 
                         {/* Article Excerpt */}
                         {featuredPost.excerpt && (
-                          <p className="text-gray-200 leading-relaxed text-sm sm:text-base md:text-lg mb-4 sm:mb-6 max-w-xl font-serif line-clamp-3 sm:line-clamp-none">
+                          <p className="text-gray-200 leading-relaxed text-sm sm:text-base md:text-lg mb-3 sm:mb-4 md:mb-6 max-w-xl font-serif line-clamp-2 sm:line-clamp-3 md:line-clamp-none">
                             {featuredPost.excerpt}
                           </p>
                         )}
