@@ -2,6 +2,7 @@
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { adminDb, db, generateSlug, type Author } from '../../../lib/supabase/client'
+import { withAdminAuth, AuthenticatedRequest, validateMethod, ErrorResponses } from '../../../lib/auth/middleware'
 
 interface ApiResponse<T = any> {
   success: boolean
@@ -14,33 +15,10 @@ interface ApiResponse<T = any> {
   message?: string
 }
 
-export default async function handler(
-  req: NextApiRequest,
+async function handler(
+  req: AuthenticatedRequest,
   res: NextApiResponse<ApiResponse>
 ) {
-  // Validate authentication
-  const authHeader = req.headers.authorization
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({
-      success: false,
-      error: {
-        code: 'AUTHENTICATION_FAILED',
-        message: 'Valid authorization token required',
-      },
-    })
-  }
-
-  const token = authHeader.substring(7)
-  if (token !== process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    return res.status(401).json({
-      success: false,
-      error: {
-        code: 'AUTHENTICATION_FAILED',
-        message: 'Invalid authorization token',
-      },
-    })
-  }
-
   try {
     switch (req.method) {
       case 'GET':
@@ -73,8 +51,10 @@ export default async function handler(
   }
 }
 
+export default withAdminAuth(handler)
+
 // GET /api/content/authors - List authors or get single author
-async function handleGetAuthors(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
+async function handleGetAuthors(req: AuthenticatedRequest, res: NextApiResponse<ApiResponse>) {
   const { id, slug } = req.query
 
   // Get single author by ID or slug
@@ -141,7 +121,7 @@ async function handleGetAuthors(req: NextApiRequest, res: NextApiResponse<ApiRes
 }
 
 // POST /api/content/authors - Create new author
-async function handleCreateAuthor(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
+async function handleCreateAuthor(req: AuthenticatedRequest, res: NextApiResponse<ApiResponse>) {
   const authorData = req.body
 
   // Validate required fields
@@ -185,7 +165,7 @@ async function handleCreateAuthor(req: NextApiRequest, res: NextApiResponse<ApiR
 }
 
 // PUT /api/content/authors - Update existing author
-async function handleUpdateAuthor(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
+async function handleUpdateAuthor(req: AuthenticatedRequest, res: NextApiResponse<ApiResponse>) {
   const { id } = req.query
   const updateData = req.body
 
@@ -229,7 +209,7 @@ async function handleUpdateAuthor(req: NextApiRequest, res: NextApiResponse<ApiR
 }
 
 // DELETE /api/content/authors - Delete author
-async function handleDeleteAuthor(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
+async function handleDeleteAuthor(req: AuthenticatedRequest, res: NextApiResponse<ApiResponse>) {
   const { id } = req.query
 
   if (!id) {

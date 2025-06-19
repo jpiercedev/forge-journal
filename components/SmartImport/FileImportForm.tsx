@@ -96,12 +96,9 @@ export default function FileImportForm({ onContentParsed, onError, onBack }: Fil
       formData.append('file', selectedFile);
       formData.append('options', JSON.stringify(options));
 
-      const token = process.env.NEXT_PUBLIC_SANITY_API_WRITE_TOKEN || localStorage.getItem('sanity_token') || '';
       const response = await fetch('/api/smart-import/parse-file', {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
+        credentials: 'include',
         body: formData,
       });
 
@@ -164,10 +161,10 @@ export default function FileImportForm({ onContentParsed, onError, onBack }: Fil
             </svg>
           </button>
           <div>
-            <h2 className="text-xl font-semibold text-gray-900" style={{ fontFamily: 'Merriweather, serif' }}>
+            <h2 className="text-xl font-semibold text-gray-900 font-sans">
               Import from File
             </h2>
-            <p className="text-gray-600" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+            <p className="text-gray-600 font-sans">
               Upload a document to extract and structure its content
             </p>
           </div>
@@ -247,7 +244,7 @@ export default function FileImportForm({ onContentParsed, onError, onBack }: Fil
 
           {/* Import Options */}
           <div>
-            <h3 className="text-lg font-medium text-gray-900 mb-3" style={{ fontFamily: 'Merriweather, serif' }}>
+            <h3 className="text-lg font-medium text-gray-900 mb-3 font-sans">
               Processing Options
             </h3>
             <div className="space-y-3">

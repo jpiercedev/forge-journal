@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import AdminLayout from 'components/admin/AdminLayout'
+import { AdminProvider, useAdmin, withAdminAuth } from 'components/admin/AdminContext'
 
 interface Post {
   id: string
@@ -21,7 +23,8 @@ interface Post {
   excerpt?: string
 }
 
-export default function PostsManagement() {
+function PostsManagement() {
+  const { state } = useAdmin()
   const [posts, setPosts] = useState<Post[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -31,24 +34,14 @@ export default function PostsManagement() {
 
   useEffect(() => {
     loadPosts()
-  }, [filter, loadPosts])
-
-  const getAuthToken = () => {
-    return localStorage.getItem('supabase_admin_token')
-  }
+  }, [filter])
 
   const loadPosts = useCallback(async () => {
-    const token = getAuthToken()
-    if (!token) {
-      router.push('/admin/dashboard')
-      return
-    }
-
     setLoading(true)
     try {
       const statusParam = filter !== 'all' ? `&status=${filter}` : ''
       const response = await fetch(`/api/content/posts?limit=100&includeAuthor=true${statusParam}`, {
-        headers: { 'Authorization': `Bearer ${token}` },
+        credentials: 'include',
       })
 
       const data = await response.json()
@@ -69,13 +62,10 @@ export default function PostsManagement() {
       return
     }
 
-    const token = getAuthToken()
-    if (!token) return
-
     try {
       const response = await fetch(`/api/content/posts?id=${postId}`, {
         method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` },
+        credentials: 'include',
       })
 
       const data = await response.json()
@@ -90,9 +80,6 @@ export default function PostsManagement() {
   }
 
   const handleStatusChange = async (postId: string, newStatus: string) => {
-    const token = getAuthToken()
-    if (!token) return
-
     try {
       const updateData: any = { status: newStatus }
       if (newStatus === 'published') {
@@ -102,9 +89,9 @@ export default function PostsManagement() {
       const response = await fetch(`/api/content/posts?id=${postId}`, {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify(updateData),
       })
 
@@ -134,153 +121,184 @@ export default function PostsManagement() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading posts...</p>
+      <AdminLayout title="Posts Management" description="Manage your blog posts" currentSection="posts">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-forge-teal mx-auto"></div>
+            <p className="mt-4 text-gray-600 font-sans">Loading posts...</p>
+          </div>
         </div>
-      </div>
+      </AdminLayout>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Posts Management</h1>
-              <p className="text-gray-600">Manage your blog posts</p>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Link
-                href="/admin/posts/new"
-                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-              >
-                New Post
-              </Link>
-              <Link
-                href="/admin/dashboard"
-                className="text-gray-600 hover:text-gray-900"
-              >
-                Back to Dashboard
-              </Link>
-            </div>
-          </div>
+    <AdminLayout title="Posts Management" description="Manage your blog posts" currentSection="posts">
+      {/* Action Bar */}
+      <div className="mb-6 flex justify-between items-center">
+        <div>
+          <h2 className="text-xl font-bold text-gray-900 font-serif">All Posts</h2>
+          <p className="text-sm text-gray-600 font-sans">Manage and organize your blog content</p>
         </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        {/* Filters and Search */}
-        <div className="bg-white p-6 rounded-lg shadow mb-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
-            <div className="flex space-x-4">
+        <Link
+          href="/admin/posts/new"
+          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-forge-teal hover:bg-forge-teal-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-forge-teal transition-colors font-sans"
+        >
+          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
+          New Post
+        </Link>
+      </div>
+      {/* Filters and Search */}
+      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0 sm:space-x-6">
+          <div className="flex space-x-4">
+            <div className="relative">
               <select
                 value={filter}
                 onChange={(e) => setFilter(e.target.value as any)}
-                className="border border-gray-300 rounded-md px-3 py-2 text-sm"
+                className="appearance-none border border-gray-300 rounded-lg px-4 py-2.5 pr-8 text-sm font-sans focus:outline-none focus:ring-2 focus:ring-forge-teal focus:border-forge-teal bg-white"
               >
                 <option value="all">All Posts</option>
                 <option value="published">Published</option>
                 <option value="draft">Drafts</option>
                 <option value="archived">Archived</option>
               </select>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
             </div>
-            <div className="flex-1 max-w-md">
+          </div>
+          <div className="flex-1 max-w-md">
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
               <input
                 type="text"
                 placeholder="Search posts..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
+                className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm font-sans focus:outline-none focus:ring-2 focus:ring-forge-teal focus:border-forge-teal transition-colors"
               />
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Posts List */}
-        <div className="bg-white shadow rounded-lg">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h3 className="text-lg font-medium text-gray-900">
-              Posts ({filteredPosts.length})
-            </h3>
-          </div>
-          
-          {error && (
-            <div className="px-6 py-4 bg-red-50 border-b border-red-200">
-              <p className="text-red-600">{error}</p>
-            </div>
-          )}
+      {/* Posts List */}
+      <div className="bg-white shadow-sm rounded-xl border border-gray-200">
+        <div className="px-6 py-5 border-b border-gray-200">
+          <h3 className="text-lg font-bold text-gray-900 font-serif">
+            Posts ({filteredPosts.length})
+          </h3>
+        </div>
 
-          <div className="divide-y divide-gray-200">
-            {filteredPosts.length === 0 ? (
-              <div className="px-6 py-8 text-center text-gray-500">
-                No posts found
+        {error && (
+          <div className="px-6 py-4 bg-red-50 border-b border-red-200">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
               </div>
-            ) : (
-              filteredPosts.map((post) => (
-                <div key={post.id} className="px-6 py-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-3">
-                        <h4 className="text-lg font-medium text-gray-900">{post.title}</h4>
-                        <span
-                          className={`px-2 py-1 text-xs rounded-full ${
-                            post.status === 'published'
-                              ? 'bg-green-100 text-green-800'
-                              : post.status === 'draft'
-                              ? 'bg-yellow-100 text-yellow-800'
-                              : 'bg-gray-100 text-gray-800'
-                          }`}
-                        >
-                          {post.status}
-                        </span>
-                      </div>
-                      <div className="mt-1 text-sm text-gray-600">
-                        <p>
-                          {post.author?.name} • {post.word_count} words • {post.reading_time} min read
-                        </p>
-                        <p>
-                          Created: {formatDate(post.created_at)}
-                          {post.published_at && ` • Published: ${formatDate(post.published_at)}`}
-                        </p>
-                        {post.excerpt && (
-                          <p className="mt-2 text-gray-500 line-clamp-2">{post.excerpt}</p>
-                        )}
-                      </div>
+              <div className="ml-3">
+                <p className="text-red-600 font-sans">{error}</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="divide-y divide-gray-200">
+          {filteredPosts.length === 0 ? (
+            <div className="px-6 py-12 text-center">
+              <svg className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <p className="text-gray-500 font-sans">No posts found</p>
+              <Link
+                href="/admin/posts/new"
+                className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-forge-teal hover:bg-forge-teal-hover font-sans"
+              >
+                Create your first post
+              </Link>
+            </div>
+          ) : (
+            filteredPosts.map((post) => (
+              <div key={post.id} className="px-6 py-4 hover:bg-gray-50 transition-colors">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center space-x-3 mb-2">
+                      <h4 className="text-lg font-medium text-gray-900 font-sans truncate">{post.title}</h4>
+                      <span
+                        className={`px-2 py-1 text-xs rounded-full font-medium font-sans ${
+                          post.status === 'published'
+                            ? 'bg-green-100 text-green-800'
+                            : post.status === 'draft'
+                            ? 'bg-forge-gold bg-opacity-20 text-forge-gold'
+                            : 'bg-gray-100 text-gray-800'
+                        }`}
+                      >
+                        {post.status}
+                      </span>
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <select
-                        value={post.status}
-                        onChange={(e) => handleStatusChange(post.id, e.target.value)}
-                        className="text-sm border border-gray-300 rounded px-2 py-1"
-                      >
-                        <option value="draft">Draft</option>
-                        <option value="published">Published</option>
-                        <option value="archived">Archived</option>
-                      </select>
-                      <Link
-                        href={`/admin/posts/${post.id}`}
-                        className="text-blue-600 hover:text-blue-900 text-sm px-2 py-1"
-                      >
-                        Edit
-                      </Link>
-                      <button
-                        onClick={() => handleDeletePost(post.id)}
-                        className="text-red-600 hover:text-red-900 text-sm px-2 py-1"
-                      >
-                        Delete
-                      </button>
+                    <div className="text-sm text-gray-600 font-sans space-y-1">
+                      <p>
+                        {post.author?.name} • {post.word_count} words • {post.reading_time} min read
+                      </p>
+                      <p>
+                        Created: {formatDate(post.created_at)}
+                        {post.published_at && ` • Published: ${formatDate(post.published_at)}`}
+                      </p>
+                      {post.excerpt && (
+                        <p className="mt-2 text-gray-500 line-clamp-2">{post.excerpt}</p>
+                      )}
                     </div>
                   </div>
+                  <div className="flex items-center space-x-3 ml-4">
+                    <select
+                      value={post.status}
+                      onChange={(e) => handleStatusChange(post.id, e.target.value)}
+                      className="text-sm border border-gray-300 rounded-lg px-3 py-1 font-sans focus:outline-none focus:ring-2 focus:ring-forge-teal focus:border-forge-teal"
+                    >
+                      <option value="draft">Draft</option>
+                      <option value="published">Published</option>
+                      <option value="archived">Archived</option>
+                    </select>
+                    <Link
+                      href={`/admin/posts/${post.id}`}
+                      className="text-forge-teal hover:text-forge-teal-hover text-sm px-2 py-1 font-medium font-sans"
+                    >
+                      Edit
+                    </Link>
+                    <button
+                      onClick={() => handleDeletePost(post.id)}
+                      className="text-red-600 hover:text-red-900 text-sm px-2 py-1 font-medium font-sans"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
-              ))
-            )}
-          </div>
+              </div>
+            ))
+          )}
         </div>
-      </main>
-    </div>
+      </div>
+    </AdminLayout>
+  )
+}
+
+const PostsWithAuth = withAdminAuth(PostsManagement)
+
+export default function PostsManagementPage() {
+  return (
+    <AdminProvider>
+      <PostsWithAuth />
+    </AdminProvider>
   )
 }

@@ -31,7 +31,7 @@ export default function PostPreview({
         <Date dateString={date} />
       </div>
       {excerpt && (
-        <p className="mb-4 text-lg leading-relaxed text-pretty font-serif">{excerpt}</p>
+        <p className="mb-4 text-lg leading-relaxed text-pretty font-sans">{excerpt}</p>
       )}
       {author && <Avatar name={author.name} picture={author.picture} />}
     </div>

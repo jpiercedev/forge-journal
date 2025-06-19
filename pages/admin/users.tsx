@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
-import Head from 'next/head'
-import Link from 'next/link'
+import AdminLayout from 'components/admin/AdminLayout'
+import { AdminProvider, useAdmin, withAdminAuth } from 'components/admin/AdminContext'
 
 interface AdminUser {
   id: string
@@ -35,7 +35,8 @@ interface CreateUserForm {
   role_id: string
 }
 
-export default function AdminUsers() {
+function AdminUsers() {
+  const { state } = useAdmin()
   const [users, setUsers] = useState<AdminUser[]>([])
   const [roles, setRoles] = useState<AdminRole[]>([])
   const [loading, setLoading] = useState(true)
@@ -49,38 +50,10 @@ export default function AdminUsers() {
     role_id: '',
   })
   const [createLoading, setCreateLoading] = useState(false)
-  const [currentUser, setCurrentUser] = useState<AdminUser | null>(null)
-  const router = useRouter()
 
   useEffect(() => {
-    checkAuthAndLoadData()
+    loadData()
   }, [])
-
-  const checkAuthAndLoadData = async () => {
-    try {
-      // Check authentication
-      const authResponse = await fetch('/api/admin/auth/me', {
-        credentials: 'include',
-      })
-
-      if (!authResponse.ok) {
-        router.push('/admin')
-        return
-      }
-
-      const authData = await authResponse.json()
-      if (!authData.success) {
-        router.push('/admin')
-        return
-      }
-
-      setCurrentUser(authData.data.user)
-      await loadData()
-    } catch (error) {
-      console.error('Auth check failed:', error)
-      router.push('/admin')
-    }
-  }
 
   const loadData = async () => {
     setLoading(true)
@@ -207,71 +180,59 @@ export default function AdminUsers() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading users...</p>
+      <AdminLayout title="Admin Users" description="Loading users..." currentSection="users">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-forge-teal mx-auto"></div>
+            <p className="mt-4 text-gray-600 font-sans">Loading users...</p>
+          </div>
         </div>
-      </div>
+      </AdminLayout>
     )
   }
 
   return (
-    <>
-      <Head>
-        <title>Admin Users - Forge Journal</title>
-        <meta name="description" content="Manage admin users for Forge Journal" />
-        <meta name="robots" content="noindex, nofollow" />
-      </Head>
+    <AdminLayout title="Admin Users" description="Manage admin users and permissions" currentSection="users">
+      {/* Action Bar */}
+      <div className="mb-6 flex justify-between items-center">
+        <div>
+          <h2 className="text-xl font-bold text-gray-900 font-serif">All Admin Users</h2>
+          <p className="text-sm text-gray-600 font-sans">Manage admin users and permissions</p>
+        </div>
+        <button
+          onClick={() => setShowCreateForm(true)}
+          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-forge-teal hover:bg-forge-teal-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-forge-teal transition-colors font-sans"
+        >
+          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
+          Add User
+        </button>
+      </div>
 
-      <div className="min-h-screen bg-gray-50">
-        {/* Header */}
-        <header className="bg-white shadow">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center py-6">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900" style={{ fontFamily: 'Merriweather, serif' }}>
-                  Admin Users
-                </h1>
-                <p className="text-gray-600" style={{ fontFamily: 'Montserrat, sans-serif' }}>
-                  Manage admin users and permissions
-                </p>
-              </div>
-              <div className="flex items-center space-x-4">
-                <button
-                  onClick={() => setShowCreateForm(true)}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
-                  style={{ fontFamily: 'Montserrat, sans-serif' }}
-                >
-                  Add User
-                </button>
-                <Link
-                  href="/admin/dashboard"
-                  className="text-gray-600 hover:text-gray-900 px-4 py-2 rounded-md hover:bg-gray-100 transition-colors"
-                  style={{ fontFamily: 'Montserrat, sans-serif' }}
-                >
-                  Back to Dashboard
-                </Link>
-              </div>
+      {/* Error Message */}
+      {error && (
+        <div className="mb-6 rounded-lg bg-red-50 p-4 border border-red-200">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <p className="text-sm text-red-700 font-sans">{error}</p>
             </div>
           </div>
-        </header>
+        </div>
+      )}
 
-        {/* Main Content */}
-        <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-          {error && (
-            <div className="mb-6 rounded-md bg-red-50 p-4">
-              <div className="text-sm text-red-700">{error}</div>
-            </div>
-          )}
-
-          {/* Users List */}
-          <div className="bg-white shadow rounded-lg">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-medium text-gray-900" style={{ fontFamily: 'Merriweather, serif' }}>
-                Admin Users ({users.length})
-              </h3>
-            </div>
+      {/* Users List */}
+      <div className="bg-white shadow-sm rounded-xl border border-gray-200">
+        <div className="px-6 py-5 border-b border-gray-200">
+          <h3 className="text-lg font-bold text-gray-900 font-serif">
+            Admin Users ({users.length})
+          </h3>
+        </div>
 
             <div className="divide-y divide-gray-200">
               {users.length === 0 ? (
@@ -440,7 +401,16 @@ export default function AdminUsers() {
             </div>
           </div>
         )}
-      </div>
-    </>
+    </AdminLayout>
+  )
+}
+
+const UsersWithAuth = withAdminAuth(AdminUsers)
+
+export default function UsersPageWrapper() {
+  return (
+    <AdminProvider>
+      <UsersWithAuth />
+    </AdminProvider>
   )
 }

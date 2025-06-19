@@ -4,44 +4,17 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { formatForSupabase } from '../../../lib/smart-import/supabase-formatter';
 import { ImportPreview,ParsedContent, PreviewResponse } from '../../../types/smart-import';
+import { withAdminAuth, AuthenticatedRequest, validateMethod, ErrorResponses } from '../../../lib/auth/middleware';
 
-export default async function handler(
-  req: NextApiRequest,
+async function handler(
+  req: AuthenticatedRequest,
   res: NextApiResponse<PreviewResponse>
 ) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({
-      success: false,
-      error: {
-        code: 'METHOD_NOT_ALLOWED',
-        message: 'Only POST method is allowed',
-      },
-    });
+  if (!validateMethod(req, ['POST'])) {
+    return res.status(405).json(ErrorResponses.METHOD_NOT_ALLOWED);
   }
 
   try {
-    // Validate authentication
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({
-        success: false,
-        error: {
-          code: 'AUTHENTICATION_FAILED',
-          message: 'Valid authorization token required',
-        },
-      });
-    }
-
-    const token = authHeader.substring(7);
-    if (token !== process.env.SANITY_API_WRITE_TOKEN) {
-      return res.status(401).json({
-        success: false,
-        error: {
-          code: 'AUTHENTICATION_FAILED',
-          message: 'Invalid authorization token',
-        },
-      });
-    }
 
     // Parse request body
     const { parsedContent, options = {} }: { parsedContent: ParsedContent; options?: any } = req.body;
@@ -139,3 +112,5 @@ export default async function handler(
     });
   }
 }
+
+export default withAdminAuth(handler);

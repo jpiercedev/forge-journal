@@ -92,7 +92,7 @@ export default function ImportMethodSelector({ onMethodSelect }: ImportMethodSel
                   {method.icon}
                 </div>
                 <div className="ml-4">
-                  <h3 className="text-lg font-semibold text-gray-900" style={{ fontFamily: 'Merriweather, serif' }}>
+                  <h3 className="text-lg font-semibold text-gray-900 font-sans">
                     {method.title}
                   </h3>
                 </div>
@@ -122,7 +122,7 @@ export default function ImportMethodSelector({ onMethodSelect }: ImportMethodSel
 
               {/* Examples */}
               <div className="mb-6">
-                <h4 className="text-sm font-medium text-gray-900 mb-2" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                <h4 className="text-sm font-medium text-gray-900 mb-2 font-sans">
                   Best for:
                 </h4>
                 <div className="flex flex-wrap gap-1">
@@ -140,46 +140,13 @@ export default function ImportMethodSelector({ onMethodSelect }: ImportMethodSel
               {/* Action Button */}
               <button
                 onClick={() => onMethodSelect(method.id)}
-                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors font-medium"
-                style={{ fontFamily: 'Montserrat, sans-serif' }}
+                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors font-medium font-sans"
               >
                 Select This Method
               </button>
             </div>
           </div>
         ))}
-      </div>
-
-      {/* Additional Information */}
-      <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
-        <div className="flex items-start">
-          <div className="flex-shrink-0">
-            <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <div className="ml-3">
-            <h3 className="text-lg font-medium text-blue-900 mb-2" style={{ fontFamily: 'Merriweather, serif' }}>
-              How Smart Import Works
-            </h3>
-            <div className="text-blue-800 space-y-2" style={{ fontFamily: 'Montserrat, sans-serif' }}>
-              <p>
-                Smart Import uses advanced AI to analyze and structure your content automatically. 
-                Here&apos;s what happens:
-              </p>
-              <ol className="list-decimal list-inside space-y-1 ml-4">
-                <li>Content is extracted and cleaned from your chosen source</li>
-                <li>AI analyzes the content to identify key elements like title, author, and structure</li>
-                <li>Content is formatted according to Forge Journal&apos;s standards</li>
-                <li>You review and edit the results before publishing</li>
-              </ol>
-              <p className="text-sm mt-3">
-                <strong>Note:</strong> All imported content will be formatted for Christian leadership and ministry contexts, 
-                ensuring it aligns with Forge Journal&apos;s mission and audience.
-              </p>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

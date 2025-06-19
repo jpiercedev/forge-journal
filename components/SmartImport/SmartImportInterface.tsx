@@ -61,13 +61,12 @@ export default function SmartImportInterface({ onComplete }: SmartImportInterfac
         message: 'Generating preview...',
       });
 
-      const token = localStorage.getItem('supabase_admin_token') || '';
       const response = await fetch('/api/smart-import/preview', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
         },
+        credentials: 'include',
         body: JSON.stringify({ parsedContent: content }),
       });
 
@@ -97,13 +96,12 @@ export default function SmartImportInterface({ onComplete }: SmartImportInterfac
         message: 'Creating post...',
       });
 
-      const token = localStorage.getItem('supabase_admin_token') || '';
       const response = await fetch('/api/smart-import/create-post', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
         },
+        credentials: 'include',
         body: JSON.stringify(finalData),
       });
 
@@ -231,10 +229,10 @@ export default function SmartImportInterface({ onComplete }: SmartImportInterfac
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2" style={{ fontFamily: 'Merriweather, serif' }}>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2 font-sans">
             Smart Import
           </h1>
-          <p className="text-lg text-gray-600" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+          <p className="text-lg text-gray-600 font-sans">
             Import blog posts from URLs, text, or files using AI-powered content analysis
           </p>
         </div>

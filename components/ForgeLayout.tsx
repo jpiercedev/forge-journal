@@ -2,7 +2,9 @@ import AlertBanner from 'components/AlertBanner'
 import AuthorSidebar from 'components/AuthorSidebar'
 import FooterAlert from 'components/FooterAlert'
 import ForgeHeader from 'components/ForgeHeader'
+import DynamicBanner from 'components/DynamicBanner'
 import RecentArticlesSidebar from 'components/RecentArticlesSidebar'
+import SidebarAd from 'components/SidebarAd'
 // Define types for Supabase data
 interface Post {
   id: string
@@ -44,10 +46,9 @@ export default function ForgeLayout({
     <div className="min-h-screen bg-gray-100">
       <AlertBanner preview={preview} loading={loading} />
       <ForgeHeader />
+      <DynamicBanner />
 
-
-
-      <main className="w-[90%] mx-auto py-12 max-w-[1280px]">
+      <main className="w-[90%] mx-auto py-6 max-w-[1280px]">
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Main Content Area - 3/4 width */}
           <div className={`${showSidebar ? 'lg:w-3/4' : 'w-full'}`}>
@@ -95,6 +96,10 @@ export default function ForgeLayout({
               {post?.author && (
                 <AuthorSidebar author={post.author} />
               )}
+
+              {/* Sidebar Ad */}
+              <SidebarAd />
+
               <RecentArticlesSidebar posts={recentPosts} />
             </div>
           )}

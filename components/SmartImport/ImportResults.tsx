@@ -25,17 +25,17 @@ export default function ImportResults({ result, onStartNew }: ImportResultsProps
 
             {/* Success Message */}
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-2" style={{ fontFamily: 'Merriweather, serif' }}>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-2 font-sans">
                 Import Successful!
               </h2>
-              <p className="text-gray-600" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+              <p className="text-gray-600 font-sans">
                 Your blog post has been created and is ready for review.
               </p>
             </div>
 
             {/* Post Details */}
             <div className="bg-gray-50 rounded-lg p-6 mb-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4" style={{ fontFamily: 'Merriweather, serif' }}>
+              <h3 className="text-lg font-medium text-gray-900 mb-4 font-sans">
                 Post Details
               </h3>
               <div className="space-y-3">
@@ -125,20 +125,20 @@ export default function ImportResults({ result, onStartNew }: ImportResultsProps
 
             {/* Error Message */}
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-2" style={{ fontFamily: 'Merriweather, serif' }}>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-2 font-sans">
                 Import Failed
               </h2>
-              <p className="text-gray-600" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+              <p className="text-gray-600 font-sans">
                 There was an error creating your blog post.
               </p>
             </div>
 
             {/* Error Details */}
             <div className="bg-red-50 border border-red-200 rounded-lg p-6 mb-6">
-              <h3 className="text-lg font-medium text-red-900 mb-2" style={{ fontFamily: 'Merriweather, serif' }}>
+              <h3 className="text-lg font-medium text-red-900 mb-2 font-sans">
                 Error Details
               </h3>
-              <p className="text-red-700" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+              <p className="text-red-700 font-sans">
                 {result.error || 'An unknown error occurred during the import process.'}
               </p>
             </div>

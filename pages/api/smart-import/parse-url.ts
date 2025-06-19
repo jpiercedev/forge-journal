@@ -5,44 +5,17 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { processWithAI } from '../../../lib/smart-import/ai-processor';
 import { extractFromUrl } from '../../../lib/smart-import/content-extractor';
 import { ParseUrlResponse, UrlImportRequest } from '../../../types/smart-import';
+import { withAdminAuth, AuthenticatedRequest, validateMethod, ErrorResponses } from '../../../lib/auth/middleware';
 
-export default async function handler(
-  req: NextApiRequest,
+async function handler(
+  req: AuthenticatedRequest,
   res: NextApiResponse<ParseUrlResponse>
 ) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({
-      success: false,
-      error: {
-        code: 'METHOD_NOT_ALLOWED',
-        message: 'Only POST method is allowed',
-      },
-    });
+  if (!validateMethod(req, ['POST'])) {
+    return res.status(405).json(ErrorResponses.METHOD_NOT_ALLOWED);
   }
 
   try {
-    // Validate authentication
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({
-        success: false,
-        error: {
-          code: 'AUTHENTICATION_FAILED',
-          message: 'Valid authorization token required',
-        },
-      });
-    }
-
-    const token = authHeader.substring(7);
-    if (token !== process.env.SUPABASE_SERVICE_ROLE_KEY) {
-      return res.status(401).json({
-        success: false,
-        error: {
-          code: 'AUTHENTICATION_FAILED',
-          message: 'Invalid authorization token',
-        },
-      });
-    }
 
     // Parse request body
     const { url, options = {} }: UrlImportRequest = req.body;
@@ -123,6 +96,8 @@ export default async function handler(
     });
   }
 }
+
+export default withAdminAuth(handler);
 
 // Simple rate limiting implementation
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();

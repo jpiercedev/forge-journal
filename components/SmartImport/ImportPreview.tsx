@@ -58,7 +58,7 @@ export default function ImportPreview({ preview, onCreatePost, onBack, onEdit }:
             {/* Header */}
             <div className="border-b border-gray-200 p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold text-gray-900" style={{ fontFamily: 'Merriweather, serif' }}>
+                <h2 className="text-xl font-semibold text-gray-900 font-sans">
                   Content Preview
                 </h2>
                 <div className="flex space-x-2">
@@ -85,11 +85,10 @@ export default function ImportPreview({ preview, onCreatePost, onBack, onEdit }:
                   type="text"
                   value={editedContent.title}
                   onChange={(e) => setEditedContent({ ...editedContent, title: e.target.value })}
-                  className="w-full text-2xl font-bold text-gray-900 border border-gray-300 rounded-md px-3 py-2"
-                  style={{ fontFamily: 'Merriweather, serif' }}
+                  className="w-full text-2xl font-bold text-gray-900 border border-gray-300 rounded-md px-3 py-2 font-sans"
                 />
               ) : (
-                <h1 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'Merriweather, serif' }}>
+                <h1 className="text-2xl font-bold text-gray-900 mb-4 font-sans">
                   {editedContent.title}
                 </h1>
               )}
@@ -119,7 +118,7 @@ export default function ImportPreview({ preview, onCreatePost, onBack, onEdit }:
 
             {/* Excerpt */}
             <div className="p-6 border-b border-gray-200">
-              <h3 className="text-lg font-medium text-gray-900 mb-2" style={{ fontFamily: 'Merriweather, serif' }}>
+              <h3 className="text-lg font-medium text-gray-900 mb-2 font-sans">
                 Excerpt
               </h3>
               {isEditing ? (
@@ -131,7 +130,7 @@ export default function ImportPreview({ preview, onCreatePost, onBack, onEdit }:
                   placeholder="Enter a brief excerpt..."
                 />
               ) : (
-                <p className="text-gray-700 italic" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                <p className="text-gray-700 italic font-sans">
                   {editedContent.excerpt || 'No excerpt provided'}
                 </p>
               )}
@@ -139,7 +138,7 @@ export default function ImportPreview({ preview, onCreatePost, onBack, onEdit }:
 
             {/* Content */}
             <div className="p-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4" style={{ fontFamily: 'Merriweather, serif' }}>
+              <h3 className="text-lg font-medium text-gray-900 mb-4 font-sans">
                 Content
               </h3>
               {isEditing ? (
@@ -153,7 +152,7 @@ export default function ImportPreview({ preview, onCreatePost, onBack, onEdit }:
               ) : (
                 <div className="prose max-w-none">
                   {editedContent.content.split('\n\n').map((paragraph, index) => (
-                    <p key={index} className="mb-4 text-gray-700 leading-relaxed" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                    <p key={index} className="mb-4 text-gray-700 leading-relaxed font-sans">
                       {paragraph}
                     </p>
                   ))}
@@ -287,7 +286,7 @@ export default function ImportPreview({ preview, onCreatePost, onBack, onEdit }:
 
           {/* Metadata */}
           <div className="bg-white rounded-lg shadow-md p-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4" style={{ fontFamily: 'Merriweather, serif' }}>
+            <h3 className="text-lg font-medium text-gray-900 mb-4 font-sans">
               Content Info
             </h3>
             <div className="space-y-2 text-sm text-gray-600">

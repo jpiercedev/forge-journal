@@ -86,6 +86,21 @@ export interface Image {
   created_at: string
 }
 
+export interface Ad {
+  id: string
+  title: string
+  type: 'banner' | 'sidebar'
+  headline: string
+  subheading?: string
+  background_image_url?: string
+  cta_text: string
+  cta_link: string
+  is_active: boolean
+  display_order: number
+  created_at: string
+  updated_at: string
+}
+
 // Database helper functions
 export const db = {
   // Posts
@@ -195,6 +210,33 @@ export const db = {
       .select('*')
       .eq('slug', slug)
       .single()
+  },
+
+  // Ads
+  async getAds(type?: 'banner' | 'sidebar', activeOnly = true) {
+    let query = supabase
+      .from('ads')
+      .select('*')
+      .order('display_order')
+      .order('created_at', { ascending: false })
+
+    if (activeOnly) {
+      query = query.eq('is_active', true)
+    }
+
+    if (type) {
+      query = query.eq('type', type)
+    }
+
+    return query
+  },
+
+  async getAdById(id: string) {
+    return supabase
+      .from('ads')
+      .select('*')
+      .eq('id', id)
+      .single()
   }
 }
 
@@ -225,6 +267,40 @@ export const adminDb = {
       .eq('id', id)
   },
 
+  async getPostBySlug(slug: string, includeAuthor = true, includeCategories = true) {
+    // Build the select clause dynamically to avoid trailing commas
+    const selectFields = ['*']
+    if (includeAuthor) {
+      selectFields.push('author:authors(*)')
+    }
+    if (includeCategories) {
+      selectFields.push('categories:post_categories(category:categories(*))')
+    }
+
+    return supabaseAdmin
+      .from('posts')
+      .select(selectFields.join(', '))
+      .eq('slug', slug)
+      .single()
+  },
+
+  async getPostById(id: string, includeAuthor = true, includeCategories = true) {
+    // Build the select clause dynamically to avoid trailing commas
+    const selectFields = ['*']
+    if (includeAuthor) {
+      selectFields.push('author:authors(*)')
+    }
+    if (includeCategories) {
+      selectFields.push('categories:post_categories(category:categories(*))')
+    }
+
+    return supabaseAdmin
+      .from('posts')
+      .select(selectFields.join(', '))
+      .eq('id', id)
+      .single()
+  },
+
   // Authors
   async createAuthor(authorData: Partial<Author>) {
     return supabaseAdmin
@@ -248,6 +324,13 @@ export const adminDb = {
       .from('authors')
       .delete()
       .eq('id', id)
+  },
+
+  async getAuthors() {
+    return supabaseAdmin
+      .from('authors')
+      .select('*')
+      .order('name')
   },
 
   // Categories
@@ -296,6 +379,57 @@ export const adminDb = {
     }
 
     return { data: [], error: null }
+  },
+
+  // Ads
+  async createAd(adData: Partial<Ad>) {
+    return supabaseAdmin
+      .from('ads')
+      .insert(adData)
+      .select()
+      .single()
+  },
+
+  async updateAd(id: string, adData: Partial<Ad>) {
+    return supabaseAdmin
+      .from('ads')
+      .update(adData)
+      .eq('id', id)
+      .select()
+      .single()
+  },
+
+  async deleteAd(id: string) {
+    return supabaseAdmin
+      .from('ads')
+      .delete()
+      .eq('id', id)
+  },
+
+  async getAds(type?: 'banner' | 'sidebar', activeOnly = false) {
+    let query = supabaseAdmin
+      .from('ads')
+      .select('*')
+      .order('display_order')
+      .order('created_at', { ascending: false })
+
+    if (activeOnly) {
+      query = query.eq('is_active', true)
+    }
+
+    if (type) {
+      query = query.eq('type', type)
+    }
+
+    return query
+  },
+
+  async getAdById(id: string) {
+    return supabaseAdmin
+      .from('ads')
+      .select('*')
+      .eq('id', id)
+      .single()
   }
 }
 

@@ -102,12 +102,12 @@ export default function ImportProgress({ progress, onCancel }: ImportProgressPro
           </div>
 
           {/* Title */}
-          <h2 className="text-2xl font-semibold text-gray-900 mb-2" style={{ fontFamily: 'Merriweather, serif' }}>
+          <h2 className="text-2xl font-semibold text-gray-900 mb-2 font-sans">
             {getStageTitle(progress.stage)}
           </h2>
 
           {/* Message */}
-          <p className="text-gray-600 mb-6" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+          <p className="text-gray-600 mb-6 font-sans">
             {progress.message}
           </p>
 

@@ -222,3 +222,73 @@ export interface PreviewFormData extends SanityPostData {
   createAuthor?: boolean;
   authorName?: string;
 }
+
+// AI Formatter Types
+export interface AIFormatterRequest {
+  postId: string;
+}
+
+export interface AIFormatterResponse {
+  success: boolean;
+  data?: {
+    originalContent: any;
+    formattedContent: any;
+    changes: ContentChange[];
+  };
+  error?: {
+    code: string;
+    message: string;
+    details?: string;
+  };
+}
+
+export interface ContentChange {
+  type: 'heading' | 'quote' | 'paragraph' | 'list' | 'emphasis';
+  action: 'detected' | 'formatted' | 'restructured';
+  originalText: string;
+  formattedStructure: any;
+  confidence: number; // 0-1 confidence score
+}
+
+export interface ContentAnalysis {
+  headings: DetectedHeading[];
+  quotes: DetectedQuote[];
+  lists: DetectedList[];
+  paragraphs: DetectedParagraph[];
+  emphasis: DetectedEmphasis[];
+}
+
+export interface DetectedHeading {
+  text: string;
+  level: number; // 1-6
+  confidence: number;
+  position: number;
+}
+
+export interface DetectedQuote {
+  text: string;
+  type: 'blockquote' | 'inline';
+  confidence: number;
+  position: number;
+}
+
+export interface DetectedList {
+  items: string[];
+  type: 'ordered' | 'unordered';
+  confidence: number;
+  position: number;
+}
+
+export interface DetectedParagraph {
+  text: string;
+  type: 'normal' | 'intro' | 'conclusion';
+  confidence: number;
+  position: number;
+}
+
+export interface DetectedEmphasis {
+  text: string;
+  type: 'bold' | 'italic' | 'important';
+  confidence: number;
+  position: number;
+}

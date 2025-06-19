@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap');
+@import url('https://use.typekit.net/43c2b92825d364b55a40fe57ff67fe61d306ab21.css');
 @import 'tailwindcss';
 @plugin "@tailwindcss/typography";
 
@@ -50,8 +49,12 @@
   --shadow-small: 0 5px 10px rgba(0, 0, 0, 0.12);
   --shadow-medium: 0 8px 30px rgba(0, 0, 0, 0.12);
 
-  --font-family-sans: 'Montserrat', ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --font-family-serif: 'Merriweather', ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-family-sans: 'proxima-nova', ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-family-serif: 'adobe-garamond-pro', ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+
+  /* Font family utilities for Tailwind v4 */
+  --font-sans: var(--font-family-sans);
+  --font-serif: var(--font-family-serif);
 }
 
 /*
@@ -75,6 +78,11 @@
     font-family: var(--font-family-sans);
     line-height: 1.6;
     color: #374151;
+  }
+
+  /* Ensure all elements inherit font family */
+  * {
+    font-family: inherit;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -137,5 +145,14 @@
   .prose strong {
     font-weight: 700;
     color: #111827;
+  }
+
+  /* Explicit font family utilities */
+  .font-sans {
+    font-family: var(--font-family-sans);
+  }
+
+  .font-serif {
+    font-family: var(--font-family-serif);
   }
 }

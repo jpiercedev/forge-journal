@@ -1,9 +1,9 @@
-// Admin Dashboard for Forge Journal
+// Admin Dashboard for Forge Journal SPA
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
-import Head from 'next/head'
+import AdminLayout from 'components/admin/AdminLayout'
+import { AdminProvider, useAdmin, withAdminAuth } from 'components/admin/AdminContext'
 
 interface Post {
   id: string
@@ -33,65 +33,26 @@ interface Category {
   created_at: string
 }
 
-interface DashboardStats {
-  totalPosts: number
-  publishedPosts: number
-  draftPosts: number
-  totalAuthors: number
-  totalCategories: number
-}
-
-interface AdminUser {
-  id: string
-  email: string
-  first_name: string
-  last_name: string
-  role?: {
-    name: string
-    description?: string
-  }
-}
-
-export default function Dashboard() {
-  const [user, setUser] = useState<AdminUser | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [stats, setStats] = useState<DashboardStats | null>(null)
+function Dashboard() {
+  const { state, refreshStats } = useAdmin()
   const [recentPosts, setRecentPosts] = useState<Post[]>([])
   const [authors, setAuthors] = useState<Author[]>([])
   const [categories, setCategories] = useState<Category[]>([])
-  const router = useRouter()
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    checkAuthentication()
+    loadDashboardData()
   }, [])
 
-  const checkAuthentication = async () => {
-    try {
-      const response = await fetch('/api/admin/auth/me', {
-        credentials: 'include',
-      })
-
-      if (response.ok) {
-        const data = await response.json()
-        if (data.success) {
-          setUser(data.data.user)
-          loadDashboardData()
-        } else {
-          router.push('/admin')
-        }
-      } else {
-        router.push('/admin')
-      }
-    } catch (error) {
-      console.error('Auth check failed:', error)
-      router.push('/admin')
-    }
-  }
+  useEffect(() => {
+    // Refresh stats when component mounts
+    refreshStats()
+  }, [])
 
   const loadDashboardData = async () => {
     setLoading(true)
     try {
-      // Load posts
+      // Load recent posts
       const postsResponse = await fetch('/api/content/posts?limit=5&includeAuthor=true', {
         credentials: 'include',
       })
@@ -120,23 +81,6 @@ export default function Dashboard() {
       if (categoriesData.success) {
         setCategories(categoriesData.data)
       }
-
-      // Calculate stats
-      const allPostsResponse = await fetch('/api/content/posts?limit=1000', {
-        credentials: 'include',
-      })
-      const allPostsData = await allPostsResponse.json()
-
-      if (allPostsData.success) {
-        const posts = allPostsData.data
-        setStats({
-          totalPosts: posts.length,
-          publishedPosts: posts.filter((p: Post) => p.status === 'published').length,
-          draftPosts: posts.filter((p: Post) => p.status === 'draft').length,
-          totalAuthors: authorsData.data?.length || 0,
-          totalCategories: categoriesData.data?.length || 0,
-        })
-      }
     } catch (error) {
       console.error('Failed to load dashboard data:', error)
     } finally {
@@ -144,214 +88,206 @@ export default function Dashboard() {
     }
   }
 
-  const handleLogout = async () => {
-    try {
-      await fetch('/api/admin/auth/logout', {
-        method: 'POST',
-        credentials: 'include',
-      })
-    } catch (error) {
-      console.error('Logout error:', error)
-    } finally {
-      // Always redirect to login page
-      router.push('/admin')
-    }
-  }
-
-  if (!user) {
-    // This will redirect to login page via useEffect
-    return null
-  }
-
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading dashboard...</p>
+      <AdminLayout title="Dashboard" description="Content Management Overview" currentSection="dashboard">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-forge-teal mx-auto"></div>
+            <p className="mt-4 text-gray-600 font-sans">Loading dashboard...</p>
+          </div>
         </div>
-      </div>
+      </AdminLayout>
     )
   }
 
   return (
-    <>
-      <Head>
-        <title>Admin Dashboard - Forge Journal</title>
-        <meta name="description" content="Admin dashboard for Forge Journal content management" />
-        <meta name="robots" content="noindex, nofollow" />
-      </Head>
-
-      <div className="min-h-screen bg-gray-50">
-        {/* Header */}
-        <header className="bg-white shadow">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center py-6">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900" style={{ fontFamily: 'Merriweather, serif' }}>
-                  Forge Journal Admin
-                </h1>
-                <p className="text-gray-600" style={{ fontFamily: 'Montserrat, sans-serif' }}>
-                  Content Management Dashboard
-                </p>
-              </div>
-              <div className="flex items-center space-x-4">
-                <div className="text-sm text-gray-600" style={{ fontFamily: 'Montserrat, sans-serif' }}>
-                  Welcome, {user.first_name} {user.last_name}
-                  {user.role && (
-                    <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">
-                      {user.role.name}
-                    </span>
-                  )}
-                </div>
-                <Link
-                  href="/admin/smart-import"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
-                  style={{ fontFamily: 'Montserrat, sans-serif' }}
-                >
-                  Smart Import
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="text-gray-600 hover:text-gray-900 px-4 py-2 rounded-md hover:bg-gray-100 transition-colors"
-                  style={{ fontFamily: 'Montserrat, sans-serif' }}
-                >
-                  Logout
-                </button>
-              </div>
-            </div>
-          </div>
-        </header>
-
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        {/* Stats */}
-        {stats && (
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h3 className="text-lg font-medium text-gray-900">Total Posts</h3>
-              <p className="text-3xl font-bold text-blue-600">{stats.totalPosts}</p>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h3 className="text-lg font-medium text-gray-900">Published</h3>
-              <p className="text-3xl font-bold text-green-600">{stats.publishedPosts}</p>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h3 className="text-lg font-medium text-gray-900">Drafts</h3>
-              <p className="text-3xl font-bold text-yellow-600">{stats.draftPosts}</p>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h3 className="text-lg font-medium text-gray-900">Authors</h3>
-              <p className="text-3xl font-bold text-purple-600">{stats.totalAuthors}</p>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h3 className="text-lg font-medium text-gray-900">Categories</h3>
-              <p className="text-3xl font-bold text-indigo-600">{stats.totalCategories}</p>
-            </div>
-          </div>
-        )}
-
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Link
-            href="/admin/posts"
-            className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow group"
-          >
-            <div className="flex items-center mb-3">
-              <div className="p-2 bg-blue-100 rounded-lg group-hover:bg-blue-200 transition-colors">
-                <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <AdminLayout title="Dashboard" description="Content Management Overview" currentSection="dashboard">
+      {/* Stats Cards */}
+      {state.stats && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
+          <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+            <div className="flex items-center">
+              <div className="p-3 bg-forge-teal bg-opacity-10 rounded-xl">
+                <svg className="w-6 h-6 text-forge-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
+              <div className="ml-4">
+                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide font-sans">Total Posts</h3>
+                <p className="text-2xl font-bold text-gray-900 font-sans mt-1">{state.stats.totalPosts}</p>
+              </div>
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2" style={{ fontFamily: 'Merriweather, serif' }}>
-              Manage Posts
-            </h3>
-            <p className="text-gray-600 text-sm" style={{ fontFamily: 'Montserrat, sans-serif' }}>
-              Create, edit, and manage blog posts
-            </p>
-          </Link>
+          </div>
 
-          <Link
-            href="/admin/authors"
-            className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow group"
-          >
-            <div className="flex items-center mb-3">
-              <div className="p-2 bg-green-100 rounded-lg group-hover:bg-green-200 transition-colors">
+          <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+            <div className="flex items-center">
+              <div className="p-3 bg-green-100 rounded-xl">
                 <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div className="ml-4">
+                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide font-sans">Published</h3>
+                <p className="text-2xl font-bold text-green-600 font-sans mt-1">{state.stats.publishedPosts}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+            <div className="flex items-center">
+              <div className="p-3 bg-forge-gold bg-opacity-20 rounded-xl">
+                <svg className="w-6 h-6 text-forge-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+              </div>
+              <div className="ml-4">
+                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide font-sans">Drafts</h3>
+                <p className="text-2xl font-bold text-forge-gold font-sans mt-1">{state.stats.draftPosts}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+            <div className="flex items-center">
+              <div className="p-3 bg-purple-100 rounded-xl">
+                <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
                 </svg>
               </div>
+              <div className="ml-4">
+                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide font-sans">Authors</h3>
+                <p className="text-2xl font-bold text-purple-600 font-sans mt-1">{state.stats.totalAuthors}</p>
+              </div>
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2" style={{ fontFamily: 'Merriweather, serif' }}>
-              Manage Authors
-            </h3>
-            <p className="text-gray-600 text-sm" style={{ fontFamily: 'Montserrat, sans-serif' }}>
-              Add and edit author profiles
-            </p>
-          </Link>
+          </div>
 
-          <Link
-            href="/admin/categories"
-            className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow group"
-          >
-            <div className="flex items-center mb-3">
-              <div className="p-2 bg-purple-100 rounded-lg group-hover:bg-purple-200 transition-colors">
-                <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+            <div className="flex items-center">
+              <div className="p-3 bg-indigo-100 rounded-xl">
+                <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                 </svg>
               </div>
+              <div className="ml-4">
+                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide font-sans">Categories</h3>
+                <p className="text-2xl font-bold text-indigo-600 font-sans mt-1">{state.stats.totalCategories}</p>
+              </div>
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2" style={{ fontFamily: 'Merriweather, serif' }}>
-              Categories
-            </h3>
-            <p className="text-gray-600 text-sm" style={{ fontFamily: 'Montserrat, sans-serif' }}>
-              Organize content with categories
-            </p>
-          </Link>
+          </div>
 
-          <Link
-            href="/admin/users"
-            className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow group"
-          >
-            <div className="flex items-center mb-3">
-              <div className="p-2 bg-orange-100 rounded-lg group-hover:bg-orange-200 transition-colors">
+          <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+            <div className="flex items-center">
+              <div className="p-3 bg-orange-100 rounded-xl">
                 <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
                 </svg>
               </div>
+              <div className="ml-4">
+                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide font-sans">Admin Users</h3>
+                <p className="text-2xl font-bold text-orange-600 font-sans mt-1">{state.stats.totalUsers}</p>
+              </div>
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2" style={{ fontFamily: 'Merriweather, serif' }}>
-              Admin Users
-            </h3>
-            <p className="text-gray-600 text-sm" style={{ fontFamily: 'Montserrat, sans-serif' }}>
-              Manage admin users and permissions
-            </p>
-          </Link>
-        </div>
-
-        {/* Recent Posts */}
-        <div className="bg-white shadow rounded-lg">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h3 className="text-lg font-medium text-gray-900">Recent Posts</h3>
           </div>
-          <div className="divide-y divide-gray-200">
-            {recentPosts.map((post) => (
-              <div key={post.id} className="px-6 py-4">
+        </div>
+      )}
+
+      {/* Quick Links */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 mb-8">
+        <div className="px-6 py-5 border-b border-gray-200">
+          <h3 className="text-lg font-bold text-gray-900 font-sans">Quick Actions</h3>
+        </div>
+        <div className="p-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Link
+              href="/admin/smart-import"
+              className="flex items-center p-4 rounded-lg border border-gray-200 hover:border-forge-teal hover:bg-forge-teal hover:bg-opacity-5 transition-all duration-200 group"
+            >
+              <div className="flex-1">
+                <h4 className="text-base font-semibold text-gray-900 group-hover:text-forge-teal font-sans transition-colors">
+                  Smart Import
+                </h4>
+                <p className="text-sm text-gray-600 font-sans mt-1">
+                  AI-powered content import
+                </p>
+              </div>
+              <svg className="w-5 h-5 text-gray-400 group-hover:text-forge-teal transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+
+            <Link
+              href="/admin/posts"
+              className="flex items-center p-4 rounded-lg border border-gray-200 hover:border-forge-teal hover:bg-forge-teal hover:bg-opacity-5 transition-all duration-200 group"
+            >
+              <div className="flex-1">
+                <h4 className="text-base font-semibold text-gray-900 group-hover:text-forge-teal font-sans transition-colors">
+                  Manage Posts
+                </h4>
+                <p className="text-sm text-gray-600 font-sans mt-1">
+                  Create and edit blog posts
+                </p>
+              </div>
+              <svg className="w-5 h-5 text-gray-400 group-hover:text-forge-teal transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+
+            <Link
+              href="/admin/authors"
+              className="flex items-center p-4 rounded-lg border border-gray-200 hover:border-forge-teal hover:bg-forge-teal hover:bg-opacity-5 transition-all duration-200 group"
+            >
+              <div className="flex-1">
+                <h4 className="text-base font-semibold text-gray-900 group-hover:text-forge-teal font-sans transition-colors">
+                  Manage Authors
+                </h4>
+                <p className="text-sm text-gray-600 font-sans mt-1">
+                  Add and edit author profiles
+                </p>
+              </div>
+              <svg className="w-5 h-5 text-gray-400 group-hover:text-forge-teal transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Recent Posts */}
+      <div className="bg-white shadow-sm rounded-xl border border-gray-200">
+        <div className="px-6 py-5 border-b border-gray-200">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-bold text-gray-900 font-sans">Recent Posts</h3>
+            <Link
+              href="/admin/posts"
+              className="text-sm text-forge-teal hover:text-forge-teal-hover font-semibold font-sans transition-colors"
+            >
+              View all →
+            </Link>
+          </div>
+        </div>
+        <div className="divide-y divide-gray-200">
+          {recentPosts.length > 0 ? (
+            recentPosts.map((post) => (
+              <div key={post.id} className="px-6 py-4 hover:bg-gray-50 transition-colors">
                 <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-900">{post.title}</h4>
-                    <p className="text-sm text-gray-600">
-                      {post.author?.name} • {post.word_count} words • {post.reading_time} min read
-                    </p>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-sm font-medium text-gray-900 font-sans truncate">{post.title}</h4>
+                    <div className="flex items-center mt-1 text-sm text-gray-600 font-sans">
+                      <span>{post.author?.name}</span>
+                      <span className="mx-2">•</span>
+                      <span>{post.word_count} words</span>
+                      <span className="mx-2">•</span>
+                      <span>{post.reading_time} min read</span>
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-3 ml-4">
                     <span
-                      className={`px-2 py-1 text-xs rounded-full ${
+                      className={`px-2 py-1 text-xs rounded-full font-medium font-sans ${
                         post.status === 'published'
                           ? 'bg-green-100 text-green-800'
                           : post.status === 'draft'
-                          ? 'bg-yellow-100 text-yellow-800'
+                          ? 'bg-forge-gold bg-opacity-20 text-forge-gold'
                           : 'bg-gray-100 text-gray-800'
                       }`}
                     >
@@ -359,18 +295,40 @@ export default function Dashboard() {
                     </span>
                     <Link
                       href={`/admin/posts/${post.id}`}
-                      className="text-blue-600 hover:text-blue-900 text-sm"
+                      className="text-forge-teal hover:text-forge-teal-hover text-sm font-medium font-sans"
                     >
                       Edit
                     </Link>
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
+            ))
+          ) : (
+            <div className="px-6 py-8 text-center">
+              <svg className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <p className="text-gray-600 font-sans">No posts yet. Create your first post!</p>
+              <Link
+                href="/admin/posts"
+                className="mt-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-forge-teal hover:bg-forge-teal-hover font-sans"
+              >
+                Create Post
+              </Link>
+            </div>
+          )}
         </div>
-      </main>
       </div>
-    </>
+    </AdminLayout>
+  )
+}
+
+const DashboardWithAuth = withAdminAuth(Dashboard)
+
+export default function DashboardPage() {
+  return (
+    <AdminProvider>
+      <DashboardWithAuth />
+    </AdminProvider>
   )
 }

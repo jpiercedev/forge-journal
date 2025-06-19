@@ -1,15 +1,12 @@
 /**
- * This component uses Portable Text to render a post body.
+ * This component renders post content from both legacy Sanity and new Supabase formats.
  *
- * You can learn more about Portable Text on:
- * https://www.sanity.io/docs/block-content
- * https://github.com/portabletext/react-portabletext
- * https://portabletext.org/
- *
+ * Legacy Sanity format uses Portable Text.
+ * New Supabase format uses a custom JSON structure from Smart Import.
  */
 import Image from 'next/image'
 
-// Simple portable text renderer for legacy content
+// Simple portable text renderer for legacy Sanity content
 function SimplePortableText({ value, components }: { value: any[], components?: any }) {
   if (!value || !Array.isArray(value)) {
     return null
@@ -25,7 +22,7 @@ function SimplePortableText({ value, components }: { value: any[], components?: 
                      block.style === 'h4' ? 'h4' : 'p'
 
           return (
-            <Tag key={index} className="mb-4">
+            <Tag key={index} className="mb-4 font-sans">
               {block.children?.map((child: any, childIndex: number) => {
                 if (child.marks?.includes('strong')) {
                   return <strong key={childIndex}>{child.text}</strong>
@@ -44,6 +41,105 @@ function SimplePortableText({ value, components }: { value: any[], components?: 
         }
 
         return null
+      })}
+    </div>
+  )
+}
+
+// Renderer for new Supabase content format from Smart Import
+function SupabaseContentRenderer({ content }: { content: any }) {
+  if (!content || !content.content || !Array.isArray(content.content)) {
+    return null
+  }
+
+  return (
+    <div>
+      {content.content.map((block: any, index: number) => {
+        switch (block.type) {
+          case 'heading':
+            const HeadingTag = `h${Math.min(block.attrs?.level || 2, 6)}` as keyof JSX.IntrinsicElements
+            return (
+              <HeadingTag key={index} className="mb-4 font-sans font-bold text-gray-900">
+                {block.content?.map((textNode: any, textIndex: number) => (
+                  <span key={textIndex}>{textNode.text}</span>
+                ))}
+              </HeadingTag>
+            )
+
+          case 'paragraph':
+            return (
+              <p key={index} className="mb-4 text-gray-700 leading-relaxed font-sans">
+                {block.content?.map((textNode: any, textIndex: number) => (
+                  <span key={textIndex}>{textNode.text}</span>
+                ))}
+              </p>
+            )
+
+          case 'bullet_list':
+            return (
+              <ul key={index} className="mb-4 list-disc list-inside font-sans">
+                {block.content?.map((listItem: any, itemIndex: number) => (
+                  <li key={itemIndex} className="mb-2 text-gray-700">
+                    {listItem.content?.[0]?.content?.map((textNode: any, textIndex: number) => (
+                      <span key={textIndex}>{textNode.text}</span>
+                    ))}
+                  </li>
+                ))}
+              </ul>
+            )
+
+          case 'ordered_list':
+            return (
+              <ol key={index} className="mb-4 list-decimal list-inside font-sans">
+                {block.content?.map((listItem: any, itemIndex: number) => (
+                  <li key={itemIndex} className="mb-2 text-gray-700">
+                    {listItem.content?.[0]?.content?.map((textNode: any, textIndex: number) => (
+                      <span key={textIndex}>{textNode.text}</span>
+                    ))}
+                  </li>
+                ))}
+              </ol>
+            )
+
+          case 'blockquote':
+            return (
+              <blockquote key={index} className="mb-4 pl-4 border-l-4 border-gray-300 italic text-gray-700 font-sans">
+                {block.content?.map((subBlock: any, subIndex: number) => {
+                  if (subBlock.type === 'paragraph') {
+                    return (
+                      <p key={subIndex} className="mb-2">
+                        {subBlock.content?.map((textNode: any, textIndex: number) => (
+                          <span key={textIndex}>{textNode.text}</span>
+                        ))}
+                      </p>
+                    )
+                  }
+                  return null
+                })}
+              </blockquote>
+            )
+
+          case 'image':
+            return (
+              <div key={index} className="my-6">
+                <Image
+                  src={block.attrs?.src || ''}
+                  alt={block.attrs?.alt || ''}
+                  width={800}
+                  height={600}
+                  className="w-full h-auto rounded-lg"
+                />
+                {block.attrs?.title && (
+                  <p className="text-sm text-gray-600 text-center mt-2 font-sans italic">
+                    {block.attrs.title}
+                  </p>
+                )}
+              </div>
+            )
+
+          default:
+            return null
+        }
       })}
     </div>
   )
@@ -71,9 +167,90 @@ const myPortableTextComponents = {
 }
 
 export default function PostBody({ content }) {
+  // Determine content format and render accordingly
+  if (!content) {
+    return null
+  }
+
+  // Debug: Log the content to see what format it's in
+  console.log('PostBody content:', content)
+  console.log('PostBody content type:', typeof content)
+
+  // If content is a string that looks like JSON, try to parse it
+  if (typeof content === 'string' && (content.startsWith('{') || content.startsWith('['))) {
+    try {
+      const parsedContent = JSON.parse(content)
+      console.log('Parsed content:', parsedContent)
+
+      // Check if it's the new Supabase format after parsing
+      if (parsedContent.type === 'doc' && parsedContent.content && Array.isArray(parsedContent.content)) {
+        return (
+          <div>
+            <SupabaseContentRenderer content={parsedContent} />
+          </div>
+        )
+      }
+
+      // Check if it's legacy Sanity format after parsing
+      if (Array.isArray(parsedContent)) {
+        return (
+          <div>
+            <SimplePortableText value={parsedContent} components={myPortableTextComponents} />
+          </div>
+        )
+      }
+    } catch (error) {
+      console.error('Failed to parse content as JSON:', error)
+      // Fall through to string handling
+    }
+  }
+
+  // Check if it's the new Supabase format (has type: 'doc' and content array)
+  if (content.type === 'doc' && content.content && Array.isArray(content.content)) {
+    return (
+      <div>
+        <SupabaseContentRenderer content={content} />
+      </div>
+    )
+  }
+
+  // Check if it's legacy Sanity format (array of blocks)
+  if (Array.isArray(content)) {
+    return (
+      <div>
+        <SimplePortableText value={content} components={myPortableTextComponents} />
+      </div>
+    )
+  }
+
+  // Check if it's HTML content from Lexical editor
+  if (typeof content === 'string' && content.includes('<')) {
+    return (
+      <div
+        className="font-sans text-gray-700"
+        style={{ fontFamily: 'Montserrat, sans-serif' }}
+        dangerouslySetInnerHTML={{ __html: content }}
+      />
+    )
+  }
+
+  // Check if it's plain text content
+  if (typeof content === 'string') {
+    return (
+      <div className="font-sans text-gray-700" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+        {content.split('\n').map((paragraph, index) => (
+          <p key={index} className="mb-4">
+            {paragraph}
+          </p>
+        ))}
+      </div>
+    )
+  }
+
+  // Fallback for unknown formats
   return (
-    <div>
-      <SimplePortableText value={content} components={myPortableTextComponents} />
+    <div className="font-sans text-gray-700">
+      <p>Content format not supported</p>
     </div>
   )
 }

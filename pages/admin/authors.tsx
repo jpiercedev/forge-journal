@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
-import Head from 'next/head'
-import Link from 'next/link'
+import AdminLayout from 'components/admin/AdminLayout'
+import { AdminProvider, useAdmin, withAdminAuth } from 'components/admin/AdminContext'
+import Alert from 'components/admin/Alert'
 
 interface Author {
   id: string
@@ -25,10 +26,12 @@ interface CreateAuthorForm {
   image_alt: string
 }
 
-export default function AdminAuthors() {
+function AdminAuthors() {
+  const { state } = useAdmin()
   const [authors, setAuthors] = useState<Author[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [editingAuthor, setEditingAuthor] = useState<Author | null>(null)
   const [createForm, setCreateForm] = useState<CreateAuthorForm>({
@@ -39,36 +42,10 @@ export default function AdminAuthors() {
     image_alt: '',
   })
   const [createLoading, setCreateLoading] = useState(false)
-  const router = useRouter()
 
   useEffect(() => {
-    checkAuthAndLoadData()
+    loadAuthors()
   }, [])
-
-  const checkAuthAndLoadData = async () => {
-    try {
-      // Check authentication
-      const authResponse = await fetch('/api/admin/auth/me', {
-        credentials: 'include',
-      })
-
-      if (!authResponse.ok) {
-        router.push('/admin')
-        return
-      }
-
-      const authData = await authResponse.json()
-      if (!authData.success) {
-        router.push('/admin')
-        return
-      }
-
-      await loadAuthors()
-    } catch (error) {
-      console.error('Auth check failed:', error)
-      router.push('/admin')
-    }
-  }
 
   const loadAuthors = async () => {
     setLoading(true)
@@ -102,6 +79,7 @@ export default function AdminAuthors() {
     e.preventDefault()
     setCreateLoading(true)
     setError('')
+    setSuccess('')
 
     try {
       const authorData = {
@@ -129,6 +107,7 @@ export default function AdminAuthors() {
           image_url: '',
           image_alt: '',
         })
+        setSuccess('Author created successfully!')
         await loadAuthors() // Reload authors list
       } else {
         setError(data.error?.message || 'Failed to create author')
@@ -146,6 +125,7 @@ export default function AdminAuthors() {
 
     setCreateLoading(true)
     setError('')
+    setSuccess('')
 
     try {
       const authorData = {
@@ -173,6 +153,7 @@ export default function AdminAuthors() {
           image_url: '',
           image_alt: '',
         })
+        setSuccess('Author updated successfully!')
         await loadAuthors() // Reload authors list
       } else {
         setError(data.error?.message || 'Failed to update author')
@@ -189,6 +170,9 @@ export default function AdminAuthors() {
       return
     }
 
+    setError('')
+    setSuccess('')
+
     try {
       const response = await fetch(`/api/content/authors?id=${authorId}`, {
         method: 'DELETE',
@@ -198,6 +182,7 @@ export default function AdminAuthors() {
       const data = await response.json()
 
       if (data.success) {
+        setSuccess('Author deleted successfully!')
         await loadAuthors() // Reload authors list
       } else {
         setError(data.error?.message || 'Failed to delete author')
@@ -241,145 +226,139 @@ export default function AdminAuthors() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading authors...</p>
+      <AdminLayout title="Authors" description="Loading authors..." currentSection="authors">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-forge-teal mx-auto"></div>
+            <p className="mt-4 text-gray-600 font-sans">Loading authors...</p>
+          </div>
         </div>
-      </div>
+      </AdminLayout>
     )
   }
 
   return (
-    <>
-      <Head>
-        <title>Authors - Forge Journal Admin</title>
-        <meta name="description" content="Manage authors for Forge Journal" />
-        <meta name="robots" content="noindex, nofollow" />
-      </Head>
+    <AdminLayout title="Authors" description="Manage author profiles and information" currentSection="authors">
+      {/* Action Bar */}
+      <div className="mb-6 flex justify-between items-center">
+        <div>
+          <h2 className="text-xl font-bold text-gray-900 font-serif">All Authors</h2>
+          <p className="text-sm text-gray-600 font-sans">Manage author profiles and information</p>
+        </div>
+        <button
+          onClick={() => setShowCreateForm(true)}
+          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-forge-teal hover:bg-forge-teal-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-forge-teal transition-colors font-sans"
+        >
+          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
+          Add Author
+        </button>
+      </div>
+      {/* Messages */}
+      {error && (
+        <Alert
+          type="error"
+          message={error}
+          onDismiss={() => setError('')}
+        />
+      )}
 
-      <div className="min-h-screen bg-gray-50">
-        {/* Header */}
-        <header className="bg-white shadow">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center py-6">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900" style={{ fontFamily: 'Merriweather, serif' }}>
-                  Authors
-                </h1>
-                <p className="text-gray-600" style={{ fontFamily: 'Montserrat, sans-serif' }}>
-                  Manage author profiles and information
-                </p>
-              </div>
-              <div className="flex items-center space-x-4">
-                <button
-                  onClick={() => setShowCreateForm(true)}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
-                  style={{ fontFamily: 'Montserrat, sans-serif' }}
-                >
-                  Add Author
-                </button>
-                <Link
-                  href="/admin/dashboard"
-                  className="text-gray-600 hover:text-gray-900 px-4 py-2 rounded-md hover:bg-gray-100 transition-colors"
-                  style={{ fontFamily: 'Montserrat, sans-serif' }}
-                >
-                  Back to Dashboard
-                </Link>
-              </div>
-            </div>
+      {success && (
+        <Alert
+          type="success"
+          message={success}
+          onDismiss={() => setSuccess('')}
+        />
+      )}
+
+      {/* Authors Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {authors.length === 0 ? (
+          <div className="col-span-full text-center py-12">
+            <svg className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+            </svg>
+            <p className="text-gray-500 font-sans">No authors found</p>
+            <button
+              onClick={() => setShowCreateForm(true)}
+              className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-forge-teal hover:bg-forge-teal-hover font-sans"
+            >
+              Create your first author
+            </button>
           </div>
-        </header>
-
-        {/* Main Content */}
-        <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-          {error && (
-            <div className="mb-6 rounded-md bg-red-50 p-4">
-              <div className="text-sm text-red-700">{error}</div>
-            </div>
-          )}
-
-          {/* Authors Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {authors.length === 0 ? (
-              <div className="col-span-full text-center py-12">
-                <p className="text-gray-500">No authors found</p>
-              </div>
-            ) : (
-              authors.map((author) => (
-                <div key={author.id} className="bg-white rounded-lg shadow hover:shadow-md transition-shadow">
-                  <div className="p-6">
-                    <div className="flex items-center space-x-4 mb-4">
-                      {author.image_url ? (
-                        <img
-                          src={author.image_url}
-                          alt={author.image_alt || author.name}
-                          className="w-16 h-16 rounded-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center">
-                          <span className="text-gray-500 text-xl font-medium">
-                            {author.name.charAt(0).toUpperCase()}
-                          </span>
-                        </div>
-                      )}
-                      <div className="flex-1">
-                        <h3 className="text-lg font-medium text-gray-900" style={{ fontFamily: 'Merriweather, serif' }}>
-                          {author.name}
-                        </h3>
-                        {author.title && (
-                          <p className="text-sm text-gray-600" style={{ fontFamily: 'Montserrat, sans-serif' }}>
-                            {author.title}
-                          </p>
-                        )}
-                      </div>
+        ) : (
+          authors.map((author) => (
+            <div key={author.id} className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-200">
+              <div className="p-6">
+                <div className="flex items-center space-x-4 mb-4">
+                  {author.image_url ? (
+                    <img
+                      src={author.image_url}
+                      alt={author.image_alt || author.name}
+                      className="w-16 h-16 rounded-full object-cover border-2 border-gray-200"
+                    />
+                  ) : (
+                    <div className="w-16 h-16 rounded-full bg-forge-teal bg-opacity-10 flex items-center justify-center">
+                      <span className="text-forge-teal text-xl font-bold font-serif">
+                        {author.name.charAt(0).toUpperCase()}
+                      </span>
                     </div>
-                    
-                    {author.bio && (
-                      <p className="text-sm text-gray-700 mb-4 line-clamp-3" style={{ fontFamily: 'Montserrat, sans-serif' }}>
-                        {author.bio}
+                  )}
+                  <div className="flex-1">
+                    <h3 className="text-lg font-bold text-gray-900 font-serif">
+                      {author.name}
+                    </h3>
+                    {author.title && (
+                      <p className="text-sm text-gray-600 font-sans">
+                        {author.title}
                       </p>
                     )}
-                    
-                    <div className="text-xs text-gray-500 mb-4" style={{ fontFamily: 'Montserrat, sans-serif' }}>
-                      Created: {formatDate(author.created_at)}
-                    </div>
-                    
-                    <div className="flex justify-end space-x-2">
-                      <button
-                        onClick={() => startEdit(author)}
-                        className="text-blue-600 hover:text-blue-900 text-sm px-3 py-1 rounded hover:bg-blue-50"
-                        style={{ fontFamily: 'Montserrat, sans-serif' }}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDeleteAuthor(author.id)}
-                        className="text-red-600 hover:text-red-900 text-sm px-3 py-1 rounded hover:bg-red-50"
-                        style={{ fontFamily: 'Montserrat, sans-serif' }}
-                      >
-                        Delete
-                      </button>
-                    </div>
                   </div>
                 </div>
-              ))
-            )}
-          </div>
-        </main>
 
-        {/* Create/Edit Author Modal */}
-        {showCreateForm && (
-          <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-            <div className="relative top-10 mx-auto p-5 border w-full max-w-2xl shadow-lg rounded-md bg-white">
-              <div className="mt-3">
-                <h3 className="text-lg font-medium text-gray-900 mb-4" style={{ fontFamily: 'Merriweather, serif' }}>
-                  {editingAuthor ? 'Edit Author' : 'Create New Author'}
-                </h3>
+                {author.bio && (
+                  <p className="text-sm text-gray-700 mb-4 line-clamp-3 font-sans leading-relaxed">
+                    {author.bio}
+                  </p>
+                )}
+
+                <div className="text-xs text-gray-500 mb-4 font-sans">
+                  Created: {formatDate(author.created_at)}
+                </div>
+
+                <div className="flex justify-end space-x-2">
+                  <button
+                    onClick={() => startEdit(author)}
+                    className="text-forge-teal hover:text-forge-teal-hover text-sm px-3 py-1 rounded-lg hover:bg-forge-teal hover:bg-opacity-10 font-medium font-sans transition-colors"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDeleteAuthor(author.id)}
+                    className="text-red-600 hover:text-red-900 text-sm px-3 py-1 rounded-lg hover:bg-red-50 font-medium font-sans transition-colors"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Create/Edit Author Modal */}
+      {showCreateForm && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div className="relative top-10 mx-auto p-5 border w-full max-w-2xl shadow-lg rounded-xl bg-white">
+            <div className="mt-3">
+              <h3 className="text-lg font-bold text-gray-900 mb-4 font-serif">
+                {editingAuthor ? 'Edit Author' : 'Create New Author'}
+              </h3>
                 <form onSubmit={editingAuthor ? handleUpdateAuthor : handleCreateAuthor} className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                      <label className="block text-sm font-medium text-gray-700 font-sans">
                         Name *
                       </label>
                       <input
@@ -387,58 +366,58 @@ export default function AdminAuthors() {
                         required
                         value={createForm.name}
                         onChange={(e) => setCreateForm(prev => ({ ...prev, name: e.target.value }))}
-                        className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-forge-teal focus:border-forge-teal font-sans"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                      <label className="block text-sm font-medium text-gray-700 font-sans">
                         Title
                       </label>
                       <input
                         type="text"
                         value={createForm.title}
                         onChange={(e) => setCreateForm(prev => ({ ...prev, title: e.target.value }))}
-                        className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-forge-teal focus:border-forge-teal font-sans"
                         placeholder="e.g., Senior Pastor, Author"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                    <label className="block text-sm font-medium text-gray-700 font-sans">
                       Bio
                     </label>
                     <textarea
                       rows={4}
                       value={createForm.bio}
                       onChange={(e) => setCreateForm(prev => ({ ...prev, bio: e.target.value }))}
-                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-forge-teal focus:border-forge-teal font-sans"
                       placeholder="Author biography..."
                     />
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                      <label className="block text-sm font-medium text-gray-700 font-sans">
                         Image URL
                       </label>
                       <input
                         type="url"
                         value={createForm.image_url}
                         onChange={(e) => setCreateForm(prev => ({ ...prev, image_url: e.target.value }))}
-                        className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-forge-teal focus:border-forge-teal font-sans"
                         placeholder="https://example.com/image.jpg"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                      <label className="block text-sm font-medium text-gray-700 font-sans">
                         Image Alt Text
                       </label>
                       <input
                         type="text"
                         value={createForm.image_alt}
                         onChange={(e) => setCreateForm(prev => ({ ...prev, image_alt: e.target.value }))}
-                        className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-forge-teal focus:border-forge-teal font-sans"
                         placeholder="Description of the image"
                       />
                     </div>
@@ -446,7 +425,7 @@ export default function AdminAuthors() {
 
                   {createForm.image_url && (
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                      <label className="block text-sm font-medium text-gray-700 mb-2 font-sans">
                         Image Preview
                       </label>
                       <img
@@ -464,16 +443,14 @@ export default function AdminAuthors() {
                     <button
                       type="button"
                       onClick={cancelEdit}
-                      className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                      style={{ fontFamily: 'Montserrat, sans-serif' }}
+                      className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 font-sans"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
                       disabled={createLoading}
-                      className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                      style={{ fontFamily: 'Montserrat, sans-serif' }}
+                      className="px-4 py-2 text-sm font-medium text-white bg-forge-teal border border-transparent rounded-lg hover:bg-forge-teal-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-forge-teal disabled:opacity-50 disabled:cursor-not-allowed font-sans"
                     >
                       {createLoading ? (editingAuthor ? 'Updating...' : 'Creating...') : (editingAuthor ? 'Update Author' : 'Create Author')}
                     </button>
@@ -483,7 +460,16 @@ export default function AdminAuthors() {
             </div>
           </div>
         )}
-      </div>
-    </>
+    </AdminLayout>
+  )
+}
+
+const AuthorsWithAuth = withAdminAuth(AdminAuthors)
+
+export default function AuthorsPageWrapper() {
+  return (
+    <AdminProvider>
+      <AuthorsWithAuth />
+    </AdminProvider>
   )
 }
