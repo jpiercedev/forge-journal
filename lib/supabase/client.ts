@@ -182,10 +182,25 @@ export const db = {
 
   // Authors
   async getAuthors() {
-    return supabase
+    const { data, error } = await supabase
       .from('authors')
       .select('*')
-      .order('name')
+      .order('created_at')
+
+    if (error || !data) {
+      return { data, error }
+    }
+
+    // Custom ordering: Steve Riggle first, Jason Nelson second, then others
+    const orderedAuthors = data.sort((a, b) => {
+      if (a.name === 'PASTOR STEVE RIGGLE') return -1
+      if (b.name === 'PASTOR STEVE RIGGLE') return 1
+      if (a.name === 'DR. JASON NELSON') return -1
+      if (b.name === 'DR. JASON NELSON') return 1
+      return 0
+    })
+
+    return { data: orderedAuthors, error: null }
   },
 
   async getAuthorBySlug(slug: string) {
@@ -327,10 +342,25 @@ export const adminDb = {
   },
 
   async getAuthors() {
-    return supabaseAdmin
+    const { data, error } = await supabaseAdmin
       .from('authors')
       .select('*')
-      .order('name')
+      .order('created_at')
+
+    if (error || !data) {
+      return { data, error }
+    }
+
+    // Custom ordering: Steve Riggle first, Jason Nelson second, then others
+    const orderedAuthors = data.sort((a, b) => {
+      if (a.name === 'PASTOR STEVE RIGGLE') return -1
+      if (b.name === 'PASTOR STEVE RIGGLE') return 1
+      if (a.name === 'DR. JASON NELSON') return -1
+      if (b.name === 'DR. JASON NELSON') return 1
+      return 0
+    })
+
+    return { data: orderedAuthors, error: null }
   },
 
   // Categories

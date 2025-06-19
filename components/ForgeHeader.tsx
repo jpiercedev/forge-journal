@@ -1,12 +1,21 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState } from 'react'
+import { useRouter } from 'next/router'
 
 import SubscribeModal from './SubscribeModal'
 
 export default function ForgeHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isSubscribeModalOpen, setIsSubscribeModalOpen] = useState(false)
+  const router = useRouter()
+
+  const isActive = (href: string) => {
+    if (href === '/') {
+      return router.pathname === '/'
+    }
+    return router.pathname.startsWith(href)
+  }
 
   return (
     <header className="bg-white border-b border-gray-200" style={{ borderBottomWidth: '7px', borderBottomColor: '#1e4356' }}>
@@ -30,35 +39,37 @@ export default function ForgeHeader() {
           <nav className="hidden md:flex items-center space-x-8">
             <Link
               href="/"
-              className="text-amber-600 hover:text-amber-700 px-3 py-2 text-sm font-bold uppercase tracking-wider transition-colors duration-200 font-sans"
-              style={{ color: '#be9d58' }}
+              className="px-3 py-2 text-sm font-bold uppercase tracking-wider transition-colors duration-200 font-sans"
+              style={{ color: isActive('/') ? '#be9d58' : '#374151' }}
+              onMouseEnter={(e) => e.currentTarget.style.color = '#be9d58'}
+              onMouseLeave={(e) => e.currentTarget.style.color = isActive('/') ? '#be9d58' : '#374151'}
             >
               HOME
             </Link>
             <Link
               href="/about"
-              className="text-gray-700 px-3 py-2 text-sm font-bold uppercase tracking-wider transition-colors duration-200 font-sans"
-              style={{ color: 'inherit' }}
+              className="px-3 py-2 text-sm font-bold uppercase tracking-wider transition-colors duration-200 font-sans"
+              style={{ color: isActive('/about') ? '#be9d58' : '#374151' }}
               onMouseEnter={(e) => e.currentTarget.style.color = '#be9d58'}
-              onMouseLeave={(e) => e.currentTarget.style.color = '#374151'}
+              onMouseLeave={(e) => e.currentTarget.style.color = isActive('/about') ? '#be9d58' : '#374151'}
             >
               ABOUT
             </Link>
             <Link
               href="/topics"
-              className="text-gray-700 px-3 py-2 text-sm font-bold uppercase tracking-wider transition-colors duration-200 font-sans"
-              style={{ color: 'inherit' }}
+              className="px-3 py-2 text-sm font-bold uppercase tracking-wider transition-colors duration-200 font-sans"
+              style={{ color: isActive('/topics') ? '#be9d58' : '#374151' }}
               onMouseEnter={(e) => e.currentTarget.style.color = '#be9d58'}
-              onMouseLeave={(e) => e.currentTarget.style.color = '#374151'}
+              onMouseLeave={(e) => e.currentTarget.style.color = isActive('/topics') ? '#be9d58' : '#374151'}
             >
               TOPICS
             </Link>
             <Link
               href="/contributors"
-              className="text-gray-700 px-3 py-2 text-sm font-bold uppercase tracking-wider transition-colors duration-200 font-sans"
-              style={{ color: 'inherit' }}
+              className="px-3 py-2 text-sm font-bold uppercase tracking-wider transition-colors duration-200 font-sans"
+              style={{ color: isActive('/contributors') ? '#be9d58' : '#374151' }}
               onMouseEnter={(e) => e.currentTarget.style.color = '#be9d58'}
-              onMouseLeave={(e) => e.currentTarget.style.color = '#374151'}
+              onMouseLeave={(e) => e.currentTarget.style.color = isActive('/contributors') ? '#be9d58' : '#374151'}
             >
               CONTRIBUTORS
             </Link>
@@ -115,34 +126,36 @@ export default function ForgeHeader() {
               <Link
                 href="/"
                 className="block px-3 py-2 text-sm font-bold uppercase tracking-wider font-sans"
-                style={{ color: '#be9d58' }}
+                style={{ color: isActive('/') ? '#be9d58' : '#374151' }}
+                onMouseEnter={(e) => e.currentTarget.style.color = '#be9d58'}
+                onMouseLeave={(e) => e.currentTarget.style.color = isActive('/') ? '#be9d58' : '#374151'}
               >
                 HOME
               </Link>
               <Link
                 href="/about"
-                className="text-gray-700 block px-3 py-2 text-sm font-bold uppercase tracking-wider font-sans"
-                style={{ color: 'inherit' }}
+                className="block px-3 py-2 text-sm font-bold uppercase tracking-wider font-sans"
+                style={{ color: isActive('/about') ? '#be9d58' : '#374151' }}
                 onMouseEnter={(e) => e.currentTarget.style.color = '#be9d58'}
-                onMouseLeave={(e) => e.currentTarget.style.color = '#374151'}
+                onMouseLeave={(e) => e.currentTarget.style.color = isActive('/about') ? '#be9d58' : '#374151'}
               >
                 ABOUT
               </Link>
               <Link
                 href="/topics"
-                className="text-gray-700 block px-3 py-2 text-sm font-bold uppercase tracking-wider font-sans"
-                style={{ color: 'inherit' }}
+                className="block px-3 py-2 text-sm font-bold uppercase tracking-wider font-sans"
+                style={{ color: isActive('/topics') ? '#be9d58' : '#374151' }}
                 onMouseEnter={(e) => e.currentTarget.style.color = '#be9d58'}
-                onMouseLeave={(e) => e.currentTarget.style.color = '#374151'}
+                onMouseLeave={(e) => e.currentTarget.style.color = isActive('/topics') ? '#be9d58' : '#374151'}
               >
                 TOPICS
               </Link>
               <Link
                 href="/contributors"
-                className="text-gray-700 block px-3 py-2 text-sm font-bold uppercase tracking-wider font-sans"
-                style={{ color: 'inherit' }}
+                className="block px-3 py-2 text-sm font-bold uppercase tracking-wider font-sans"
+                style={{ color: isActive('/contributors') ? '#be9d58' : '#374151' }}
                 onMouseEnter={(e) => e.currentTarget.style.color = '#be9d58'}
-                onMouseLeave={(e) => e.currentTarget.style.color = '#374151'}
+                onMouseLeave={(e) => e.currentTarget.style.color = isActive('/contributors') ? '#be9d58' : '#374151'}
               >
                 CONTRIBUTORS
               </Link>

@@ -24,26 +24,20 @@ export default function ContributorsPage({ authors, posts }: ContributorsPagePro
         preview={false}
         loading={false}
         recentPosts={posts.slice(0, 3)}
-        showSidebar={false}
+        showSidebar={true}
       >
-        <div className="bg-white">
-        {/* Header Section */}
-        <div className="bg-gradient-to-r from-forge-teal to-forge-teal-dark">
-          <div className="w-[90%] mx-auto max-w-[1280px] py-16">
-            <div className="text-center">
-              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 font-serif">
-                Our Contributors
-              </h1>
-              <p className="text-xl text-white/90 max-w-3xl mx-auto font-sans">
-                Meet the distinguished pastors, theologians, and leaders who share their wisdom
-                and insights to equip the church for effective ministry and leadership.
-              </p>
-            </div>
+        <div className="max-w-4xl">
+          <div className="mb-8">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-6 font-sans">
+              Contributors
+            </h1>
+            <div className="border-b-4 border-gray-900 w-16 mb-8"></div>
           </div>
-        </div>
 
-        {/* Contributors Grid */}
-        <div className="w-[90%] mx-auto max-w-[1280px] py-16">
+
+
+          {/* Contributors Grid */}
+          <div>
           {authors.length === 0 ? (
             <div className="text-center py-16">
               <h2 className="text-2xl font-bold text-gray-900 mb-4 font-serif">
@@ -54,25 +48,25 @@ export default function ContributorsPage({ authors, posts }: ContributorsPagePro
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {authors.map((author) => (
                 <div
                   key={author.id}
-                  className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-200"
+                  className="bg-white border border-gray-300 p-6 flex gap-4"
                 >
                   {/* Author Image */}
-                  <div className="h-64 bg-gradient-to-br from-forge-teal/10 to-forge-gold/10 flex items-center justify-center">
+                  <div className="flex-shrink-0">
                     {author.image_url ? (
                       <Image
                         src={author.image_url}
                         alt={author.image_alt || author.name}
-                        width={256}
-                        height={256}
-                        className="w-full h-full object-cover"
+                        width={80}
+                        height={80}
+                        className="w-20 h-20 rounded-full object-cover border-2 border-gray-300"
                       />
                     ) : (
-                      <div className="w-32 h-32 rounded-full bg-forge-teal bg-opacity-20 flex items-center justify-center">
-                        <span className="text-forge-teal text-4xl font-bold font-serif">
+                      <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center border-2 border-gray-300">
+                        <span className="text-gray-600 text-xl font-bold font-serif">
                           {author.name.charAt(0).toUpperCase()}
                         </span>
                       </div>
@@ -80,19 +74,30 @@ export default function ContributorsPage({ authors, posts }: ContributorsPagePro
                   </div>
 
                   {/* Author Info */}
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2 font-serif">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-lg font-bold text-gray-900 mb-1 font-serif uppercase tracking-wide">
                       {author.name}
                     </h3>
 
                     {author.title && (
-                      <p className="text-forge-gold font-medium mb-3 font-sans">
-                        {author.title}
-                      </p>
+                      <div className="mb-2">
+                        {author.title.split(' | ').map((titlePart, index) => (
+                          <p
+                            key={index}
+                            className={`text-sm font-medium leading-tight font-sans ${
+                              index === 0
+                                ? 'text-forge-teal font-semibold'
+                                : 'text-gray-600'
+                            }`}
+                          >
+                            {titlePart.trim()}
+                          </p>
+                        ))}
+                      </div>
                     )}
 
                     {author.bio && (
-                      <p className="text-gray-700 text-sm leading-relaxed font-sans line-clamp-4">
+                      <p className="text-xs text-gray-600 leading-relaxed font-sans">
                         {author.bio}
                       </p>
                     )}
@@ -101,36 +106,7 @@ export default function ContributorsPage({ authors, posts }: ContributorsPagePro
               ))}
             </div>
           )}
-        </div>
-
-        {/* Call to Action Section */}
-        <div className="bg-gray-50 border-t border-gray-200">
-          <div className="w-[90%] mx-auto max-w-[1280px] py-16">
-            <div className="text-center">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4 font-serif">
-                Join Our Community of Leaders
-              </h2>
-              <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto font-sans">
-                The Forge Journal is committed to equipping pastors and church leaders
-                with the tools, insights, and wisdom needed for effective ministry.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <a
-                  href="/"
-                  className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-forge-teal hover:bg-forge-teal-dark transition-colors duration-200 font-sans"
-                >
-                  Read Latest Articles
-                </a>
-                <a
-                  href="/about"
-                  className="inline-flex items-center px-6 py-3 border border-forge-teal text-base font-medium rounded-md text-forge-teal bg-white hover:bg-forge-teal hover:text-white transition-colors duration-200 font-sans"
-                >
-                  Learn More About Us
-                </a>
-              </div>
-            </div>
           </div>
-        </div>
         </div>
       </ForgeLayout>
     </>
