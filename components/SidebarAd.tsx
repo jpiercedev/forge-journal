@@ -20,10 +20,11 @@ export default function SidebarAd({ className = '' }: SidebarAdProps) {
     try {
       const response = await fetch('/api/content/ads?type=sidebar&active=true')
       const data = await response.json()
-      
+
       if (data.success && data.data && data.data.length > 0) {
-        // Get the first active sidebar ad (they're ordered by display_order)
-        setSidebarAd(data.data[0])
+        // Randomly select a sidebar ad from all active sidebar ads
+        const randomIndex = Math.floor(Math.random() * data.data.length)
+        setSidebarAd(data.data[randomIndex])
       }
     } catch (error) {
       console.error('Failed to load sidebar ad:', error)

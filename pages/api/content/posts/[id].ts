@@ -52,7 +52,7 @@ async function handleGetPost(req: any, res: NextApiResponse<ApiResponse>, id: st
   const { includeAuthor = 'true', includeCategories = 'true' } = req.query
 
   try {
-    const result = await db.getPostById(
+    const result = await adminDb.getPostById(
       id,
       includeAuthor === 'true',
       includeCategories === 'true'
@@ -96,7 +96,7 @@ async function handleUpdatePost(req: any, res: NextApiResponse<ApiResponse>, id:
       status,
       author_id,
       category_ids,
-      cover_image,
+      cover_image_url,
     } = req.body
 
     // Validate required fields
@@ -128,7 +128,7 @@ async function handleUpdatePost(req: any, res: NextApiResponse<ApiResponse>, id:
       author_id: author_id || null,
       word_count: wordCount,
       reading_time: readingTime,
-      cover_image_url: cover_image || null,
+      cover_image_url: cover_image_url || null,
       updated_at: new Date().toISOString(),
     }
 

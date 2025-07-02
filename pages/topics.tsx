@@ -1,5 +1,5 @@
 import ForgeLayout from 'components/ForgeLayout'
-import { db, type Post } from 'lib/supabase/client'
+import { db, type Post, type Category } from 'lib/supabase/client'
 
 interface Settings {
   title: string
@@ -10,52 +10,18 @@ import Head from 'next/head'
 import Link from 'next/link'
 import type { SharedPageProps } from 'pages/_app'
 
+interface TopicWithCount extends Category {
+  post_count: number
+}
+
 interface PageProps extends SharedPageProps {
   posts: Post[]
+  topics: TopicWithCount[]
   settings: Settings
 }
 
-const topics = [
-  {
-    name: 'Biblical Exposition',
-    description: 'In-depth studies of Scripture and theological insights',
-    count: 12,
-    slug: 'biblical-exposition'
-  },
-  {
-    name: 'Church Leadership',
-    description: 'Practical guidance for pastors and church leaders',
-    count: 8,
-    slug: 'church-leadership'
-  },
-  {
-    name: 'Pastoral Care',
-    description: 'Wisdom for shepherding and caring for congregations',
-    count: 6,
-    slug: 'pastoral-care'
-  },
-  {
-    name: 'Theology',
-    description: 'Doctrinal studies and theological reflection',
-    count: 10,
-    slug: 'theology'
-  },
-  {
-    name: 'Church History',
-    description: 'Lessons from the history of the Christian church',
-    count: 5,
-    slug: 'church-history'
-  },
-  {
-    name: 'Ministry Practice',
-    description: 'Practical approaches to ministry and church life',
-    count: 7,
-    slug: 'ministry-practice'
-  }
-]
-
 export default function TopicsPage(props: PageProps) {
-  const { posts, settings } = props
+  const { posts, topics, settings } = props
 
   return (
     <>
@@ -93,7 +59,7 @@ export default function TopicsPage(props: PageProps) {
                     href={`/topics/${topic.slug}`}
                     className="hover:text-blue-800 transition-colors duration-200"
                   >
-                    {topic.name}
+                    {topic.title}
                   </Link>
                 </h3>
                 <p className="text-gray-700 leading-relaxed mb-4">
@@ -101,7 +67,7 @@ export default function TopicsPage(props: PageProps) {
                 </p>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-600">
-                    {topic.count} articles
+                    {topic.post_count} {topic.post_count === 1 ? 'article' : 'articles'}
                   </span>
                   <Link
                     href={`/topics/${topic.slug}`}
@@ -147,6 +113,25 @@ export const getStaticProps: GetStaticProps<PageProps> = async () => {
       return {
         props: {
           posts: [],
+          topics: [],
+          settings: {
+            title: 'Forge Journal',
+            description: []
+          },
+        },
+        revalidate: 60,
+      }
+    }
+
+    // Get categories from Supabase
+    const { data: categories, error: categoriesError } = await db.getCategories()
+
+    if (categoriesError) {
+      console.error('Error fetching categories:', categoriesError)
+      return {
+        props: {
+          posts: [],
+          topics: [],
           settings: {
             title: 'Forge Journal',
             description: []
@@ -180,9 +165,36 @@ export const getStaticProps: GetStaticProps<PageProps> = async () => {
       }
     }
 
+    // Create topics with post counts
+    const topicsWithCounts: TopicWithCount[] = []
+    if (Array.isArray(categories)) {
+      for (const category of categories) {
+        try {
+          if (category &&
+              typeof category === 'object' &&
+              typeof (category as any).id === 'string' &&
+              typeof (category as any).title === 'string' &&
+              typeof (category as any).slug === 'string') {
+
+            // For now, we'll set count to 0 since posts don't have categories assigned yet
+            // This will be updated when posts are properly categorized
+            const postCount = 0
+
+            topicsWithCounts.push({
+              ...(category as any),
+              post_count: postCount
+            })
+          }
+        } catch (e) {
+          // Skip invalid categories
+        }
+      }
+    }
+
     return {
       props: {
         posts: validPosts,
+        topics: topicsWithCounts,
         settings,
       },
       revalidate: 60, // Revalidate every minute
@@ -192,6 +204,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async () => {
     return {
       props: {
         posts: [],
+        topics: [],
         settings: {
           title: 'Forge Journal',
           description: []

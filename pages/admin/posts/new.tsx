@@ -6,6 +6,8 @@ import Link from 'next/link'
 import AdminLayout from 'components/admin/AdminLayout'
 import { AdminProvider, useAdmin, withAdminAuth } from 'components/admin/AdminContext'
 import LexicalEditor from 'components/admin/LexicalEditor'
+import ImageUpload from 'components/ImageUpload'
+import Alert from 'components/admin/Alert'
 
 interface Author {
   id: string
@@ -28,6 +30,8 @@ function NewPostPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const [generatingExcerpt, setGeneratingExcerpt] = useState(false)
+  const [excerptSuccess, setExcerptSuccess] = useState('')
 
   // Form state
   const [formData, setFormData] = useState({
@@ -136,7 +140,11 @@ function NewPostPage() {
       const createData = {
         ...formData,
         content: parsedContent,
+        cover_image_url: formData.cover_image, // Map cover_image to cover_image_url for database
       }
+
+      // Remove the cover_image field since we're using cover_image_url
+      delete createData.cover_image
 
       console.log('Creating post with data:', createData)
 
@@ -163,6 +171,40 @@ function NewPostPage() {
       setError('Failed to create post')
     } finally {
       setSaving(false)
+    }
+  }
+
+  const handleGenerateExcerpt = async () => {
+    setGeneratingExcerpt(true)
+    setError('')
+    setExcerptSuccess('')
+
+    try {
+      const response = await fetch('/api/content/generate-excerpt', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          title: formData.title,
+          content: formData.content,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (data.success && data.data?.excerpt) {
+        setExcerptSuccess('Excerpt generated successfully!')
+        setFormData(prev => ({ ...prev, excerpt: data.data.excerpt }))
+      } else {
+        setError(data.error?.message || 'Failed to generate excerpt')
+      }
+    } catch (error) {
+      console.error('Failed to generate excerpt:', error)
+      setError('Failed to generate excerpt')
+    } finally {
+      setGeneratingExcerpt(false)
     }
   }
 
@@ -335,17 +377,15 @@ function NewPostPage() {
               </div>
 
               <div>
-                <label htmlFor="cover_image" className="block text-sm font-medium text-gray-700 font-sans">
-                  Cover Image URL
-                </label>
-                <input
-                  type="url"
-                  id="cover_image"
-                  name="cover_image"
+                <ImageUpload
+                  label="Cover Image"
                   value={formData.cover_image}
-                  onChange={handleInputChange}
-                  className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-forge-teal focus:border-forge-teal font-sans"
-                  placeholder="https://example.com/image.jpg"
+                  onChange={(url) => setFormData(prev => ({ ...prev, cover_image: url }))}
+                  onError={(error) => setError(error)}
+                  folder="posts"
+                  placeholder="Upload a cover image for your post"
+                  maxSize={5 * 1024 * 1024} // 5MB
+                  showPreview={true}
                 />
               </div>
 

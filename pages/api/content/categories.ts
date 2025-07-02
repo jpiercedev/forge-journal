@@ -2,44 +2,12 @@
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { adminDb, db, generateSlug, type Category } from '../../../lib/supabase/client'
+import { withAdminAuth, validateMethod, successResponse, errorResponse, ApiResponse, AuthenticatedRequest } from '../../../lib/auth/middleware'
 
-interface ApiResponse<T = any> {
-  success: boolean
-  data?: T
-  error?: {
-    code: string
-    message: string
-    details?: string
-  }
-  message?: string
-}
-
-export default async function handler(
-  req: NextApiRequest,
+async function handler(
+  req: AuthenticatedRequest,
   res: NextApiResponse<ApiResponse>
 ) {
-  // Validate authentication
-  const authHeader = req.headers.authorization
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({
-      success: false,
-      error: {
-        code: 'AUTHENTICATION_FAILED',
-        message: 'Valid authorization token required',
-      },
-    })
-  }
-
-  const token = authHeader.substring(7)
-  if (token !== process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    return res.status(401).json({
-      success: false,
-      error: {
-        code: 'AUTHENTICATION_FAILED',
-        message: 'Invalid authorization token',
-      },
-    })
-  }
 
   try {
     switch (req.method) {
@@ -265,3 +233,5 @@ async function handleDeleteCategory(req: NextApiRequest, res: NextApiResponse<Ap
     })
   }
 }
+
+export default withAdminAuth(handler)

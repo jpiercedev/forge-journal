@@ -19,10 +19,13 @@ export default function DynamicBanner({ className = '' }: DynamicBannerProps) {
     try {
       const response = await fetch('/api/content/ads?type=banner&active=true')
       const data = await response.json()
-      
+
       if (data.success && data.data && data.data.length > 0) {
-        // Get the first active banner ad (they're ordered by display_order)
-        setBannerAd(data.data[0])
+        // Randomly select a banner ad from all active banners
+        const randomIndex = Math.floor(Math.random() * data.data.length)
+        const selectedAd = data.data[randomIndex]
+        console.log('Selected banner ad:', selectedAd.title, 'Background:', selectedAd.background_image_url)
+        setBannerAd(selectedAd)
       }
     } catch (error) {
       console.error('Failed to load banner ad:', error)
@@ -47,12 +50,13 @@ export default function DynamicBanner({ className = '' }: DynamicBannerProps) {
       <div className="w-[90%] mx-auto max-w-[1280px] h-full">
         <div className="flex items-center justify-center h-full py-2">
           <div
-            className="w-full h-full bg-gradient-to-r from-blue-900 via-red-800 to-blue-900 relative overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300 group"
+            key={bannerAd.id}
+            className="w-full h-full relative overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300 group"
             style={{
-              backgroundImage: bannerAd.background_image_url ? `url(${bannerAd.background_image_url})` : undefined,
+              backgroundImage: bannerAd.background_image_url ? `url("${bannerAd.background_image_url}?t=${Date.now()}")` : 'linear-gradient(to right, #1e3a8a, #991b1b, #1e3a8a)',
               backgroundSize: 'cover',
               backgroundPosition: 'center',
-              backgroundBlendMode: bannerAd.background_image_url ? 'overlay' : 'normal'
+              backgroundRepeat: 'no-repeat'
             }}
             onClick={handleAdClick}
             role="button"
@@ -64,8 +68,8 @@ export default function DynamicBanner({ className = '' }: DynamicBannerProps) {
             }}
             aria-label={`${bannerAd.headline} - ${bannerAd.cta_text}`}
           >
-            {/* Overlay for better text readability */}
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-900/80 via-red-800/70 to-blue-900/80"></div>
+            {/* Overlay for better text readability - lighter so background image shows through */}
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-900/60 via-red-800/50 to-blue-900/60"></div>
 
             {/* Ad Content */}
             <div className="relative z-10 flex items-center justify-between h-full px-6">
@@ -79,6 +83,10 @@ export default function DynamicBanner({ className = '' }: DynamicBannerProps) {
                     {bannerAd.subheading}
                   </p>
                 )}
+                {/* Temporary debug indicator */}
+                <p className="text-yellow-300 text-xs font-sans mt-1">
+                  [{bannerAd.title}]
+                </p>
               </div>
 
               {/* Right Side - CTA */}

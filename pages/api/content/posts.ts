@@ -4,6 +4,19 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { adminDb, db, generateSlug, calculateReadingTime, type Post } from '../../../lib/supabase/client'
 import { withAdminAuth, validateMethod, successResponse, errorResponse, ApiResponse } from '../../../lib/auth/middleware'
 
+// Helper function to extract plain text from structured content
+function extractPlainTextFromContent(content: any): string {
+  if (typeof content === 'string') return content
+
+  if (content.content && Array.isArray(content.content)) {
+    return content.content.map((block: any) => extractPlainTextFromContent(block)).join(' ')
+  }
+
+  if (content.text) return content.text
+
+  return ''
+}
+
 export default withAdminAuth(async (req, res) => {
   try {
     switch (req.method) {
@@ -125,20 +138,20 @@ async function handleGetPosts(req: any, res: NextApiResponse<ApiResponse>) {
 
 // POST /api/content/posts - Create new post
 async function handleCreatePost(req: any, res: NextApiResponse<ApiResponse>) {
-  const postData = req.body
-
-  // Validate required fields
-  if (!postData.title || !postData.content) {
-    return res.status(400).json({
-      success: false,
-      error: {
-        code: 'INVALID_INPUT',
-        message: 'Title and content are required',
-      },
-    })
-  }
-
   try {
+    const postData = req.body
+
+    // Validate required fields
+    if (!postData.title || !postData.content) {
+      return res.status(400).json({
+        success: false,
+        error: {
+          code: 'INVALID_INPUT',
+          message: 'Title and content are required',
+        },
+      })
+    }
+
     // Generate slug if not provided
     if (!postData.slug) {
       postData.slug = generateSlug(postData.title)
@@ -159,10 +172,30 @@ async function handleCreatePost(req: any, res: NextApiResponse<ApiResponse>) {
       postData.published_at = new Date().toISOString()
     }
 
-    const result = await adminDb.createPost(postData)
+    // Extract category_ids before creating the post
+    const categoryIds = postData.category_ids || []
+
+    // Remove category_ids from postData since it's not a column in the posts table
+    const { category_ids, ...postDataWithoutCategories } = postData
+
+    // Handle empty string values for UUID fields (convert to null)
+    if (postDataWithoutCategories.author_id === '') {
+      postDataWithoutCategories.author_id = null
+    }
+
+    const result = await adminDb.createPost(postDataWithoutCategories)
 
     if (result.error) {
       throw result.error
+    }
+
+    // Set post categories if any were provided
+    if (categoryIds.length > 0 && result.data?.id) {
+      const categoryResult = await adminDb.setPostCategories(result.data.id, categoryIds)
+      if (categoryResult.error) {
+        console.error('Error setting post categories:', categoryResult.error)
+        // Don't fail the entire operation, just log the error
+      }
     }
 
     return res.status(201).json({
@@ -171,6 +204,7 @@ async function handleCreatePost(req: any, res: NextApiResponse<ApiResponse>) {
       message: 'Post created successfully',
     })
   } catch (error) {
+    console.error('Error in handleCreatePost:', error)
     return res.status(500).json({
       success: false,
       error: {
@@ -215,10 +249,30 @@ async function handleUpdatePost(req: any, res: NextApiResponse<ApiResponse>) {
       updateData.published_at = new Date().toISOString()
     }
 
-    const result = await adminDb.updatePost(id as string, updateData)
+    // Extract category_ids before updating the post
+    const categoryIds = updateData.category_ids
+
+    // Remove category_ids from updateData since it's not a column in the posts table
+    const { category_ids, ...updateDataWithoutCategories } = updateData
+
+    // Handle empty string values for UUID fields (convert to null)
+    if (updateDataWithoutCategories.author_id === '') {
+      updateDataWithoutCategories.author_id = null
+    }
+
+    const result = await adminDb.updatePost(id as string, updateDataWithoutCategories)
 
     if (result.error) {
       throw result.error
+    }
+
+    // Update post categories if category_ids were provided
+    if (categoryIds !== undefined) {
+      const categoryResult = await adminDb.setPostCategories(id as string, categoryIds || [])
+      if (categoryResult.error) {
+        console.error('Error updating post categories:', categoryResult.error)
+        // Don't fail the entire operation, just log the error
+      }
     }
 
     return res.status(200).json({
@@ -273,17 +327,4 @@ async function handleDeletePost(req: any, res: NextApiResponse<ApiResponse>) {
       },
     })
   }
-}
-
-// Helper function to extract plain text from structured content
-function extractPlainTextFromContent(content: any): string {
-  if (typeof content === 'string') return content
-  
-  if (content.content && Array.isArray(content.content)) {
-    return content.content.map((block: any) => extractPlainTextFromContent(block)).join(' ')
-  }
-  
-  if (content.text) return content.text
-  
-  return ''
 }

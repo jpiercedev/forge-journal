@@ -13,6 +13,7 @@ export interface ApiResponse<T = any> {
   error?: {
     code: string
     message: string
+    details?: string
   }
   message?: string
 }

@@ -1,25 +1,9 @@
 import ImagePlaceholder from 'components/ImagePlaceholder'
-// Removed Sanity image import - now using direct URLs
-// Define types for Supabase data
-interface Post {
-  id: string
-  title: string
-  slug: string
-  excerpt?: string
-  cover_image_url?: string
-  cover_image_alt?: string
-  published_at: string
-  content?: any
-  author?: {
-    name: string
-    title?: string
-    avatar_url?: string
-  }
-}
 import Image from 'next/image'
+import type { Post } from 'lib/supabase/client'
 
 interface ForgePostHeaderProps {
-  post: Pick<Post, 'title' | 'author' | 'cover_image_url'> & { published_at?: string }
+  post: Pick<Post, 'title' | 'author' | 'cover_image_url' | 'published_at'>
   volumeInfo?: string
 }
 
@@ -39,13 +23,11 @@ export default function ForgePostHeader({ post, volumeInfo }: ForgePostHeaderPro
       {/* Header with Background Image */}
       <div className="relative overflow-hidden mb-8">
         {/* Background Image */}
-        <div className="aspect-video w-full overflow-hidden bg-gray-200">
+        <div className="aspect-video w-full overflow-hidden bg-gray-200 relative">
           {cover_image_url ? (
-            <Image
-              src={cover_image_url || ''}
+            <img
+              src={cover_image_url}
               alt={title}
-              width={1200}
-              height={675}
               className="w-full h-full object-cover"
             />
           ) : (
@@ -57,10 +39,15 @@ export default function ForgePostHeader({ post, volumeInfo }: ForgePostHeaderPro
               className="w-full h-full"
             />
           )}
-        </div>
 
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+          {/* Accent Color Overlay - same as homepage */}
+          <div className="absolute inset-0" style={{ backgroundColor: '#1e4356', opacity: 0.5 }}></div>
+
+          {/* Semi-transparent Overlay - same gradient as homepage */}
+          <div className="absolute inset-0" style={{
+            background: 'linear-gradient(to right, rgba(30, 67, 86, 0.9), rgba(30, 67, 86, 0.8), rgba(30, 67, 86, 0.3))'
+          }}></div>
+        </div>
 
         {/* Content Overlay */}
         <div className="absolute inset-0 flex items-end">
@@ -82,7 +69,7 @@ export default function ForgePostHeader({ post, volumeInfo }: ForgePostHeaderPro
                   {author.name}
                 </h2>
                 <p className="text-sm sm:text-base font-medium font-serif" style={{ color: '#be9d58' }}>
-                  Author Title Goes Here
+                  {author.title || 'Author'}
                 </p>
               </div>
             )}

@@ -1,10 +1,8 @@
 import ForgeLayout from 'components/ForgeLayout'
 import ImagePlaceholder from 'components/ImagePlaceholder'
 import IndexPageHead from 'components/IndexPageHead'
-import SearchBar from 'components/SearchBar'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useEffect,useState } from 'react'
 import type { Post } from 'lib/supabase/client'
 
 interface Settings {
@@ -22,12 +20,6 @@ export interface ForgeIndexPageProps {
 export default function ForgeIndexPage(props: ForgeIndexPageProps) {
   const { preview, loading, posts, settings } = props
   const [featuredPost, ...otherPosts] = posts || []
-  const [filteredPosts, setFilteredPosts] = useState(otherPosts)
-
-  // Update filtered posts when otherPosts changes
-  useEffect(() => {
-    setFilteredPosts(otherPosts)
-  }, [otherPosts])
 
   return (
     <>
@@ -39,12 +31,6 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
         recentPosts={otherPosts.slice(0, 3)}
         showSidebar={true}
         showTagline={true}
-        searchBar={otherPosts.length > 0 ? (
-          <SearchBar
-            posts={otherPosts}
-            onSearchResults={setFilteredPosts}
-          />
-        ) : undefined}
       >
         <div className="max-w-none">
           {/* Featured Article - Full Width Background with Overlay */}
@@ -138,10 +124,10 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
 
 
           {/* Other Articles Grid */}
-          {filteredPosts.length > 0 && (
+          {otherPosts.length > 0 && (
             <section className="bg-white p-6 md:p-8 shadow-sm border-t-8" style={{ borderTopColor: '#1e4356' }}>
               <div className="space-y-12 md:space-y-16">
-                {filteredPosts.map((post, index) => (
+                {otherPosts.map((post, index) => (
                   <div key={post.slug}>
                     <article className="group">
                     <div className="flex flex-col md:flex-row gap-8">
@@ -222,7 +208,7 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
                     </article>
 
                     {/* Subtle Divider - only show between articles, not after the last one */}
-                    {index < filteredPosts.length - 1 && (
+                    {index < otherPosts.length - 1 && (
                       <div className="border-t border-gray-200 mt-12 md:mt-16"></div>
                     )}
                   </div>

@@ -155,4 +155,60 @@
   .font-serif {
     font-family: var(--font-family-serif);
   }
+
+  /* Virtuous Forms containment styles */
+  .virtuous-form-wrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden;
+    position: relative;
+    contain: layout style;
+  }
+
+  /* Ensure Virtuous form content stays within container */
+  .virtuous-form-wrapper iframe,
+  .virtuous-form-wrapper form,
+  .virtuous-form-wrapper div[data-vform],
+  .virtuous-form-wrapper [data-vform] {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+  }
+
+  /* Style the Virtuous form to match site design */
+  .virtuous-form-wrapper .vform-container {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Prevent forms from being positioned outside container */
+  div[data-vform="ABD6EF54-B777-4893-90C4-1E392F554538"] {
+    position: relative !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Hide any forms that appear outside our target container */
+  body > div[data-vform="ABD6EF54-B777-4893-90C4-1E392F554538"]:not(#virtuous-form-container *) {
+    display: none !important;
+  }
+
+  /* Hide forms that appear at the root level until moved */
+  div[data-vform="ABD6EF54-B777-4893-90C4-1E392F554538"]:not(#virtuous-form-container *) {
+    visibility: hidden !important;
+    position: absolute !important;
+    top: -9999px !important;
+    left: -9999px !important;
+  }
+
+  /* Show forms only when inside our container */
+  #virtuous-form-container div[data-vform="ABD6EF54-B777-4893-90C4-1E392F554538"] {
+    visibility: visible !important;
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+  }
 }

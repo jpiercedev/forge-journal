@@ -49,23 +49,24 @@ export default function ForgePostPage(props: ForgePostPageProps) {
             <h1 className="text-2xl font-semibold text-gray-900">Loading…</h1>
           </div>
         ) : (
-          <>
-            <article className="max-w-none bg-white p-8 shadow-sm">
-              <ForgePostHeader
-                post={post}
-                volumeInfo="FEBRUARY 2025 | VOLUME 54, ISSUE 2"
-              />
+          <article className="max-w-none bg-white p-8 shadow-sm">
+            <ForgePostHeader
+              post={post}
+              volumeInfo="FEBRUARY 2025 | VOLUME 54, ISSUE 2"
+            />
 
-              {/* Article Content */}
-              <div className="prose prose-lg max-w-none">
-                <PostBody content={post.content} />
-              </div>
-            </article>
+            {/* Article Content */}
+            <div className="prose prose-lg max-w-none">
+              <PostBody content={post.content} />
+            </div>
 
-            {/* Virtuous Forms Integration */}
-            <div className="max-w-none bg-white p-8 shadow-sm mt-6">
-              <div className="border-t border-gray-200 pt-8">
-                <div id="virtuous-form-container">
+            {/* Virtuous Forms Integration - Simple approach */}
+            <div className="border-t border-gray-200 pt-8 mt-8">
+              <div className="max-w-none">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 font-sans">
+                  Stay Connected
+                </h3>
+                <div className="bg-gray-50 p-6 rounded-lg">
                   <Script
                     src="https://cdn.virtuoussoftware.com/virtuous.embed.min.js"
                     data-vform="ABD6EF54-B777-4893-90C4-1E392F554538"
@@ -77,7 +78,7 @@ export default function ForgePostPage(props: ForgePostPageProps) {
                 </div>
               </div>
             </div>
-          </>
+          </article>
         )}
       </ForgeLayout>
     </>
