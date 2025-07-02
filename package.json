@@ -4,6 +4,7 @@
   "scripts": {
     "build": "next build",
     "dev": "next --turbopack",
+    "dev:https": "node scripts/https-dev.js",
     "format": "npx prettier --write . --ignore-path .gitignore --cache",
     "lint": "next lint . --ignore-path .gitignore",
     "lint:fix": "npm run format && npm run lint -- --fix",

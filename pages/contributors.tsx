@@ -10,6 +10,13 @@ interface ContributorsPageProps {
 }
 
 export default function ContributorsPage({ authors, posts }: ContributorsPageProps) {
+  // Define featured author names
+  const featuredNames = ['PASTOR STEVE RIGGLE', 'DR. JASON NELSON', 'DR. SAM THOMAS']
+
+  // Separate featured and regular authors
+  const featuredAuthors = authors.filter(author => featuredNames.includes(author.name))
+  const regularAuthors = authors.filter(author => !featuredNames.includes(author.name))
+
   return (
     <>
       <Head>
@@ -26,18 +33,14 @@ export default function ContributorsPage({ authors, posts }: ContributorsPagePro
         recentPosts={posts.slice(0, 3)}
         showSidebar={true}
       >
-        <div className="max-w-4xl">
-          <div className="mb-8">
+        <div className="max-w-6xl">
+          <div className="mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-6 font-sans">
               Contributors
             </h1>
             <div className="border-b-4 border-gray-900 w-16 mb-8"></div>
           </div>
 
-
-
-          {/* Contributors Grid */}
-          <div>
           {authors.length === 0 ? (
             <div className="text-center py-16">
               <h2 className="text-2xl font-bold text-gray-900 mb-4 font-serif">
@@ -48,65 +51,145 @@ export default function ContributorsPage({ authors, posts }: ContributorsPagePro
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {authors.map((author) => (
-                <div
-                  key={author.id}
-                  className="bg-white border border-gray-300 p-6 flex gap-4"
-                >
-                  {/* Author Image */}
-                  <div className="flex-shrink-0">
-                    {author.image_url ? (
-                      <Image
-                        src={author.image_url}
-                        alt={author.image_alt || author.name}
-                        width={80}
-                        height={80}
-                        className="w-20 h-20 rounded-full object-cover border-2 border-gray-300"
-                      />
-                    ) : (
-                      <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center border-2 border-gray-300">
-                        <span className="text-gray-600 text-xl font-bold font-serif">
-                          {author.name.charAt(0).toUpperCase()}
-                        </span>
+            <>
+              {/* Introduction Paragraph */}
+              <div className="mb-12">
+                <p className="text-lg text-gray-700 leading-relaxed font-sans">
+                  The Forge Journal contributors are pastors, leaders, and mentors who are committed to equipping a new generation to stand strong in truth, lead with conviction, and impact their communities for the Kingdom of God. Each voice brings biblical insight, real-world experience, and a passion to see pastors rise in this critical hour.
+                </p>
+              </div>
+
+              {/* Featured Contributors Section */}
+              {featuredAuthors.length > 0 && (
+                <div className="mb-16">
+                  <div className="space-y-8">
+                    {featuredAuthors.map((author) => (
+                      <div
+                        key={author.id}
+                        className="bg-gray-50 border border-gray-300 p-4 md:p-8 flex flex-col md:flex-row gap-4 md:gap-8 items-center md:items-start"
+                      >
+                        {/* Author Image */}
+                        <div className="flex-shrink-0">
+                          {author.image_url ? (
+                            <div className="w-32 h-32 md:w-40 md:h-40 border-2 border-gray-300 overflow-hidden">
+                              <Image
+                                src={author.image_url}
+                                alt={author.image_alt || author.name}
+                                width={160}
+                                height={160}
+                                className="w-full h-full object-cover object-top"
+                              />
+                            </div>
+                          ) : (
+                            <div className="w-32 h-32 md:w-40 md:h-40 bg-gray-200 flex items-center justify-center border-2 border-gray-300">
+                              <span className="text-gray-600 text-3xl md:text-4xl font-bold font-serif">
+                                {author.name.charAt(0).toUpperCase()}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Author Info */}
+                        <div className="flex-1 min-w-0 text-center md:text-left">
+                          <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-3 font-serif uppercase tracking-wide">
+                            {author.name}
+                          </h3>
+
+                          {author.title && (
+                            <div className="mb-4">
+                              {author.title.split(' | ').map((titlePart, index) => (
+                                <p
+                                  key={index}
+                                  className={`text-sm md:text-base font-medium leading-tight font-serif ${
+                                    index === 0
+                                      ? 'text-forge-teal font-semibold'
+                                      : 'text-gray-600'
+                                  }`}
+                                >
+                                  {titlePart.trim()}
+                                </p>
+                              ))}
+                            </div>
+                          )}
+
+                          {author.bio && (
+                            <p className="text-sm md:text-base text-gray-600 leading-relaxed font-sans whitespace-pre-line">
+                              {author.bio}
+                            </p>
+                          )}
+                        </div>
                       </div>
-                    )}
-                  </div>
-
-                  {/* Author Info */}
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-lg font-bold text-gray-900 mb-1 font-serif uppercase tracking-wide">
-                      {author.name}
-                    </h3>
-
-                    {author.title && (
-                      <div className="mb-2">
-                        {author.title.split(' | ').map((titlePart, index) => (
-                          <p
-                            key={index}
-                            className={`text-sm font-medium leading-tight font-sans ${
-                              index === 0
-                                ? 'text-forge-teal font-semibold'
-                                : 'text-gray-600'
-                            }`}
-                          >
-                            {titlePart.trim()}
-                          </p>
-                        ))}
-                      </div>
-                    )}
-
-                    {author.bio && (
-                      <p className="text-xs text-gray-600 leading-relaxed font-sans">
-                        {author.bio}
-                      </p>
-                    )}
+                    ))}
                   </div>
                 </div>
-              ))}
-            </div>
+              )}
+
+              {/* Regular Contributors Section */}
+              {regularAuthors.length > 0 && (
+                <div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {regularAuthors.map((author) => (
+                      <div
+                        key={author.id}
+                        className="bg-white border border-gray-300 p-6 flex gap-4"
+                      >
+                        {/* Author Image */}
+                        <div className="flex-shrink-0">
+                          {author.image_url ? (
+                            <div className="w-20 h-20 border-2 border-gray-300 overflow-hidden">
+                              <Image
+                                src={author.image_url}
+                                alt={author.image_alt || author.name}
+                                width={80}
+                                height={80}
+                                className="w-full h-full object-cover object-top"
+                              />
+                            </div>
+                          ) : (
+                            <div className="w-20 h-20 bg-gray-200 flex items-center justify-center border-2 border-gray-300">
+                              <span className="text-gray-600 text-xl font-bold font-serif">
+                                {author.name.charAt(0).toUpperCase()}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Author Info */}
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-lg font-bold text-gray-900 mb-1 font-serif uppercase tracking-wide">
+                            {author.name}
+                          </h3>
+
+                          {author.title && (
+                            <div className="mb-2">
+                              {author.title.split(' | ').map((titlePart, index) => (
+                                <p
+                                  key={index}
+                                  className={`text-sm font-medium leading-tight font-serif ${
+                                    index === 0
+                                      ? 'text-forge-teal font-semibold'
+                                      : 'text-gray-600'
+                                  }`}
+                                >
+                                  {titlePart.trim()}
+                                </p>
+                              ))}
+                            </div>
+                          )}
+
+                          {author.bio && (
+                            <p className="text-xs text-gray-600 leading-relaxed font-sans whitespace-pre-line">
+                              {author.bio}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
           )}
-          </div>
         </div>
       </ForgeLayout>
     </>
