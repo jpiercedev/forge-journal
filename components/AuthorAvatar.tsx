@@ -1,12 +1,12 @@
-// Removed Sanity imports - now using direct URLs
+import Image from 'next/image'
+import type { Author } from 'lib/supabase/client'
 
-interface Author {
+interface AuthorAvatarProps {
   name: string
   picture?: string
 }
-import Image from 'next/image'
 
-export default function AuthorAvatar(props: Author) {
+export default function AuthorAvatar(props: AuthorAvatarProps) {
   const { name, picture } = props
   return (
     <div className="flex items-center">

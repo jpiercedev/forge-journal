@@ -5,6 +5,7 @@ import { useRouter } from 'next/router'
 import AdminLayout from 'components/admin/AdminLayout'
 import { AdminProvider, useAdmin, withAdminAuth } from 'components/admin/AdminContext'
 import Alert from 'components/admin/Alert'
+import ImageUpload from 'components/ImageUpload'
 
 interface Author {
   id: string
@@ -396,48 +397,33 @@ function AdminAuthors() {
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 font-sans">
-                        Image URL
-                      </label>
-                      <input
-                        type="url"
-                        value={createForm.image_url}
-                        onChange={(e) => setCreateForm(prev => ({ ...prev, image_url: e.target.value }))}
-                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-forge-teal focus:border-forge-teal font-sans"
-                        placeholder="https://example.com/image.jpg"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 font-sans">
-                        Image Alt Text
-                      </label>
-                      <input
-                        type="text"
-                        value={createForm.image_alt}
-                        onChange={(e) => setCreateForm(prev => ({ ...prev, image_alt: e.target.value }))}
-                        className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-forge-teal focus:border-forge-teal font-sans"
-                        placeholder="Description of the image"
-                      />
-                    </div>
+                  <div>
+                    <ImageUpload
+                      label="Author Photo"
+                      value={createForm.image_url}
+                      onChange={(url) => setCreateForm(prev => ({ ...prev, image_url: url }))}
+                      onError={(error) => setError(error)}
+                      folder="authors"
+                      placeholder="Upload a photo for this author"
+                      maxSize={5 * 1024 * 1024} // 5MB
+                      showPreview={true}
+                    />
                   </div>
 
-                  {createForm.image_url && (
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2 font-sans">
-                        Image Preview
-                      </label>
-                      <img
-                        src={createForm.image_url}
-                        alt={createForm.image_alt || 'Preview'}
-                        className="w-24 h-24 rounded-full object-cover border border-gray-300"
-                        onError={(e) => {
-                          e.currentTarget.style.display = 'none'
-                        }}
-                      />
-                    </div>
-                  )}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 font-sans">
+                      Image Alt Text
+                    </label>
+                    <input
+                      type="text"
+                      value={createForm.image_alt}
+                      onChange={(e) => setCreateForm(prev => ({ ...prev, image_alt: e.target.value }))}
+                      className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-forge-teal focus:border-forge-teal font-sans"
+                      placeholder="Description of the image (for accessibility)"
+                    />
+                  </div>
+
+
 
                   <div className="flex justify-end space-x-3 pt-4">
                     <button

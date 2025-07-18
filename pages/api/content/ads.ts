@@ -1,7 +1,7 @@
 // Content Management API - Ads CRUD
 
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { adminDb, generateSlug, type Ad } from '../../../lib/supabase/client'
+import { adminDb, db, generateSlug, type Ad } from '../../../lib/supabase/client'
 import { withAdminAuth, AuthenticatedRequest, validateMethod, ErrorResponses } from '../../../lib/auth/middleware'
 
 interface ApiResponse<T = any> {
@@ -16,22 +16,31 @@ interface ApiResponse<T = any> {
 }
 
 async function handler(
-  req: AuthenticatedRequest,
+  req: NextApiRequest,
   res: NextApiResponse<ApiResponse>
 ) {
   console.log(`Ads API called: ${req.method} /api/content/ads`)
-  console.log('User authenticated:', !!req.user)
 
   try {
     switch (req.method) {
       case 'GET':
+        // GET requests are public - no authentication required
         return await handleGetAds(req, res)
       case 'POST':
-        return await handleCreateAd(req, res)
       case 'PUT':
-        return await handleUpdateAd(req, res)
       case 'DELETE':
-        return await handleDeleteAd(req, res)
+        // These methods require admin authentication
+        return withAdminAuth(async (authReq: AuthenticatedRequest, authRes: NextApiResponse<ApiResponse>) => {
+          console.log('User authenticated:', !!authReq.user)
+          switch (req.method) {
+            case 'POST':
+              return await handleCreateAd(authReq, authRes)
+            case 'PUT':
+              return await handleUpdateAd(authReq, authRes)
+            case 'DELETE':
+              return await handleDeleteAd(authReq, authRes)
+          }
+        })(req, res)
       default:
         console.log('Method not allowed:', req.method)
         return res.status(405).json({
@@ -56,7 +65,7 @@ async function handler(
 }
 
 // GET /api/content/ads - List all ads or get single ad by ID
-async function handleGetAds(req: AuthenticatedRequest, res: NextApiResponse<ApiResponse>) {
+async function handleGetAds(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   const { id, type, active } = req.query
 
   console.log('GET /api/content/ads called with params:', { id, type, active })
@@ -65,7 +74,7 @@ async function handleGetAds(req: AuthenticatedRequest, res: NextApiResponse<ApiR
     if (id) {
       // Get single ad by ID
       console.log('Fetching single ad with ID:', id)
-      const { data: ad, error } = await adminDb.getAdById(id as string)
+      const { data: ad, error } = await db.getAdById(id as string)
 
       if (error) {
         console.error('Error fetching single ad:', error)
@@ -90,7 +99,7 @@ async function handleGetAds(req: AuthenticatedRequest, res: NextApiResponse<ApiR
       const adType = type as 'banner' | 'sidebar' | undefined
 
       console.log('Fetching all ads with filters:', { adType, activeOnly })
-      const { data: ads, error } = await adminDb.getAds(adType, activeOnly)
+      const { data: ads, error } = await db.getAds(adType, activeOnly)
 
       if (error) {
         console.error('Database error fetching ads:', error)
@@ -308,4 +317,4 @@ async function handleDeleteAd(req: AuthenticatedRequest, res: NextApiResponse<Ap
   }
 }
 
-export default withAdminAuth(handler)
+export default handler

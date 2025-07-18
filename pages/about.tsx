@@ -32,6 +32,11 @@ export default function AboutPage(props: PageProps) {
       >
         <div className="max-w-4xl">
           <div className="mb-8">
+            <div className="py-4 px-6 mb-8 -mx-4 border-t-4 border-b-4 shadow-lg" style={{ backgroundColor: '#B91C1C', borderColor: '#991B1B' }}>
+              <h2 className="text-xl md:text-2xl font-bold text-center font-sans uppercase tracking-wide text-white">
+                Shaping Minds who Shape the Nation
+              </h2>
+            </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-6 font-sans">
               About The Forge Journal
             </h1>
@@ -40,16 +45,9 @@ export default function AboutPage(props: PageProps) {
 
           <div className="prose prose-lg max-w-none">
             <p className="text-xl text-gray-700 leading-relaxed mb-6">
-              The Forge Journal is dedicated to equipping pastors and church leaders with thoughtful,
-              biblical content that strengthens their ministry and deepens their understanding of
-              theological principles.
-            </p>
-
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4 font-sans">Our Mission</h2>
-            <p className="text-gray-700 leading-relaxed mb-6">
-              We believe that strong churches are built by well-equipped leaders. Through in-depth
-              articles, practical insights, and theological reflection, The Forge Journal serves as
-              a resource for pastors seeking to grow in their calling and better serve their congregations.
+              The Forge Journal is an online publication of FORGE, dedicated to equipping pastors and
+              church leaders by offering intellectually engaging, biblically centered resources designed
+              to empower the Church to impact culture with the values of the Kingdom.
             </p>
 
             <h2 className="text-2xl font-semibold text-gray-900 mb-4 font-sans">What We Offer</h2>

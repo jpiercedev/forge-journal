@@ -30,7 +30,7 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
         loading={loading}
         recentPosts={otherPosts.slice(0, 3)}
         showSidebar={true}
-        showTagline={true}
+        showTagline={false}
       >
         <div className="max-w-none">
           {/* Featured Article - Full Width Background with Overlay */}

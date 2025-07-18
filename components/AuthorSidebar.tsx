@@ -1,28 +1,24 @@
 import ImagePlaceholder from 'components/ImagePlaceholder'
-// Removed Sanity image import - now using direct URLs
-// Define types for Supabase data
-interface Post {
-  id: string
-  title: string
-  slug: string
-  excerpt?: string
-  cover_image_url?: string
-  cover_image_alt?: string
-  published_at: string
-  author?: {
-    name: string
-    title?: string
-    avatar_url?: string
-  }
-}
 import Image from 'next/image'
+import { useState } from 'react'
+import type { Author } from 'lib/supabase/client'
 
 interface AuthorSidebarProps {
-  author: Post['author']
+  author: Author
 }
 
 export default function AuthorSidebar({ author }: AuthorSidebarProps) {
+  const [isExpanded, setIsExpanded] = useState(false)
+
   if (!author) return null
+
+  // Function to truncate bio text
+  const truncateBio = (text: string, maxLength: number = 150) => {
+    if (text.length <= maxLength) return text
+    return text.substring(0, maxLength).trim() + '...'
+  }
+
+  const shouldShowReadMore = author.bio && author.bio.length > 150
 
   return (
     <div className="bg-white p-6 shadow-sm mb-6">
@@ -30,10 +26,10 @@ export default function AuthorSidebar({ author }: AuthorSidebarProps) {
       
       {/* Author Image */}
       <div className="w-full h-48 overflow-hidden bg-gray-200 mb-4">
-        {author.avatar_url ? (
+        {author.image_url ? (
           <Image
-            src={author.avatar_url || '/placeholder-author.jpg'}
-            alt={author.name}
+            src={author.image_url}
+            alt={author.image_alt || author.name}
             width={280}
             height={192}
             className="w-full h-full object-cover"
@@ -54,11 +50,26 @@ export default function AuthorSidebar({ author }: AuthorSidebarProps) {
       
       {/* Author Bio */}
       <div className="text-sm text-gray-700 leading-relaxed font-sans">
-        <p>
-          {author.name} holds a PhD in Church History,
-          focusing on historical theology and mentoring
-          future leaders.
-        </p>
+        {author.bio ? (
+          <div>
+            <p className="whitespace-pre-line">
+              {isExpanded ? author.bio : truncateBio(author.bio)}
+            </p>
+            {shouldShowReadMore && (
+              <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="mt-2 text-xs font-medium text-blue-600 hover:text-blue-800 transition-colors duration-200 focus:outline-none focus:underline"
+              >
+                {isExpanded ? 'Read Less' : 'Read More'}
+              </button>
+            )}
+          </div>
+        ) : (
+          <p>
+            {author.name} is a contributor to The Forge Journal,
+            helping to shape leaders and pastors that shape the nation.
+          </p>
+        )}
       </div>
     </div>
   )
