@@ -6,7 +6,8 @@ export interface Ad {
   type: 'banner' | 'sidebar'
   headline: string
   subheading?: string
-  background_image_url?: string
+  image_url?: string
+  image_alt?: string
   cta_text: string
   cta_link: string
   is_active: boolean
@@ -20,7 +21,8 @@ export interface CreateAdData {
   type: 'banner' | 'sidebar'
   headline: string
   subheading?: string
-  background_image_url?: string
+  image_url?: string
+  image_alt?: string
   cta_text: string
   cta_link: string
   is_active?: boolean

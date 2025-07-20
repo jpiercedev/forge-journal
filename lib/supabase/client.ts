@@ -110,7 +110,8 @@ export interface Ad {
   type: 'banner' | 'sidebar'
   headline: string
   subheading?: string
-  background_image_url?: string
+  image_url?: string
+  image_alt?: string
   cta_text: string
   cta_link: string
   is_active: boolean
@@ -169,6 +170,10 @@ export const db = {
   },
 
   async getPostBySlug(slug: string, includeAuthor = true, includeCategories = true) {
+    if (!supabase) {
+      return { data: null, error: new Error('Supabase client not available') }
+    }
+
     // Build the select clause dynamically to avoid trailing commas
     const selectFields = ['*']
     if (includeAuthor) {
@@ -186,6 +191,10 @@ export const db = {
   },
 
   async getPostById(id: string, includeAuthor = true, includeCategories = true) {
+    if (!supabase) {
+      return { data: null, error: new Error('Supabase client not available') }
+    }
+
     // Build the select clause dynamically to avoid trailing commas
     const selectFields = ['*']
     if (includeAuthor) {
@@ -204,6 +213,10 @@ export const db = {
 
   // Authors
   async getAuthors() {
+    if (!supabase) {
+      return { data: null, error: new Error('Supabase client not available') }
+    }
+
     const { data, error } = await supabase
       .from('authors')
       .select('*')
@@ -226,6 +239,10 @@ export const db = {
   },
 
   async getAuthorBySlug(slug: string) {
+    if (!supabase) {
+      return { data: null, error: new Error('Supabase client not available') }
+    }
+
     return supabase
       .from('authors')
       .select('*')
@@ -235,6 +252,10 @@ export const db = {
 
   // Categories
   async getCategories() {
+    if (!supabase) {
+      return { data: null, error: new Error('Supabase client not available') }
+    }
+
     return supabase
       .from('categories')
       .select('*')
@@ -242,6 +263,10 @@ export const db = {
   },
 
   async getCategoryBySlug(slug: string) {
+    if (!supabase) {
+      return { data: null, error: new Error('Supabase client not available') }
+    }
+
     return supabase
       .from('categories')
       .select('*')
@@ -251,6 +276,10 @@ export const db = {
 
   // Ads
   async getAds(type?: 'banner' | 'sidebar', activeOnly = true) {
+    if (!supabase) {
+      return { data: null, error: new Error('Supabase client not available') }
+    }
+
     let query = supabase
       .from('ads')
       .select('*')
@@ -269,6 +298,10 @@ export const db = {
   },
 
   async getAdById(id: string) {
+    if (!supabase) {
+      return { data: null, error: new Error('Supabase client not available') }
+    }
+
     return supabase
       .from('ads')
       .select('*')
@@ -281,6 +314,10 @@ export const db = {
 export const adminDb = {
   // Posts
   async createPost(postData: Partial<Post>) {
+    if (!supabaseAdmin) {
+      return { data: null, error: new Error('Supabase admin client not available') }
+    }
+
     return supabaseAdmin
       .from('posts')
       .insert(postData)
@@ -289,6 +326,10 @@ export const adminDb = {
   },
 
   async updatePost(id: string, postData: Partial<Post>) {
+    if (!supabaseAdmin) {
+      return { data: null, error: new Error('Supabase admin client not available') }
+    }
+
     return supabaseAdmin
       .from('posts')
       .update(postData)
@@ -298,6 +339,10 @@ export const adminDb = {
   },
 
   async deletePost(id: string) {
+    if (!supabaseAdmin) {
+      return { data: null, error: new Error('Supabase admin client not available') }
+    }
+
     return supabaseAdmin
       .from('posts')
       .delete()

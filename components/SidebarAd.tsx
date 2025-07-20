@@ -59,11 +59,11 @@ export default function SidebarAd({ className = '' }: SidebarAdProps) {
         aria-label={`${sidebarAd.headline} - ${sidebarAd.cta_text}`}
       >
         {/* Ad Image */}
-        {sidebarAd.background_image_url && (
+        {sidebarAd.image_url && (
           <div className="aspect-[4/3] overflow-hidden bg-gray-200">
             <Image
-              src={sidebarAd.background_image_url}
-              alt={sidebarAd.headline}
+              src={sidebarAd.image_url}
+              alt={sidebarAd.image_alt || sidebarAd.headline}
               width={400}
               height={300}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"

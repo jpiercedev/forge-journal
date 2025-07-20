@@ -8,6 +8,7 @@ const config: NextConfig = {
       { hostname: 'uvnbfnobyqbonuxztjuz.supabase.co' }, // Your specific Supabase project
       { hostname: 'cdn.sanity.io' }, // Sanity CDN for migrated images
       { hostname: 'images.unsplash.com' }, // Unsplash images for ads
+      { hostname: 'unsplash.com' }, // Unsplash base domain for any existing URLs
     ],
   },
   typescript: {

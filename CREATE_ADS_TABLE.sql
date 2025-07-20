@@ -8,7 +8,8 @@ CREATE TABLE IF NOT EXISTS ads (
   type VARCHAR(50) NOT NULL CHECK (type IN ('banner', 'sidebar')),
   headline VARCHAR(255) NOT NULL,
   subheading TEXT,
-  background_image_url TEXT,
+  image_url TEXT,
+  image_alt TEXT,
   cta_text VARCHAR(100) NOT NULL,
   cta_link TEXT NOT NULL,
   is_active BOOLEAN DEFAULT true,
@@ -38,13 +39,14 @@ CREATE TRIGGER trigger_ads_updated_at
   EXECUTE FUNCTION update_ads_updated_at();
 
 -- Insert sample banner ad (based on the existing Leaderboard component)
-INSERT INTO ads (title, type, headline, subheading, background_image_url, cta_text, cta_link, is_active, display_order)
+INSERT INTO ads (title, type, headline, subheading, image_url, image_alt, cta_text, cta_link, is_active, display_order)
 VALUES (
   'Forge Pastors Training Banner',
   'banner',
   'FORGE PASTORS TRAINING',
   'Equipping Leaders to Shape the Nation • Next Cohort Starting Soon',
   'https://images.unsplash.com/photo-1606768666853-403c90a981ad?w=800&h=200&fit=crop&crop=center',
+  'Forge Pastors Training Banner',
   'SIGN UP NOW',
   'https://forgejournal.com/training',
   true,
@@ -52,13 +54,14 @@ VALUES (
 ) ON CONFLICT (title) DO NOTHING;
 
 -- Insert sample sidebar ad
-INSERT INTO ads (title, type, headline, subheading, background_image_url, cta_text, cta_link, is_active, display_order)
+INSERT INTO ads (title, type, headline, subheading, image_url, image_alt, cta_text, cta_link, is_active, display_order)
 VALUES (
   'Leadership Resources Sidebar',
   'sidebar',
   'LEADERSHIP RESOURCES',
   'Download our free guide to pastoral leadership in challenging times',
   'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop&crop=center',
+  'Leadership Resources Sidebar',
   'DOWNLOAD FREE',
   'https://forgejournal.com/resources',
   true,

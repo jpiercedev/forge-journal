@@ -53,7 +53,7 @@ export default function DynamicBanner({ className = '' }: DynamicBannerProps) {
             key={bannerAd.id}
             className="w-full h-full relative overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300 group"
             style={{
-              backgroundImage: bannerAd.background_image_url ? `url("${bannerAd.background_image_url}?t=${Date.now()}")` : 'linear-gradient(to right, #1e3a8a, #991b1b, #1e3a8a)',
+              backgroundImage: bannerAd.image_url ? `url("${bannerAd.image_url}?t=${Date.now()}")` : 'linear-gradient(to right, #1e3a8a, #991b1b, #1e3a8a)',
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat'

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import AdminLayout from 'components/admin/AdminLayout'
 import Alert from 'components/admin/Alert'
+import ImageUpload from 'components/ImageUpload'
 import { AdminProvider, useAdmin, withAdminAuth } from 'components/admin/AdminContext'
 import type { Ad } from 'types/ads'
 
@@ -11,7 +12,8 @@ interface CreateAdForm {
   type: 'banner' | 'sidebar'
   headline: string
   subheading: string
-  background_image_url: string
+  image_url: string
+  image_alt: string
   cta_text: string
   cta_link: string
   is_active: boolean
@@ -31,7 +33,8 @@ function AdsPage() {
     type: 'banner',
     headline: '',
     subheading: '',
-    background_image_url: '',
+    image_url: '',
+    image_alt: '',
     cta_text: '',
     cta_link: '',
     is_active: true,
@@ -92,7 +95,8 @@ function AdsPage() {
           type: 'banner',
           headline: '',
           subheading: '',
-          background_image_url: '',
+          image_url: '',
+          image_alt: '',
           cta_text: '',
           cta_link: '',
           is_active: true,
@@ -137,7 +141,8 @@ function AdsPage() {
           type: 'banner',
           headline: '',
           subheading: '',
-          background_image_url: '',
+          image_url: '',
+          image_alt: '',
           cta_text: '',
           cta_link: '',
           is_active: true,
@@ -189,7 +194,8 @@ function AdsPage() {
       type: ad.type,
       headline: ad.headline,
       subheading: ad.subheading || '',
-      background_image_url: ad.background_image_url || '',
+      image_url: ad.image_url || '',
+      image_alt: ad.image_alt || '',
       cta_text: ad.cta_text,
       cta_link: ad.cta_link,
       is_active: ad.is_active,
@@ -206,7 +212,8 @@ function AdsPage() {
       type: 'banner',
       headline: '',
       subheading: '',
-      background_image_url: '',
+      image_url: '',
+      image_alt: '',
       cta_text: '',
       cta_link: '',
       is_active: true,
@@ -355,15 +362,28 @@ function AdsPage() {
               </div>
 
               <div>
+                <ImageUpload
+                  label="Ad Image"
+                  value={createForm.image_url}
+                  onChange={(url) => setCreateForm({ ...createForm, image_url: url })}
+                  onError={(error) => setError(error)}
+                  folder="ads"
+                  placeholder="Upload an image for this ad"
+                  maxSize={5 * 1024 * 1024} // 5MB
+                  showPreview={true}
+                />
+              </div>
+
+              <div>
                 <label className="block text-sm font-medium text-gray-700 font-sans mb-2">
-                  Background Image URL
+                  Image Alt Text
                 </label>
                 <input
-                  type="url"
-                  value={createForm.background_image_url}
-                  onChange={(e) => setCreateForm({ ...createForm, background_image_url: e.target.value })}
+                  type="text"
+                  value={createForm.image_alt}
+                  onChange={(e) => setCreateForm({ ...createForm, image_alt: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forge-teal focus:border-transparent font-sans"
-                  placeholder="https://example.com/image.jpg"
+                  placeholder="Descriptive text for the image"
                 />
               </div>
 

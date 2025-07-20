@@ -134,7 +134,7 @@ async function handleGetAds(req: NextApiRequest, res: NextApiResponse<ApiRespons
 
 // POST /api/content/ads - Create new ad
 async function handleCreateAd(req: AuthenticatedRequest, res: NextApiResponse<ApiResponse>) {
-  const { title, type, headline, subheading, background_image_url, cta_text, cta_link, is_active, display_order } = req.body
+  const { title, type, headline, subheading, image_url, image_alt, cta_text, cta_link, is_active, display_order } = req.body
 
   // Validate required fields
   if (!title || !type || !headline || !cta_text || !cta_link) {
@@ -164,7 +164,8 @@ async function handleCreateAd(req: AuthenticatedRequest, res: NextApiResponse<Ap
       type,
       headline,
       subheading: subheading || null,
-      background_image_url: background_image_url || null,
+      image_url: image_url || null,
+      image_alt: image_alt || null,
       cta_text,
       cta_link,
       is_active: is_active !== undefined ? is_active : true,
@@ -205,7 +206,7 @@ async function handleCreateAd(req: AuthenticatedRequest, res: NextApiResponse<Ap
 // PUT /api/content/ads - Update ad
 async function handleUpdateAd(req: AuthenticatedRequest, res: NextApiResponse<ApiResponse>) {
   const { id } = req.query
-  const { title, type, headline, subheading, background_image_url, cta_text, cta_link, is_active, display_order } = req.body
+  const { title, type, headline, subheading, image_url, image_alt, cta_text, cta_link, is_active, display_order } = req.body
 
   if (!id) {
     return res.status(400).json({
@@ -235,7 +236,8 @@ async function handleUpdateAd(req: AuthenticatedRequest, res: NextApiResponse<Ap
     if (type !== undefined) updateData.type = type
     if (headline !== undefined) updateData.headline = headline
     if (subheading !== undefined) updateData.subheading = subheading
-    if (background_image_url !== undefined) updateData.background_image_url = background_image_url
+    if (image_url !== undefined) updateData.image_url = image_url
+    if (image_alt !== undefined) updateData.image_alt = image_alt
     if (cta_text !== undefined) updateData.cta_text = cta_text
     if (cta_link !== undefined) updateData.cta_link = cta_link
     if (is_active !== undefined) updateData.is_active = is_active
