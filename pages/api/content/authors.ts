@@ -4,6 +4,17 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { adminDb, db, generateSlug, type Author } from '../../../lib/supabase/client'
 import { withAdminAuth, AuthenticatedRequest, validateMethod, ErrorResponses } from '../../../lib/auth/middleware'
 
+// Helper function to trigger page revalidation
+async function triggerRevalidation(res: NextApiResponse) {
+  try {
+    await res.revalidate('/contributors')
+    console.log('Successfully triggered revalidation for /contributors')
+  } catch (error) {
+    console.warn('Error triggering revalidation:', error)
+    // Don't fail the main operation if revalidation fails
+  }
+}
+
 interface ApiResponse<T = any> {
   success: boolean
   data?: T
@@ -147,6 +158,9 @@ async function handleCreateAuthor(req: AuthenticatedRequest, res: NextApiRespons
       throw result.error
     }
 
+    // Trigger revalidation of contributors page
+    await triggerRevalidation(res)
+
     return res.status(201).json({
       success: true,
       data: result.data,
@@ -191,6 +205,9 @@ async function handleUpdateAuthor(req: AuthenticatedRequest, res: NextApiRespons
       throw result.error
     }
 
+    // Trigger revalidation of contributors page
+    await triggerRevalidation(res)
+
     return res.status(200).json({
       success: true,
       data: result.data,
@@ -229,6 +246,9 @@ async function handleDeleteAuthor(req: AuthenticatedRequest, res: NextApiRespons
     if (result.error) {
       throw result.error
     }
+
+    // Trigger revalidation of contributors page
+    await triggerRevalidation(res)
 
     return res.status(200).json({
       success: true,
