@@ -30,34 +30,38 @@ export async function formatContentWithAI(content: any): Promise<any> {
       messages: [
         {
           role: 'user',
-          content: `You are a formatting expert. Your job is to take existing text and make it visually appealing with proper structure, while preserving every single word exactly as written.
+          content: `You are a formatting expert. Your job is to take existing text and make it visually appealing with natural, varied structure while preserving every single word exactly as written.
 
 CORE RULE: Never add, remove, or change any words. Only change how the existing text is formatted and structured.
 
 FORMATTING GUIDELINES:
 1. **Preserve all text exactly** - every word, punctuation mark, and sentence must remain identical
-2. **Add visual structure** - use headings, blockquotes, emphasis, and lists to make it engaging
+2. **Use natural variety** - mix different formatting elements for engaging, readable content
 3. **Use existing text only** - if you make something a heading, it must be text that's already there
 
-WHAT TO FORMAT:
-- **Titles and names**: Short lines at the beginning often work as headings (like "Don't Hold Your Breath")
-- **Author bylines**: Lines starting with "By" can stay as paragraphs or become smaller headings
+NATURAL FORMATTING APPROACH:
+- **Main title**: Use H1 only for the very first/main title (if there is one)
+- **Author bylines**: Keep as regular paragraphs with italic emphasis (like "By Dr. Jason Nelson")
+- **Section breaks**: Use H2 sparingly, only for major section divisions
+- **Questions**: Most questions should be regular paragraphs with bold emphasis, not headings
+- **Key statements**: Use bold text within paragraphs rather than making them headings
 - **Quoted text**: Any text in quotation marks should become blockquotes
-- **Questions**: Standalone questions can be emphasized or become small headings
-- **Key statements**: Important declarations can be emphasized with bold
-- **Lists**: If you see numbered or bulleted content, format as proper lists
+- **Lists**: Format numbered or bulleted content as proper lists
+- **Emphasis**: Use bold and italic text liberally within paragraphs for key phrases
 
-FORMATTING VARIETY TO USE:
-- Heading level 1 for main titles
-- Heading level 2 for section breaks (only if the text is already there)
-- Blockquotes for quoted content and important statements
-- Bold text for emphasis on key phrases
-- Proper paragraph breaks for readability
+FORMATTING VARIETY TO USE (in order of preference):
+1. **Regular paragraphs** with bold/italic emphasis - use this most often
+2. **Blockquotes** for quoted content and important statements
+3. **Bold text** for key phrases and important concepts within paragraphs
+4. **Italic text** for author bylines, subtle emphasis, and references
+5. **Lists** when content is clearly structured as numbered or bulleted items
+6. **H2 headings** only for major section breaks (use sparingly)
+7. **H1 heading** only for the main title at the very beginning
 
 EXAMPLE INPUT: "Don't Hold Your Breath\nBy Dr. Jason Nelson\n\n\"I'm stressed out\" is what I hear..."
-EXAMPLE OUTPUT: Make "Don't Hold Your Breath" a heading, keep byline as paragraph, put quoted text in blockquote.
+EXAMPLE OUTPUT: Make "Don't Hold Your Breath" an H1, keep "By Dr. Jason Nelson" as italic paragraph, put quoted text in blockquote, keep most other content as regular paragraphs with bold emphasis.
 
-REMEMBER: Use the existing text creatively for structure, but never invent new headings or content.
+REMEMBER: Favor paragraphs with emphasis over headings. Use headings sparingly for true structural breaks only.
 
 Return as JSON:
 {
@@ -106,7 +110,7 @@ function formatContentFallback(content: any): any {
   const segments = plainText.split(/\n\s*\n/).filter(segment => segment.trim());
 
   const blocks: any[] = [];
-  let headingLevel = 1; // Track heading hierarchy
+  let hasMainTitle = false; // Track if we've used the main title
 
   segments.forEach((segment, index) => {
     const trimmed = segment.trim();
@@ -136,36 +140,61 @@ function formatContentFallback(content: any): any {
       trimmed.match(/^(First|Second|Third|Fourth|Fifth|Next|Finally|Additionally|Moreover|Furthermore)/i) ||
       trimmed.split(/\n/).filter(line => line.trim().match(/^(\d+\.|•|\*|-)\s/)).length > 1;
 
-    // Detect titles and headings from existing text only
-    const isMainTitle = index === 0 && trimmed.length < 100 && !trimmed.endsWith('.') && !isQuote &&
-      (trimmed.match(/^[A-Z][a-zA-Z\s']+$/) || trimmed.includes('By ') || trimmed.match(/^(Don't|How to|Why|What|When|Where)/));
+    // Detect main title (only first segment, and only if it looks like a title)
+    // Split title and byline if they're combined
+    let titleText = trimmed;
+    let bylineText = '';
 
-    // Detect questions and short statements that could be subheadings
-    const isSubHeading = !isQuote && !isList && !isMainTitle && (
-      (trimmed.endsWith('?') && trimmed.length < 60) || // Questions as headings
-      (trimmed.length < 50 && !trimmed.endsWith('.') && trimmed.match(/^[A-Z]/)) // Short statements
-    );
+    if (index === 0 && trimmed.includes('\nBy ')) {
+      const parts = trimmed.split('\nBy ');
+      titleText = parts[0].trim();
+      bylineText = 'By ' + parts[1].trim();
+    }
 
-    // Detect bylines
+    const isMainTitle = !hasMainTitle && index === 0 && titleText.length < 100 && !titleText.endsWith('.') && !isQuote &&
+      (titleText.match(/^[A-Z][a-zA-Z\s']+$/) || titleText.match(/^(Don't|How to|Why|What|When|Where)/)) &&
+      !titleText.startsWith('By ');
+
+    // Detect bylines - keep as regular paragraphs with emphasis
     const isByline = trimmed.startsWith('By ') && trimmed.length < 50;
 
+    // Most content should be regular paragraphs - be very selective about headings
+    const isMajorSectionBreak = !isQuote && !isList && !isMainTitle && !isByline &&
+      trimmed.length < 80 && !trimmed.endsWith('.') && trimmed.match(/^[A-Z]/) &&
+      (trimmed.includes('Chapter') || trimmed.includes('Part ') || trimmed.includes('Section'));
+
     if (isMainTitle) {
-      // First segment as main title
+      // Only the very first title gets H1
       blocks.push({
         type: 'heading',
         attrs: { level: 1 },
-        content: [{ type: 'text', text: trimmed }]
+        content: [{ type: 'text', text: titleText }]
       });
-      headingLevel = 2; // Next headings will be level 2
+      hasMainTitle = true;
+
+      // If there was a byline in the same segment, add it as a separate italic paragraph
+      if (bylineText) {
+        blocks.push({
+          type: 'paragraph',
+          content: [{
+            type: 'text',
+            text: bylineText,
+            marks: [{ type: 'italic' }]
+          }]
+        });
+      }
     } else if (isByline) {
-      // Author byline as smaller heading or emphasized paragraph
+      // Author byline as emphasized paragraph, not heading
       blocks.push({
-        type: 'heading',
-        attrs: { level: 3 },
-        content: [{ type: 'text', text: trimmed }]
+        type: 'paragraph',
+        content: [{
+          type: 'text',
+          text: trimmed,
+          marks: [{ type: 'italic' }]
+        }]
       });
-    } else if (isSubHeading) {
-      // Questions and short statements as subheadings
+    } else if (isMajorSectionBreak) {
+      // Only true section breaks get H2 - very rare
       blocks.push({
         type: 'heading',
         attrs: { level: 2 },
@@ -201,14 +230,18 @@ function formatContentFallback(content: any): any {
         content: listContent
       });
     } else {
-      // Regular paragraph with smart emphasis detection
+      // Regular paragraph with natural emphasis detection
       const content = [];
+
+      // Detect questions and key statements that should be emphasized (not made into headings)
+      const isQuestion = trimmed.endsWith('?');
+      const isKeyStatement = trimmed.length < 80 && !trimmed.endsWith('.') && trimmed.match(/^[A-Z]/);
 
       // Detect key phrases that should be emphasized
       const emphasisPatterns = [
         /\b(In a word|In other words|Instead|Nope!|Don't hold your breath)\b/gi,
         /\b(Christ|Jesus|Prince of Peace|King of Kings|Holy Spirit|Church|God)\b/g,
-        /\b(anxiety|peace|breathe|purify)\b/gi
+        /\b(anxiety|peace|breathe|purify|faith|hope|love|grace|mercy)\b/gi
       ];
 
       let textWithEmphasis = trimmed;
@@ -237,34 +270,45 @@ function formatContentFallback(content: any): any {
           }
         });
       } else {
-        // Add smart emphasis for key phrases (but only occasionally to avoid overdoing it)
-        const shouldAddEmphasis = Math.random() < 0.3; // 30% chance to add emphasis
-        if (shouldAddEmphasis) {
-          for (const pattern of emphasisPatterns) {
-            if (pattern.test(trimmed)) {
-              textWithEmphasis = trimmed.replace(pattern, (match) => `**${match}**`);
-              hasEmphasis = true;
-              break; // Only apply one emphasis pattern
+        // Add natural emphasis for questions and key statements
+        if (isQuestion || isKeyStatement) {
+          // Questions and key statements get bold emphasis
+          content.push({
+            type: 'text',
+            marks: [{ type: 'bold' }],
+            text: trimmed
+          });
+          hasEmphasis = true;
+        } else {
+          // Add smart emphasis for key phrases (more frequently than before)
+          const shouldAddEmphasis = Math.random() < 0.5; // 50% chance to add emphasis
+          if (shouldAddEmphasis) {
+            for (const pattern of emphasisPatterns) {
+              if (pattern.test(trimmed)) {
+                textWithEmphasis = trimmed.replace(pattern, (match) => `**${match}**`);
+                hasEmphasis = true;
+                break; // Only apply one emphasis pattern
+              }
             }
           }
-        }
 
-        if (hasEmphasis) {
-          // Parse the emphasized text
-          const parts = textWithEmphasis.split(/(\*\*[^*]+\*\*)/);
-          parts.forEach(part => {
-            if (part.startsWith('**') && part.endsWith('**')) {
-              content.push({
-                type: 'text',
-                marks: [{ type: 'bold' }],
-                text: part.slice(2, -2)
-              });
-            } else if (part.trim()) {
-              content.push({ type: 'text', text: part });
-            }
-          });
-        } else {
-          content.push({ type: 'text', text: trimmed });
+          if (hasEmphasis) {
+            // Parse the emphasized text
+            const parts = textWithEmphasis.split(/(\*\*[^*]+\*\*)/);
+            parts.forEach(part => {
+              if (part.startsWith('**') && part.endsWith('**')) {
+                content.push({
+                  type: 'text',
+                  marks: [{ type: 'bold' }],
+                  text: part.slice(2, -2)
+                });
+              } else if (part.trim()) {
+                content.push({ type: 'text', text: part });
+              }
+            });
+          } else {
+            content.push({ type: 'text', text: trimmed });
+          }
         }
       }
 

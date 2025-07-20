@@ -27,7 +27,7 @@ export default function SidebarAd({ className = '' }: SidebarAdProps) {
         setSidebarAd(data.data[randomIndex])
       }
     } catch (error) {
-      console.error('Failed to load sidebar ad:', error)
+
     } finally {
       setLoading(false)
     }

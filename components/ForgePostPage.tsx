@@ -41,6 +41,7 @@ export default function ForgePostPage(props: ForgePostPageProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = useState('')
+  const [isExistingSubscriber, setIsExistingSubscriber] = useState(false)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target
@@ -73,10 +74,19 @@ export default function ForgePostPage(props: ForgePostPageProps) {
         body: JSON.stringify(formData)
       })
 
-      const result = await response.json()
+      let result
+      try {
+        result = await response.json()
+      } catch (e) {
+        console.error('Failed to parse response:', e)
+        setSubmitStatus('error')
+        setErrorMessage('Invalid response from server')
+        return
+      }
 
       if (response.ok) {
         setSubmitStatus('success')
+        setIsExistingSubscriber(result.isExisting || false)
         // Reset form
         setFormData({
           firstName: '',
@@ -92,6 +102,8 @@ export default function ForgePostPage(props: ForgePostPageProps) {
     } catch (error) {
       setSubmitStatus('error')
       setErrorMessage('Network error. Please try again.')
+      setIsExistingSubscriber(false) // Reset this on error
+      console.error('Form submission error:', error)
     } finally {
       setIsSubmitting(false)
     }
@@ -148,18 +160,25 @@ export default function ForgePostPage(props: ForgePostPageProps) {
                           </svg>
                         </div>
                         <div className="ml-4">
-                          <div className="text-base font-medium text-green-800 mb-3" style={{ fontFamily: 'Proxima Nova, sans-serif' }}>
-                            Thank you for signing up for The Forge Journal!
-                          </div>
-                          <p className="text-sm text-green-700 leading-relaxed mb-4" style={{ fontFamily: 'Proxima Nova, sans-serif' }}>
-                            You're now subscribed to receive bold biblical leadership insights, real stories from pastors in the trenches, and updates from the movement that's rising to take back our nation—one pulpit at a time. Keep an eye on your inbox for the latest issue and be encouraged as God continues to raise up leaders for this critical hour.
-                          </p>
-                          <div className="text-sm text-green-600 space-y-1" style={{ fontFamily: 'Proxima Nova, sans-serif' }}>
-                            <div><a href="https://TheForgeJournal.com" target="_blank" rel="noopener noreferrer" className="hover:text-green-800 underline">TheForgeJournal.com</a></div>
-                            <div><a href="https://ForgePastors.com" target="_blank" rel="noopener noreferrer" className="hover:text-green-800 underline">ForgePastors.com</a></div>
-                            <div><a href="https://GraceWoodlands.com" target="_blank" rel="noopener noreferrer" className="hover:text-green-800 underline">GraceWoodlands.com</a></div>
-                            <div><a href="https://GraceInternational.org" target="_blank" rel="noopener noreferrer" className="hover:text-green-800 underline">GraceInternational.org</a></div>
-                          </div>
+                          {isExistingSubscriber ? (
+                            <>
+                              <div className="text-lg font-bold text-green-800 mb-3" style={{ fontFamily: 'Proxima Nova, sans-serif' }}>
+                                You're already signed up!
+                              </div>
+                              <p className="text-sm text-green-700 leading-relaxed" style={{ fontFamily: 'Proxima Nova, sans-serif' }}>
+                                You're already part of The Forge Journal family and will continue receiving bold biblical leadership insights and updates from the movement. Thank you for your continued support as we raise up leaders for this critical hour.
+                              </p>
+                            </>
+                          ) : (
+                            <>
+                              <div className="text-lg font-bold text-green-800 mb-3" style={{ fontFamily: 'Proxima Nova, sans-serif' }}>
+                                Thank you for signing up for The Forge Journal!
+                              </div>
+                              <p className="text-sm text-green-700 leading-relaxed" style={{ fontFamily: 'Proxima Nova, sans-serif' }}>
+                                You're now subscribed to receive bold biblical leadership insights, real stories from pastors in the trenches, and updates from the movement that's rising to take back our nation—one pulpit at a time. Keep an eye on your inbox for the latest issue and be encouraged as God continues to raise up leaders for this critical hour.
+                              </p>
+                            </>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -182,7 +201,8 @@ export default function ForgePostPage(props: ForgePostPageProps) {
                     </div>
                   )}
 
-                  <form className="space-y-6" onSubmit={handleSubmit}>
+                  {submitStatus !== 'success' && (
+                    <form className="space-y-6" onSubmit={handleSubmit}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label htmlFor="firstName" className="block text-base font-medium text-gray-900 mb-2" style={{ fontFamily: 'Proxima Nova, sans-serif' }}>
@@ -305,6 +325,7 @@ export default function ForgePostPage(props: ForgePostPageProps) {
                       We respect your privacy and will never share your information.
                     </p>
                   </form>
+                  )}
                 </div>
               </div>
             </div>

@@ -24,11 +24,11 @@ export default function DynamicBanner({ className = '' }: DynamicBannerProps) {
         // Randomly select a banner ad from all active banners
         const randomIndex = Math.floor(Math.random() * data.data.length)
         const selectedAd = data.data[randomIndex]
-        console.log('Selected banner ad:', selectedAd.title, 'Background:', selectedAd.background_image_url)
+
         setBannerAd(selectedAd)
       }
     } catch (error) {
-      console.error('Failed to load banner ad:', error)
+
     } finally {
       setLoading(false)
     }
@@ -83,10 +83,7 @@ export default function DynamicBanner({ className = '' }: DynamicBannerProps) {
                     {bannerAd.subheading}
                   </p>
                 )}
-                {/* Temporary debug indicator */}
-                <p className="text-yellow-300 text-xs font-sans mt-1">
-                  [{bannerAd.title}]
-                </p>
+
               </div>
 
               {/* Right Side - CTA */}

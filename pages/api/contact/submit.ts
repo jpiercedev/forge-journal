@@ -83,53 +83,15 @@ export default async function handler(
 
     console.log('Submitting contact to Virtuous:', contact)
 
-    // Try different contact types if the first one fails
-    const contactTypesToTry = ['Person', 'Individual', 'Household', 'Contact']
-    let virtuousResponse: Response | null = null
-    let lastError: any = null
-
-    for (const contactType of contactTypesToTry) {
-      const testContact = { ...contact, contactType }
-      console.log(`Trying contact type: ${contactType}`)
-
-      try {
-        virtuousResponse = await fetch('https://api.virtuoussoftware.com/api/Contact', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${process.env.VIRTUOUS_API_KEY}`,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify(testContact)
-        })
-
-        if (virtuousResponse.ok) {
-          console.log(`Success with contact type: ${contactType}`)
-          break
-        } else {
-          const errorText = await virtuousResponse.text()
-          console.log(`Failed with contact type ${contactType}:`, {
-            status: virtuousResponse.status,
-            body: errorText
-          })
-
-          // If it's not a contact type error, break and use this response
-          if (!errorText.includes('Contact Type') && !errorText.includes('contactType')) {
-            break
-          }
-        }
-      } catch (error) {
-        console.log(`Network error with contact type ${contactType}:`, error)
-        lastError = error
-      }
-    }
-
-    if (!virtuousResponse) {
-      return res.status(500).json({
-        error: 'Failed to connect to Virtuous CRM - all contact types failed',
-        details: lastError?.message || 'Network error'
-      })
-    }
+    const virtuousResponse = await fetch('https://api.virtuoussoftware.com/api/Contact', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.VIRTUOUS_API_KEY}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(contact)
+    })
 
     // Read response body once
     const responseText = await virtuousResponse.text()
@@ -146,7 +108,8 @@ export default async function handler(
         console.log('Email already exists in Virtuous - treating as success')
         return res.status(200).json({
           success: true,
-          message: 'Thank you! You are already subscribed to our updates.'
+          message: 'Welcome back! You\'re already part of The Forge Journal family and will continue receiving bold biblical leadership insights and updates from the movement. Thank you for your continued support as we raise up leaders for this critical hour.',
+          isExisting: true
         })
       }
 
@@ -166,15 +129,17 @@ export default async function handler(
     }
     console.log('Virtuous API success:', virtuousResult)
 
-    return res.status(200).json({ 
-      success: true, 
+    return res.status(200).json({
+      success: true,
       message: 'Contact submitted successfully',
-      virtuousId: virtuousResult.id || virtuousResult.transactionId
+      virtuousId: virtuousResult.id || virtuousResult.transactionId,
+      isExisting: false
     })
 
   } catch (error) {
     console.error('Contact submission error:', error)
-    return res.status(500).json({ 
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace')
+    return res.status(500).json({
       error: 'Internal server error',
       details: error instanceof Error ? error.message : 'Unknown error'
     })

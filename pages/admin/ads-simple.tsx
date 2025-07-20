@@ -87,18 +87,7 @@ function SimpleAdsPage() {
           )}
         </div>
 
-        <div className="mt-6 bg-gray-100 rounded p-4">
-          <h3 className="font-medium mb-2">Debug Info:</h3>
-          <p><strong>Loading:</strong> {loading ? 'Yes' : 'No'}</p>
-          <p><strong>Error:</strong> {error || 'None'}</p>
-          <p><strong>Ads Count:</strong> {ads.length}</p>
-          <button 
-            onClick={loadAds}
-            className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          >
-            Reload Ads
-          </button>
-        </div>
+
       </div>
     </AdminLayout>
   )

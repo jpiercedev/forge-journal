@@ -31,7 +31,7 @@ async function handler(
       case 'DELETE':
         // These methods require admin authentication
         return withAdminAuth(async (authReq: AuthenticatedRequest, authRes: NextApiResponse<ApiResponse>) => {
-          console.log('User authenticated:', !!authReq.user)
+
           switch (req.method) {
             case 'POST':
               return await handleCreateAd(authReq, authRes)
@@ -42,7 +42,7 @@ async function handler(
           }
         })(req, res)
       default:
-        console.log('Method not allowed:', req.method)
+
         return res.status(405).json({
           success: false,
           error: {
@@ -52,7 +52,7 @@ async function handler(
         })
     }
   } catch (error) {
-    console.error('Ads API error:', error)
+
     return res.status(500).json({
       success: false,
       error: {
@@ -68,7 +68,7 @@ async function handler(
 async function handleGetAds(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
   const { id, type, active } = req.query
 
-  console.log('GET /api/content/ads called with params:', { id, type, active })
+
 
   try {
     if (id) {
@@ -98,11 +98,11 @@ async function handleGetAds(req: NextApiRequest, res: NextApiResponse<ApiRespons
       const activeOnly = active === 'true'
       const adType = type as 'banner' | 'sidebar' | undefined
 
-      console.log('Fetching all ads with filters:', { adType, activeOnly })
+
       const { data: ads, error } = await db.getAds(adType, activeOnly)
 
       if (error) {
-        console.error('Database error fetching ads:', error)
+
         return res.status(500).json({
           success: false,
           error: {
@@ -113,14 +113,14 @@ async function handleGetAds(req: NextApiRequest, res: NextApiResponse<ApiRespons
         })
       }
 
-      console.log('Successfully fetched ads:', ads?.length || 0, 'ads found')
+
       return res.status(200).json({
         success: true,
         data: ads || [],
       })
     }
   } catch (error) {
-    console.error('Unexpected error fetching ads:', error)
+
     return res.status(500).json({
       success: false,
       error: {
@@ -305,7 +305,7 @@ async function handleDeleteAd(req: AuthenticatedRequest, res: NextApiResponse<Ap
       message: 'Ad deleted successfully',
     })
   } catch (error) {
-    console.error('Error deleting ad:', error)
+
     return res.status(500).json({
       success: false,
       error: {
