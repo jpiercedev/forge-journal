@@ -40,8 +40,17 @@ export default async function handler(
 
     // Validate required fields
     if (!formData.firstName || !formData.lastName || !formData.email) {
-      return res.status(400).json({ 
-        error: 'Missing required fields: firstName, lastName, and email are required' 
+      return res.status(400).json({
+        error: 'Missing required fields: firstName, lastName, and email are required'
+      })
+    }
+
+    // Check if Virtuous API key is configured
+    if (!process.env.VIRTUOUS_API_KEY) {
+      console.error('VIRTUOUS_API_KEY environment variable is not set')
+      return res.status(500).json({
+        error: 'Server configuration error',
+        details: 'Virtuous API key not configured'
       })
     }
 
@@ -81,7 +90,7 @@ export default async function handler(
       ]
     }
 
-    console.log('Submitting contact to Virtuous:', contact)
+    console.log('Submitting contact to Virtuous:', JSON.stringify(contact, null, 2))
 
     const virtuousResponse = await fetch('https://api.virtuoussoftware.com/api/Contact', {
       method: 'POST',
@@ -92,6 +101,9 @@ export default async function handler(
       },
       body: JSON.stringify(contact)
     })
+
+    console.log('Virtuous API response status:', virtuousResponse.status)
+    console.log('Virtuous API response headers:', Object.fromEntries(virtuousResponse.headers.entries()))
 
     // Read response body once
     const responseText = await virtuousResponse.text()
@@ -128,6 +140,46 @@ export default async function handler(
       virtuousResult = { message: 'Contact created successfully' }
     }
     console.log('Virtuous API success:', virtuousResult)
+
+    // Add tags to the contact after creation
+    const contactId = virtuousResult.id
+    if (contactId) {
+      // Tag IDs from Virtuous - these need to be created in Virtuous first
+      const tagIdsToAdd = [
+        25  // FORGE TEST
+      ]
+
+      for (const tagId of tagIdsToAdd) {
+        try {
+          const tagResponse = await fetch('https://api.virtuoussoftware.com/api/ContactTag', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${process.env.VIRTUOUS_API_KEY}`,
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+              contactId: contactId,
+              tagId: tagId
+            })
+          })
+
+          const tagResponseText = await tagResponse.text()
+
+          if (tagResponse.ok) {
+            console.log(`Successfully added tag ID ${tagId} to contact ${contactId}`)
+          } else {
+            console.error(`Failed to add tag ID ${tagId}:`, {
+              status: tagResponse.status,
+              statusText: tagResponse.statusText,
+              body: tagResponseText
+            })
+          }
+        } catch (tagError) {
+          console.error(`Error adding tag ID ${tagId}:`, tagError)
+        }
+      }
+    }
 
     return res.status(200).json({
       success: true,
