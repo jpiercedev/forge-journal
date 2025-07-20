@@ -163,10 +163,10 @@ export default function ForgePostPage(props: ForgePostPageProps) {
                           {isExistingSubscriber ? (
                             <>
                               <div className="text-lg font-bold text-green-800 mb-3" style={{ fontFamily: 'Proxima Nova, sans-serif' }}>
-                                You're already signed up!
+                                You&apos;re already signed up!
                               </div>
                               <p className="text-sm text-green-700 leading-relaxed" style={{ fontFamily: 'Proxima Nova, sans-serif' }}>
-                                You're already part of The Forge Journal family and will continue receiving bold biblical leadership insights and updates from the movement. Thank you for your continued support as we raise up leaders for this critical hour.
+                                You&apos;re already part of The Forge Journal family and will continue receiving bold biblical leadership insights and updates from the movement. Thank you for your continued support as we raise up leaders for this critical hour.
                               </p>
                             </>
                           ) : (
@@ -175,7 +175,7 @@ export default function ForgePostPage(props: ForgePostPageProps) {
                                 Thank you for signing up for The Forge Journal!
                               </div>
                               <p className="text-sm text-green-700 leading-relaxed" style={{ fontFamily: 'Proxima Nova, sans-serif' }}>
-                                You're now subscribed to receive bold biblical leadership insights, real stories from pastors in the trenches, and updates from the movement that's rising to take back our nation—one pulpit at a time. Keep an eye on your inbox for the latest issue and be encouraged as God continues to raise up leaders for this critical hour.
+                                You&apos;re now subscribed to receive bold biblical leadership insights, real stories from pastors in the trenches, and updates from the movement that&apos;s rising to take back our nation—one pulpit at a time. Keep an eye on your inbox for the latest issue and be encouraged as God continues to raise up leaders for this critical hour.
                               </p>
                             </>
                           )}
