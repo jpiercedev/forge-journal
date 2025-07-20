@@ -198,6 +198,18 @@ export default function ContributorsPage({ authors, posts }: ContributorsPagePro
 
 export const getStaticProps: GetStaticProps = async () => {
   try {
+    // Check if Supabase is available (might not be during build time)
+    if (!db || typeof db.getAuthors !== 'function' || typeof db.getPosts !== 'function') {
+      console.warn('Supabase client not available during build, returning empty data')
+      return {
+        props: {
+          authors: [],
+          posts: []
+        },
+        revalidate: 60
+      }
+    }
+
     // Fetch authors and posts in parallel
     const [authorsResult, postsResult] = await Promise.all([
       db.getAuthors(),

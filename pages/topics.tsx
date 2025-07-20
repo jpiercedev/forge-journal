@@ -101,6 +101,22 @@ export default function TopicsPage(props: PageProps) {
 
 export const getStaticProps: GetStaticProps<PageProps> = async () => {
   try {
+    // Check if Supabase is available (might not be during build time)
+    if (!db || typeof db.getPosts !== 'function' || typeof db.getCategories !== 'function') {
+      console.warn('Supabase client not available during build, returning empty data')
+      return {
+        props: {
+          posts: [],
+          topics: [],
+          settings: {
+            title: 'Forge Journal',
+            description: []
+          },
+        },
+        revalidate: 60,
+      }
+    }
+
     // Get published posts from Supabase
     const { data: posts, error: postsError } = await db.getPosts({
       status: 'published',

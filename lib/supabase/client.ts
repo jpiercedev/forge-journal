@@ -7,12 +7,17 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-if (!supabaseUrl || !supabaseAnonKey) {
+// Check if we're in a build environment without env vars
+const isBuildTime = process.env.NODE_ENV === 'production' && (!supabaseUrl || !supabaseAnonKey)
+
+if (!isBuildTime && (!supabaseUrl || !supabaseAnonKey)) {
   throw new Error('Missing Supabase environment variables')
 }
 
 // Client for browser/frontend use
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export const supabase = isBuildTime
+  ? null as any // Placeholder during build time
+  : createClient(supabaseUrl, supabaseAnonKey)
 
 // Admin client for server-side operations (has elevated permissions)
 // Only create this on the server side where the service key is available
@@ -22,8 +27,9 @@ export const supabaseAdmin = (() => {
     return null as any
   }
 
-  if (!supabaseServiceKey) {
-    throw new Error('Missing SUPABASE_SERVICE_ROLE_KEY environment variable')
+  if (isBuildTime || !supabaseServiceKey) {
+    // During build time or when service key is missing, return placeholder
+    return null as any
   }
 
   return createClient(supabaseUrl, supabaseServiceKey, {
@@ -124,6 +130,10 @@ export const db = {
     includeCategories?: boolean
     slug?: string
   } = {}) {
+    if (!supabase) {
+      return { data: null, error: new Error('Supabase client not available') }
+    }
+
     // Build the select clause dynamically to avoid trailing commas
     const selectFields = ['*']
     if (options.includeAuthor) {

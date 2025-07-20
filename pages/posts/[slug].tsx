@@ -27,6 +27,14 @@ export default function ProjectSlugRoute(props: PageProps) {
 export const getStaticProps: GetStaticProps<PageProps, Query> = async (ctx) => {
   const { params = {} } = ctx
 
+  // Check if Supabase is available (might not be during build time)
+  if (!db || typeof db.getPostBySlug !== 'function' || typeof db.getPosts !== 'function') {
+    console.warn('Supabase client not available during build, returning notFound')
+    return {
+      notFound: true,
+    }
+  }
+
   try {
     // Get the specific post by slug
     const { data: posts, error: postError } = await db.getPosts({
@@ -116,6 +124,15 @@ export const getStaticProps: GetStaticProps<PageProps, Query> = async (ctx) => {
 
 export const getStaticPaths = async () => {
   try {
+    // Check if Supabase is available (might not be during build time)
+    if (!db || typeof db.getPosts !== 'function') {
+      console.warn('Supabase client not available during build, using fallback')
+      return {
+        paths: [],
+        fallback: 'blocking',
+      }
+    }
+
     // Get all published post slugs
     const { data: posts, error } = await db.getPosts({
       status: 'published',

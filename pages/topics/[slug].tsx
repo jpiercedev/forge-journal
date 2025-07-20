@@ -166,6 +166,14 @@ export default function TopicPage(props: PageProps) {
 export const getStaticProps: GetStaticProps<PageProps, Query> = async (ctx) => {
   const { params = {} } = ctx
 
+  // Check if Supabase is available (might not be during build time)
+  if (!db || typeof db.getCategoryBySlug !== 'function' || typeof db.getPosts !== 'function') {
+    console.warn('Supabase client not available during build, returning notFound')
+    return {
+      notFound: true,
+    }
+  }
+
   try {
     // Get the category by slug
     const { data: category, error: categoryError } = await db.getCategoryBySlug(params.slug as string)
@@ -235,6 +243,15 @@ export const getStaticProps: GetStaticProps<PageProps, Query> = async (ctx) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   try {
+    // Check if Supabase is available (might not be during build time)
+    if (!db || typeof db.getCategories !== 'function') {
+      console.warn('Supabase client not available during build, using fallback')
+      return {
+        paths: [],
+        fallback: 'blocking',
+      }
+    }
+
     // Get all categories
     const { data: categories, error } = await db.getCategories()
 
