@@ -1,7 +1,7 @@
 // Admin Context Provider for Forge Journal SPA
 // Manages global admin state, user authentication, and shared data
 
-import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react'
+import React, { createContext, useContext, useReducer, useEffect, useCallback, ReactNode } from 'react'
 import { useRouter } from 'next/router'
 
 // Types
@@ -315,7 +315,7 @@ export function AdminProvider({ children }: AdminProviderProps) {
     }
   }
 
-  const refreshStats = async (): Promise<void> => {
+  const refreshStats = useCallback(async (): Promise<void> => {
     try {
       // Load posts stats
       const postsResponse = await fetch('/api/content/posts?limit=1000', {
@@ -356,7 +356,7 @@ export function AdminProvider({ children }: AdminProviderProps) {
     } catch (error) {
       console.error('Failed to refresh stats:', error)
     }
-  }
+  }, [dispatch])
 
   const hasPermission = (permission: string): boolean => {
     if (!state.user?.role?.permissions) return false

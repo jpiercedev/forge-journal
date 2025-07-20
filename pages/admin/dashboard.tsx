@@ -201,7 +201,7 @@ function Dashboard() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Link
               href="/admin/smart-import"
-              className="flex items-center p-4 rounded-lg border border-gray-200 hover:border-forge-teal hover:bg-forge-teal hover:bg-opacity-5 transition-all duration-200 group"
+              className="flex items-center p-4 rounded-lg border border-gray-200 hover:border-forge-teal hover:bg-gray-50 transition-all duration-200 group"
             >
               <div className="flex-1">
                 <h4 className="text-base font-semibold text-gray-900 group-hover:text-forge-teal font-sans transition-colors">
@@ -218,7 +218,7 @@ function Dashboard() {
 
             <Link
               href="/admin/posts"
-              className="flex items-center p-4 rounded-lg border border-gray-200 hover:border-forge-teal hover:bg-forge-teal hover:bg-opacity-5 transition-all duration-200 group"
+              className="flex items-center p-4 rounded-lg border border-gray-200 hover:border-forge-teal hover:bg-gray-50 transition-all duration-200 group"
             >
               <div className="flex-1">
                 <h4 className="text-base font-semibold text-gray-900 group-hover:text-forge-teal font-sans transition-colors">
@@ -235,7 +235,7 @@ function Dashboard() {
 
             <Link
               href="/admin/authors"
-              className="flex items-center p-4 rounded-lg border border-gray-200 hover:border-forge-teal hover:bg-forge-teal hover:bg-opacity-5 transition-all duration-200 group"
+              className="flex items-center p-4 rounded-lg border border-gray-200 hover:border-forge-teal hover:bg-gray-50 transition-all duration-200 group"
             >
               <div className="flex-1">
                 <h4 className="text-base font-semibold text-gray-900 group-hover:text-forge-teal font-sans transition-colors">
