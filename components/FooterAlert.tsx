@@ -3,9 +3,17 @@ import { useEffect,useState } from 'react'
 export default function FooterAlert() {
   const [isVisible, setIsVisible] = useState(false)
   const [isDismissed, setIsDismissed] = useState(false)
-  const [email, setEmail] = useState('')
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    smsOptIn: false
+  })
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSubmitted, setIsSubmitted] = useState(false)
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const [errorMessage, setErrorMessage] = useState('')
+  const [isExistingSubscriber, setIsExistingSubscriber] = useState(false)
 
   useEffect(() => {
     // Check if user has already dismissed the alert
@@ -29,20 +37,75 @@ export default function FooterAlert() {
     localStorage.setItem('forgeJournalAlertDismissed', 'true')
   }
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target
+
+    if (type === 'checkbox') {
+      setFormData(prev => ({
+        ...prev,
+        [name]: checked
+      }))
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }))
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
-    
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    setIsSubmitting(false)
-    setIsSubmitted(true)
-    
-    // Auto-dismiss after successful submission
-    setTimeout(() => {
-      handleDismiss()
-    }, 3000)
+    setSubmitStatus('idle')
+    setErrorMessage('')
+
+    try {
+      const response = await fetch('/api/contact/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      })
+
+      let result
+      try {
+        result = await response.json()
+      } catch (e) {
+        console.error('Failed to parse response:', e)
+        setSubmitStatus('error')
+        setErrorMessage('Invalid response from server')
+        return
+      }
+
+      if (response.ok) {
+        setSubmitStatus('success')
+        setIsExistingSubscriber(result.isExisting || false)
+        // Reset form
+        setFormData({
+          firstName: '',
+          lastName: '',
+          email: '',
+          phone: '',
+          smsOptIn: false
+        })
+
+        // Auto-dismiss after successful submission
+        setTimeout(() => {
+          handleDismiss()
+        }, 3000)
+      } else {
+        setSubmitStatus('error')
+        setErrorMessage(result.error || 'Failed to submit form')
+      }
+    } catch (error) {
+      setSubmitStatus('error')
+      setErrorMessage('Network error. Please try again.')
+      setIsExistingSubscriber(false)
+      console.error('Form submission error:', error)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   if (isDismissed) return null
@@ -56,10 +119,10 @@ export default function FooterAlert() {
       <div className="bg-white border-t-2 shadow-lg" style={{ borderColor: '#be9d58' }}>
         <div className="w-[90%] mx-auto py-4">
           <div className="flex items-center justify-between">
-            {!isSubmitted ? (
+            {submitStatus !== 'success' ? (
               <>
                 {/* Content */}
-                <div className="flex-1 flex flex-col sm:flex-row sm:items-center gap-4">
+                <div className="flex-1 flex flex-col gap-4">
                   <div className="flex-shrink-0">
                     <h3 className="text-lg font-bold text-gray-900 font-sans">
                       Receive The Forge Journal free every week
@@ -68,27 +131,83 @@ export default function FooterAlert() {
                       Get practical insights and theological wisdom delivered to your inbox.
                     </p>
                   </div>
-                  
-                  {/* Email Form */}
-                  <form onSubmit={handleSubmit} className="flex gap-2 min-w-0 flex-1 max-w-md">
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="Enter your email"
-                      required
-                      className="flex-1 px-3 py-2 text-sm border border-gray-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors"
-                    />
-                    <button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="px-4 py-2 text-sm font-thin uppercase tracking-wider text-white transition-colors duration-200 font-sans disabled:opacity-50"
-                      style={{ backgroundColor: '#1e4356' }}
-                      onMouseEnter={(e) => !isSubmitting && (e.currentTarget.style.backgroundColor = '#152e3f')}
-                      onMouseLeave={(e) => !isSubmitting && (e.currentTarget.style.backgroundColor = '#1e4356')}
-                    >
-                      {isSubmitting ? 'Signing up...' : 'Sign Up'}
-                    </button>
+
+                  {/* Contact Form */}
+                  <form onSubmit={handleSubmit} className="space-y-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <input
+                        type="text"
+                        name="firstName"
+                        value={formData.firstName}
+                        onChange={handleInputChange}
+                        placeholder="First Name"
+                        required
+                        className="px-3 py-2 text-sm border border-gray-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors font-sans"
+                      />
+                      <input
+                        type="text"
+                        name="lastName"
+                        value={formData.lastName}
+                        onChange={handleInputChange}
+                        placeholder="Last Name"
+                        required
+                        className="px-3 py-2 text-sm border border-gray-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors font-sans"
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        placeholder="Email Address"
+                        required
+                        className="px-3 py-2 text-sm border border-gray-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors font-sans"
+                      />
+                      <input
+                        type="tel"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        placeholder="Phone (Optional)"
+                        className="px-3 py-2 text-sm border border-gray-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors font-sans"
+                      />
+                    </div>
+
+                    {formData.phone && (
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          id="popup-sms-opt-in"
+                          name="smsOptIn"
+                          checked={formData.smsOptIn}
+                          onChange={handleInputChange}
+                          className="w-4 h-4 text-amber-600 bg-gray-100 border-gray-300 focus:ring-amber-500 focus:ring-2"
+                        />
+                        <label htmlFor="popup-sms-opt-in" className="text-xs text-gray-600 font-sans">
+                          I consent to receive text messages from The Forge Journal
+                        </label>
+                      </div>
+                    )}
+
+                    {submitStatus === 'error' && (
+                      <div className="text-red-600 text-sm font-sans">
+                        {errorMessage}
+                      </div>
+                    )}
+
+                    <div className="flex justify-end">
+                      <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="px-6 py-2 text-sm font-thin uppercase tracking-wider text-white transition-colors duration-200 font-sans disabled:opacity-50"
+                        style={{ backgroundColor: '#1e4356' }}
+                        onMouseEnter={(e) => !isSubmitting && (e.currentTarget.style.backgroundColor = '#152e3f')}
+                        onMouseLeave={(e) => !isSubmitting && (e.currentTarget.style.backgroundColor = '#1e4356')}
+                      >
+                        {isSubmitting ? 'Signing up...' : 'Sign Up'}
+                      </button>
+                    </div>
                   </form>
                 </div>
               </>
@@ -100,8 +219,15 @@ export default function FooterAlert() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-gray-900 font-sans">Thank you for subscribing!</h3>
-                  <p className="text-sm text-gray-600">You&apos;ll receive The Forge Journal in your inbox every week.</p>
+                  <h3 className="text-lg font-bold text-gray-900 font-sans">
+                    {isExistingSubscriber ? 'Welcome back!' : 'Thank you for subscribing!'}
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    {isExistingSubscriber
+                      ? "You're already part of The Forge Journal family and will continue receiving bold biblical leadership insights."
+                      : "You'll receive The Forge Journal in your inbox every week."
+                    }
+                  </p>
                 </div>
               </div>
             )}

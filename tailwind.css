@@ -3,26 +3,45 @@
 @plugin "@tailwindcss/typography";
 
 @theme {
+  /* TailAdmin Modern Color Palette */
   --color-accent-1: #fafafa;
   --color-accent-2: #eaeaea;
   --color-accent-7: #333;
-  --color-success: #0070f3;
-  --color-cyan: #79ffe1;
-  --color-blue-500: #2276fc;
+  --color-success: #10b981;
+  --color-cyan: #06b6d4;
+
+  /* Primary Dark Teal - TailAdmin Style */
+  --color-primary: #1e4356;
+  --color-primary-hover: #152e3f;
+  --color-primary-light: #f0f4f6;
+  --color-blue-500: #3b82f6;
+  --color-blue-600: #2563eb;
+  --color-blue-700: #1d4ed8;
   --color-blue-800: #1e40af;
   --color-blue-900: #1e3a8a;
-  --color-yellow-100: #fef7da;
-  --color-orange-600: #ea580c;
-  --color-orange-500: #f97316;
-  --color-amber-600: #d97706;
-  --color-amber-500: #f59e0b;
-  --color-amber-400: #fbbf24;
-  --color-forge-gold: #be9d58;
-  --color-forge-gold-hover: #a8894e;
-  --color-teal-600: #0d9488;
-  --color-teal-700: #0f766e;
-  --color-forge-teal: #1e4356;
-  --color-forge-teal-hover: #152e3f;
+
+  /* Status Colors */
+  --color-success: #10b981;
+  --color-success-light: #d1fae5;
+  --color-warning: #f59e0b;
+  --color-warning-light: #fef3c7;
+  --color-danger: #ef4444;
+  --color-danger-light: #fee2e2;
+  --color-info: #3b82f6;
+  --color-info-light: #dbeafe;
+
+  /* Neutral Grays - TailAdmin Style */
+  --color-gray-1: #f9fafb;
+  --color-gray-2: #f3f4f6;
+  --color-gray-3: #e5e7eb;
+  --color-gray-4: #d1d5db;
+  --color-gray-5: #9ca3af;
+  --color-gray-6: #6b7280;
+  --color-gray-7: #374151;
+  --color-gray-8: #1f2937;
+  --color-gray-9: #111827;
+
+  /* Legacy color mappings for compatibility */
   --color-gray-50: #f9fafb;
   --color-gray-100: #f3f4f6;
   --color-gray-200: #e5e7eb;
@@ -33,6 +52,20 @@
   --color-gray-700: #374151;
   --color-gray-800: #1f2937;
   --color-gray-900: #111827;
+
+  /* Dark Theme Colors */
+  --color-dark: #1c2434;
+  --color-dark-2: #24303f;
+  --color-dark-3: #313d4a;
+  --color-dark-4: #3d4a5c;
+  --color-dark-5: #5a6c7d;
+  --color-dark-6: #64748b;
+
+  /* Legacy Forge Colors (kept for frontend compatibility) */
+  --color-forge-gold: #be9d58;
+  --color-forge-gold-hover: #a8894e;
+  --color-forge-teal: #1e4356;
+  --color-forge-teal-hover: #152e3f;
 
   --tracking-tighter: -0.04em;
   --tracking-wide: 0.025em;
@@ -50,11 +83,11 @@
   --shadow-medium: 0 8px 30px rgba(0, 0, 0, 0.12);
 
   --font-family-sans: 'proxima-nova', ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --font-family-serif: 'adobe-garamond-pro', ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-family-serif: 'proxima-nova', ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 
-  /* Font family utilities for Tailwind v4 */
+  /* Font family utilities for Tailwind v4 - Both use Proxima Nova */
   --font-sans: var(--font-family-sans);
-  --font-serif: var(--font-family-serif);
+  --font-serif: var(--font-family-sans);
 }
 
 /*
@@ -75,7 +108,7 @@
   }
 
   body {
-    font-family: var(--font-family-sans);
+    font-family: 'proxima-nova', ui-sans-serif, system-ui, sans-serif;
     line-height: 1.6;
     color: #374151;
   }
@@ -86,7 +119,7 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-family-sans);
+    font-family: 'proxima-nova', ui-sans-serif, system-ui, sans-serif;
     font-weight: 900;
     line-height: var(--leading-tight);
     color: #111827;
@@ -147,13 +180,13 @@
     color: #111827;
   }
 
-  /* Explicit font family utilities */
+  /* Explicit font family utilities - Both use Proxima Nova */
   .font-sans {
-    font-family: var(--font-family-sans);
+    font-family: 'proxima-nova', ui-sans-serif, system-ui, sans-serif;
   }
 
   .font-serif {
-    font-family: var(--font-family-serif);
+    font-family: 'proxima-nova', ui-sans-serif, system-ui, sans-serif;
   }
 
   /* Custom Contact Form Styling */

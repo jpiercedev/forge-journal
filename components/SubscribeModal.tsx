@@ -6,24 +6,95 @@ interface SubscribeModalProps {
 }
 
 export default function SubscribeModal({ isOpen, onClose }: SubscribeModalProps) {
-  const [email, setEmail] = useState('')
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    smsOptIn: false
+  })
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSubmitted, setIsSubmitted] = useState(false)
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const [errorMessage, setErrorMessage] = useState('')
+  const [isExistingSubscriber, setIsExistingSubscriber] = useState(false)
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target
+
+    if (type === 'checkbox') {
+      setFormData(prev => ({
+        ...prev,
+        [name]: checked
+      }))
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }))
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
-    
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    setIsSubmitting(false)
-    setIsSubmitted(true)
+    setSubmitStatus('idle')
+    setErrorMessage('')
+
+    try {
+      const response = await fetch('/api/contact/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      })
+
+      let result
+      try {
+        result = await response.json()
+      } catch (e) {
+        console.error('Failed to parse response:', e)
+        setSubmitStatus('error')
+        setErrorMessage('Invalid response from server')
+        return
+      }
+
+      if (response.ok) {
+        setSubmitStatus('success')
+        setIsExistingSubscriber(result.isExisting || false)
+        // Reset form
+        setFormData({
+          firstName: '',
+          lastName: '',
+          email: '',
+          phone: '',
+          smsOptIn: false
+        })
+      } else {
+        setSubmitStatus('error')
+        setErrorMessage(result.error || 'Failed to submit form')
+      }
+    } catch (error) {
+      setSubmitStatus('error')
+      setErrorMessage('Network error. Please try again.')
+      setIsExistingSubscriber(false)
+      console.error('Form submission error:', error)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleClose = () => {
-    setEmail('')
-    setIsSubmitted(false)
+    setFormData({
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      smsOptIn: false
+    })
+    setSubmitStatus('idle')
+    setErrorMessage('')
+    setIsExistingSubscriber(false)
     onClose()
   }
 
@@ -59,8 +130,40 @@ export default function SubscribeModal({ isOpen, onClose }: SubscribeModalProps)
               Stay connected with the latest articles, insights, and resources from The Forge Journal.
             </p>
 
-            {!isSubmitted ? (
+            {submitStatus !== 'success' ? (
               <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="modal-firstName" className="block text-sm font-medium text-gray-700 mb-2 font-sans">
+                      First Name
+                    </label>
+                    <input
+                      type="text"
+                      id="modal-firstName"
+                      name="firstName"
+                      value={formData.firstName}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-4 py-3 border border-gray-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors font-sans"
+                      placeholder="First Name"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="modal-lastName" className="block text-sm font-medium text-gray-700 mb-2 font-sans">
+                      Last Name
+                    </label>
+                    <input
+                      type="text"
+                      id="modal-lastName"
+                      name="lastName"
+                      value={formData.lastName}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-4 py-3 border border-gray-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors font-sans"
+                      placeholder="Last Name"
+                    />
+                  </div>
+                </div>
                 <div>
                   <label htmlFor="modal-email" className="block text-sm font-medium text-gray-700 mb-2 font-sans">
                     Email Address
@@ -68,13 +171,51 @@ export default function SubscribeModal({ isOpen, onClose }: SubscribeModalProps)
                   <input
                     type="email"
                     id="modal-email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
                     required
                     className="w-full px-4 py-3 border border-gray-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors font-sans"
                     placeholder="Enter your email address"
                   />
                 </div>
+                <div>
+                  <label htmlFor="modal-phone" className="block text-sm font-medium text-gray-700 mb-2 font-sans">
+                    Phone Number (Optional)
+                  </label>
+                  <input
+                    type="tel"
+                    id="modal-phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-gray-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors font-sans"
+                    placeholder="Phone number (optional)"
+                  />
+                </div>
+
+                {formData.phone && (
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="modal-sms-opt-in"
+                      name="smsOptIn"
+                      checked={formData.smsOptIn}
+                      onChange={handleInputChange}
+                      className="w-4 h-4 text-amber-600 bg-gray-100 border-gray-300 focus:ring-amber-500 focus:ring-2"
+                    />
+                    <label htmlFor="modal-sms-opt-in" className="text-sm text-gray-600 font-sans">
+                      I consent to receive text messages from The Forge Journal
+                    </label>
+                  </div>
+                )}
+
+                {submitStatus === 'error' && (
+                  <div className="text-red-600 text-sm font-sans">
+                    {errorMessage}
+                  </div>
+                )}
+
                 <button
                   type="submit"
                   disabled={isSubmitting}
@@ -93,9 +234,14 @@ export default function SubscribeModal({ isOpen, onClose }: SubscribeModalProps)
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2 font-sans">Thank you for subscribing!</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2 font-sans">
+                  {isExistingSubscriber ? 'Welcome back!' : 'Thank you for subscribing!'}
+                </h3>
                 <p className="text-gray-600 mb-4 font-sans">
-                  You&apos;ll receive our latest articles and insights directly in your inbox.
+                  {isExistingSubscriber
+                    ? "You're already part of The Forge Journal family and will continue receiving bold biblical leadership insights and updates from the movement."
+                    : "You'll receive our latest articles and insights directly in your inbox."
+                  }
                 </p>
                 <button
                   onClick={handleClose}

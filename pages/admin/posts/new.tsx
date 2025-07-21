@@ -52,7 +52,7 @@ function NewPostPage() {
 
   const loadAuthors = async () => {
     try {
-      const response = await fetch('/api/content/authors', {
+      const response = await fetch('/api/content/contributors', {
         credentials: 'include',
       })
       const data = await response.json()
@@ -61,7 +61,7 @@ function NewPostPage() {
         setAuthors(data.data)
       }
     } catch (error) {
-      console.error('Failed to load authors:', error)
+      console.error('Failed to load contributors:', error)
     }
   }
 

@@ -36,12 +36,12 @@ export default function FontTest() {
           </div>
         </div>
 
-        {/* Serif Font (Garamond) Tests */}
+        {/* Serif Font (Now Proxima Nova) Tests */}
         <div className="mb-12">
           <h2 className="text-2xl font-bold mb-6 text-forge-teal font-sans">
-            Serif Font (Adobe Garamond Pro) - font-serif
+            Serif Font (Proxima Nova) - font-serif
           </h2>
-          
+
           <div className="space-y-4">
             <p className="text-lg font-serif font-light">
               Light: The quick brown fox jumps over the lazy dog
@@ -83,13 +83,13 @@ export default function FontTest() {
 
             <div className="border border-gray-200 rounded-lg p-6">
               <h3 className="text-xl font-bold font-serif mb-2 text-gray-900">
-                Content Example (Adobe Garamond Pro)
+                Content Example (Proxima Nova)
               </h3>
               <p className="font-serif text-gray-700 leading-relaxed">
-                This is how content appears using Adobe Garamond Pro. This elegant serif font 
-                is perfect for author names, volume information, and other content elements 
-                that need a more traditional, authoritative feel. The font should maintain 
-                excellent readability while adding sophistication to the design.
+                This is how content appears using Proxima Nova for all backend text. Both font-sans
+                and font-serif classes now use Proxima Nova to ensure consistent typography
+                throughout the admin interface. This provides a clean, modern, and unified
+                appearance for all administrative functions.
               </p>
             </div>
           </div>
@@ -110,12 +110,12 @@ export default function FontTest() {
             <div>
               <strong className="font-sans">Serif Font Family:</strong>
               <code className="ml-2 bg-gray-200 px-2 py-1 rounded font-mono">
-                adobe-garamond-pro
+                proxima-nova
               </code>
             </div>
           </div>
           <p className="text-sm text-gray-600 mt-4 font-sans">
-            If the fonts above don&apos;t look different from system fonts, there may be an issue with the Adobe Fonts loading.
+            Both font-sans and font-serif now use Proxima Nova for consistent backend typography. If the fonts don&apos;t look like Proxima Nova, there may be an issue with the Adobe Fonts loading.
           </p>
         </div>
 

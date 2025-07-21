@@ -17,19 +17,82 @@ interface PageProps extends SharedPageProps {
 
 export default function SubscribePage(props: PageProps) {
   const { posts, settings } = props
-  const [email, setEmail] = useState('')
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    smsOptIn: false
+  })
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSubmitted, setIsSubmitted] = useState(false)
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const [errorMessage, setErrorMessage] = useState('')
+  const [isExistingSubscriber, setIsExistingSubscriber] = useState(false)
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target
+
+    if (type === 'checkbox') {
+      setFormData(prev => ({
+        ...prev,
+        [name]: checked
+      }))
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }))
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
-    
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    setIsSubmitting(false)
-    setIsSubmitted(true)
+    setSubmitStatus('idle')
+    setErrorMessage('')
+
+    try {
+      const response = await fetch('/api/contact/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      })
+
+      let result
+      try {
+        result = await response.json()
+      } catch (e) {
+        console.error('Failed to parse response:', e)
+        setSubmitStatus('error')
+        setErrorMessage('Invalid response from server')
+        return
+      }
+
+      if (response.ok) {
+        setSubmitStatus('success')
+        setIsExistingSubscriber(result.isExisting || false)
+        // Reset form
+        setFormData({
+          firstName: '',
+          lastName: '',
+          email: '',
+          phone: '',
+          smsOptIn: false
+        })
+      } else {
+        setSubmitStatus('error')
+        setErrorMessage(result.error || 'Failed to submit form')
+      }
+    } catch (error) {
+      setSubmitStatus('error')
+      setErrorMessage('Network error. Please try again.')
+      setIsExistingSubscriber(false)
+      console.error('Form submission error:', error)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -59,28 +122,101 @@ export default function SubscribePage(props: PageProps) {
               Our subscribers receive exclusive content and early access to new publications.
             </p>
 
-            {!isSubmitted ? (
+            {submitStatus !== 'success' ? (
               <div className="bg-gray-50 p-8 mb-8">
-                <h2 className="text-2xl font-semibold text-gray-900 mb-6">Free Subscription</h2>
+                <h2 className="text-2xl font-semibold text-gray-900 mb-6 font-sans">Free Subscription</h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2 font-sans">
+                        First Name
+                      </label>
+                      <input
+                        type="text"
+                        id="firstName"
+                        name="firstName"
+                        value={formData.firstName}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full px-4 py-3 border border-gray-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors font-sans"
+                        placeholder="First Name"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2 font-sans">
+                        Last Name
+                      </label>
+                      <input
+                        type="text"
+                        id="lastName"
+                        name="lastName"
+                        value={formData.lastName}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full px-4 py-3 border border-gray-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors font-sans"
+                        placeholder="Last Name"
+                      />
+                    </div>
+                  </div>
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2 font-sans">
                       Email Address
                     </label>
                     <input
                       type="email"
                       id="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-4 py-3 border border-gray-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors font-sans"
                       placeholder="Enter your email address"
                     />
                   </div>
+                  <div>
+                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2 font-sans">
+                      Phone Number (Optional)
+                    </label>
+                    <input
+                      type="tel"
+                      id="phone"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 border border-gray-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors font-sans"
+                      placeholder="Phone number (optional)"
+                    />
+                  </div>
+
+                  {formData.phone && (
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        id="sms-opt-in"
+                        name="smsOptIn"
+                        checked={formData.smsOptIn}
+                        onChange={handleInputChange}
+                        className="w-4 h-4 text-amber-600 bg-gray-100 border-gray-300 focus:ring-amber-500 focus:ring-2"
+                      />
+                      <label htmlFor="sms-opt-in" className="text-sm text-gray-600 font-sans">
+                        I consent to receive text messages from The Forge Journal
+                      </label>
+                    </div>
+                  )}
+
+                  {submitStatus === 'error' && (
+                    <div className="text-red-600 text-sm font-sans">
+                      {errorMessage}
+                    </div>
+                  )}
+
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="bg-blue-800 hover:bg-blue-900 disabled:bg-gray-400 text-white px-8 py-3 text-sm font-medium uppercase tracking-wide transition-colors duration-200"
+                    className="text-white px-8 py-3 text-sm font-medium uppercase tracking-wide transition-colors duration-200 font-sans disabled:opacity-50"
+                    style={{ backgroundColor: '#1e4356' }}
+                    onMouseEnter={(e) => !isSubmitting && (e.currentTarget.style.backgroundColor = '#152e3f')}
+                    onMouseLeave={(e) => !isSubmitting && (e.currentTarget.style.backgroundColor = '#1e4356')}
                   >
                     {isSubmitting ? 'Subscribing...' : 'Subscribe Now'}
                   </button>
@@ -88,9 +224,14 @@ export default function SubscribePage(props: PageProps) {
               </div>
             ) : (
               <div className="bg-green-50 border border-green-200 p-8 mb-8">
-                <h2 className="text-2xl font-semibold text-green-800 mb-4">Thank You for Subscribing!</h2>
-                <p className="text-green-700">
-                  You&apos;ll receive a confirmation email shortly. Welcome to The Forge Journal community!
+                <h2 className="text-2xl font-semibold text-green-800 mb-4 font-sans">
+                  {isExistingSubscriber ? 'Welcome back!' : 'Thank You for Subscribing!'}
+                </h2>
+                <p className="text-green-700 font-sans">
+                  {isExistingSubscriber
+                    ? "You're already part of The Forge Journal family and will continue receiving bold biblical leadership insights and updates from the movement. Thank you for your continued support!"
+                    : "You'll receive a confirmation email shortly. Welcome to The Forge Journal community!"
+                  }
                 </p>
               </div>
             )}

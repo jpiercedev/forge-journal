@@ -1,4 +1,4 @@
-// Content Management API - Authors CRUD
+// Content Management API - Contributors CRUD
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { adminDb, db, generateSlug, type Author } from '../../../lib/supabase/client'
@@ -33,13 +33,13 @@ async function handler(
   try {
     switch (req.method) {
       case 'GET':
-        return await handleGetAuthors(req, res)
+        return await handleGetContributors(req, res)
       case 'POST':
-        return await handleCreateAuthor(req, res)
+        return await handleCreateContributor(req, res)
       case 'PUT':
-        return await handleUpdateAuthor(req, res)
+        return await handleUpdateContributor(req, res)
       case 'DELETE':
-        return await handleDeleteAuthor(req, res)
+        return await handleDeleteContributor(req, res)
       default:
         return res.status(405).json({
           success: false,
@@ -50,7 +50,7 @@ async function handler(
         })
     }
   } catch (error) {
-    console.error('Authors API error:', error)
+    console.error('Contributors API error:', error)
     return res.status(500).json({
       success: false,
       error: {
@@ -64,11 +64,11 @@ async function handler(
 
 export default withAdminAuth(handler)
 
-// GET /api/content/authors - List authors or get single author
-async function handleGetAuthors(req: AuthenticatedRequest, res: NextApiResponse<ApiResponse>) {
+// GET /api/content/contributors - List contributors or get single contributor
+async function handleGetContributors(req: AuthenticatedRequest, res: NextApiResponse<ApiResponse>) {
   const { id, slug } = req.query
 
-  // Get single author by ID or slug
+  // Get single contributor by ID or slug
   if (id || slug) {
     try {
       let result
@@ -78,15 +78,15 @@ async function handleGetAuthors(req: AuthenticatedRequest, res: NextApiResponse<
         // For ID, we'll need to add this method to the db helper
         result = await db.getAuthors()
         const author = result.data?.find(a => a.id === id)
-        result = { data: author, error: author ? null : new Error('Author not found') }
+        result = { data: author, error: author ? null : new Error('Contributor not found') }
       }
 
       if (result.error || !result.data) {
         return res.status(404).json({
           success: false,
           error: {
-            code: 'AUTHOR_NOT_FOUND',
-            message: 'Author not found',
+            code: 'CONTRIBUTOR_NOT_FOUND',
+            message: 'Contributor not found',
           },
         })
       }
@@ -94,20 +94,20 @@ async function handleGetAuthors(req: AuthenticatedRequest, res: NextApiResponse<
       return res.status(200).json({
         success: true,
         data: result.data,
-        message: 'Author retrieved successfully',
+        message: 'Contributor retrieved successfully',
       })
     } catch (error) {
       return res.status(500).json({
         success: false,
         error: {
           code: 'FETCH_FAILED',
-          message: 'Failed to fetch author',
+          message: 'Failed to fetch contributor',
         },
       })
     }
   }
 
-  // List all authors
+  // List all contributors
   try {
     const result = await db.getAuthors()
 
@@ -118,21 +118,21 @@ async function handleGetAuthors(req: AuthenticatedRequest, res: NextApiResponse<
     return res.status(200).json({
       success: true,
       data: result.data,
-      message: 'Authors retrieved successfully',
+      message: 'Contributors retrieved successfully',
     })
   } catch (error) {
     return res.status(500).json({
       success: false,
       error: {
         code: 'FETCH_FAILED',
-        message: 'Failed to fetch authors',
+        message: 'Failed to fetch contributors',
       },
     })
   }
 }
 
-// POST /api/content/authors - Create new author
-async function handleCreateAuthor(req: AuthenticatedRequest, res: NextApiResponse<ApiResponse>) {
+// POST /api/content/contributors - Create new contributor
+async function handleCreateContributor(req: AuthenticatedRequest, res: NextApiResponse<ApiResponse>) {
   const authorData = req.body
 
   // Validate required fields
@@ -141,7 +141,7 @@ async function handleCreateAuthor(req: AuthenticatedRequest, res: NextApiRespons
       success: false,
       error: {
         code: 'INVALID_INPUT',
-        message: 'Author name is required',
+        message: 'Contributor name is required',
       },
     })
   }
@@ -164,22 +164,22 @@ async function handleCreateAuthor(req: AuthenticatedRequest, res: NextApiRespons
     return res.status(201).json({
       success: true,
       data: result.data,
-      message: 'Author created successfully',
+      message: 'Contributor created successfully',
     })
   } catch (error) {
     return res.status(500).json({
       success: false,
       error: {
         code: 'CREATE_FAILED',
-        message: 'Failed to create author',
+        message: 'Failed to create contributor',
         details: error.message,
       },
     })
   }
 }
 
-// PUT /api/content/authors - Update existing author
-async function handleUpdateAuthor(req: AuthenticatedRequest, res: NextApiResponse<ApiResponse>) {
+// PUT /api/content/contributors - Update existing contributor
+async function handleUpdateContributor(req: AuthenticatedRequest, res: NextApiResponse<ApiResponse>) {
   const { id } = req.query
   const updateData = req.body
 
@@ -188,7 +188,7 @@ async function handleUpdateAuthor(req: AuthenticatedRequest, res: NextApiRespons
       success: false,
       error: {
         code: 'INVALID_INPUT',
-        message: 'Author ID is required',
+        message: 'Contributor ID is required',
       },
     })
   }
@@ -211,22 +211,22 @@ async function handleUpdateAuthor(req: AuthenticatedRequest, res: NextApiRespons
     return res.status(200).json({
       success: true,
       data: result.data,
-      message: 'Author updated successfully',
+      message: 'Contributor updated successfully',
     })
   } catch (error) {
     return res.status(500).json({
       success: false,
       error: {
         code: 'UPDATE_FAILED',
-        message: 'Failed to update author',
+        message: 'Failed to update contributor',
         details: error.message,
       },
     })
   }
 }
 
-// DELETE /api/content/authors - Delete author
-async function handleDeleteAuthor(req: AuthenticatedRequest, res: NextApiResponse<ApiResponse>) {
+// DELETE /api/content/contributors - Delete contributor
+async function handleDeleteContributor(req: AuthenticatedRequest, res: NextApiResponse<ApiResponse>) {
   const { id } = req.query
 
   if (!id) {
@@ -234,7 +234,7 @@ async function handleDeleteAuthor(req: AuthenticatedRequest, res: NextApiRespons
       success: false,
       error: {
         code: 'INVALID_INPUT',
-        message: 'Author ID is required',
+        message: 'Contributor ID is required',
       },
     })
   }
@@ -252,14 +252,14 @@ async function handleDeleteAuthor(req: AuthenticatedRequest, res: NextApiRespons
 
     return res.status(200).json({
       success: true,
-      message: 'Author deleted successfully',
+      message: 'Contributor deleted successfully',
     })
   } catch (error) {
     return res.status(500).json({
       success: false,
       error: {
         code: 'DELETE_FAILED',
-        message: 'Failed to delete author',
+        message: 'Failed to delete contributor',
         details: error.message,
       },
     })

@@ -26,7 +26,7 @@ interface DashboardStats {
   totalPosts: number
   publishedPosts: number
   draftPosts: number
-  totalAuthors: number
+  totalContributors: number
   totalCategories: number
   totalUsers: number
 }
@@ -323,11 +323,11 @@ export function AdminProvider({ children }: AdminProviderProps) {
       })
       const postsData = await postsResponse.json()
 
-      // Load authors stats
-      const authorsResponse = await fetch('/api/content/authors', {
+      // Load contributors stats
+      const contributorsResponse = await fetch('/api/content/contributors', {
         credentials: 'include',
       })
-      const authorsData = await authorsResponse.json()
+      const contributorsData = await contributorsResponse.json()
 
       // Load categories stats
       const categoriesResponse = await fetch('/api/content/categories', {
@@ -347,7 +347,7 @@ export function AdminProvider({ children }: AdminProviderProps) {
           totalPosts: posts.length,
           publishedPosts: posts.filter((p: any) => p.status === 'published').length,
           draftPosts: posts.filter((p: any) => p.status === 'draft').length,
-          totalAuthors: authorsData.success ? authorsData.data.length : 0,
+          totalContributors: contributorsData.success ? contributorsData.data.length : 0,
           totalCategories: categoriesData.success ? categoriesData.data.length : 0,
           totalUsers: usersData.success ? usersData.data.length : 0,
         }
