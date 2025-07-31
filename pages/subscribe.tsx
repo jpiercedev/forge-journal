@@ -108,7 +108,7 @@ export default function SubscribePage(props: PageProps) {
         recentPosts={posts.slice(0, 3)} 
         showSidebar={true}
       >
-        <div className="max-w-4xl">
+        <div>
           <div className="mb-8">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-6">
               Subscribe to The Forge Journal

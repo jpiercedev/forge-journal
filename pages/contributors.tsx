@@ -33,7 +33,7 @@ export default function ContributorsPage({ authors, posts }: ContributorsPagePro
         recentPosts={posts.slice(0, 3)}
         showSidebar={true}
       >
-        <div className="max-w-6xl">
+        <div>
           <div className="mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-6 font-sans">
               Contributors

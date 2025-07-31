@@ -30,9 +30,9 @@ export default function AboutPage(props: PageProps) {
         recentPosts={posts.slice(0, 3)}
         showSidebar={true}
       >
-        <div className="max-w-4xl">
+        <div>
           <div className="mb-8">
-            <div className="py-4 px-6 mb-8 -mx-4 border-t-4 border-b-4 shadow-lg" style={{ backgroundColor: '#B91C1C', borderColor: '#991B1B' }}>
+            <div className="py-4 px-6 mb-8 border-t-4 border-b-4 shadow-lg" style={{ backgroundColor: '#B91C1C', borderColor: '#991B1B' }}>
               <h2 className="text-xl md:text-2xl font-bold text-center font-sans uppercase tracking-wide text-white">
                 Shaping Minds who Shape the Nation
               </h2>
