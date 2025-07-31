@@ -29,7 +29,7 @@ export default function ForgeLayout({
   searchBar,
 }: ForgeLayoutProps) {
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 overflow-x-hidden">
       <AlertBanner preview={preview} loading={loading} />
       <ForgeHeader />
 
@@ -37,16 +37,16 @@ export default function ForgeLayout({
         <DynamicBanner />
       </div>
 
-      <main className="w-[90%] mx-auto pt-3 pb-6 max-w-[1280px]">
-        <div className={`${showSidebar ? 'lg:grid lg:grid-cols-4 lg:gap-6' : ''} flex flex-col lg:flex-row gap-6`}>
+      <main className="w-full px-4 sm:w-[95%] md:w-[90%] mx-auto pt-3 pb-6 max-w-[1280px]">
+        <div className={`${showSidebar ? 'lg:grid lg:grid-cols-4 lg:gap-6' : ''} flex flex-col lg:flex-row gap-4 lg:gap-6`}>
           {/* Main Content Area - 3/4 width */}
-          <div className={`${showSidebar ? 'lg:col-span-3' : 'w-full'}`}>
+          <div className={`${showSidebar ? 'lg:col-span-3' : 'w-full'} min-w-0`}>
             {children}
           </div>
 
           {/* Sidebar - 1/4 width */}
           {showSidebar && (
-            <div className="lg:col-span-1 space-y-6">
+            <div className="lg:col-span-1 space-y-4 lg:space-y-6 min-w-0">
               {/* Tagline Section - Sidebar */}
               {showTagline && (
                 <div
@@ -96,8 +96,8 @@ export default function ForgeLayout({
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 mt-16">
-        <div className="w-[90%] mx-auto py-8 max-w-[1280px]">
+      <footer className="bg-white border-t border-gray-200 mt-8 md:mt-16">
+        <div className="w-full px-4 sm:w-[95%] md:w-[90%] mx-auto py-6 md:py-8 max-w-[1280px]">
           <div className="text-center text-gray-600">
             <p className="text-sm">
               © {new Date().getFullYear()} The Forge Journal. All rights reserved.

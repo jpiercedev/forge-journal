@@ -35,11 +35,11 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
         <div className="max-w-none">
           {/* Featured Article - Full Width Background with Overlay */}
           {featuredPost && (
-            <section className="mb-16">
+            <section className="mb-8 md:mb-16">
               <div className="relative">
                 {/* Featured Badge */}
-                <div className="absolute top-4 left-4 z-20">
-                  <span className="inline-block px-3 py-1 text-xs font-bold uppercase tracking-wider text-white rounded-full font-sans"
+                <div className="absolute top-2 md:top-4 left-2 md:left-4 z-20">
+                  <span className="inline-block px-2 md:px-3 py-1 text-xs font-bold uppercase tracking-wider text-white rounded-full font-sans"
                         style={{ backgroundColor: '#be9d58' }}>
                     Featured
                   </span>
@@ -78,9 +78,9 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
 
                     {/* Content Overlay */}
                     <div className="absolute inset-0 flex items-end">
-                      <div className="p-6 sm:p-6 md:p-8 lg:p-12 max-w-2xl w-full pb-8 sm:pb-6 md:pb-8 lg:pb-12">
+                      <div className="p-4 sm:p-6 md:p-8 lg:p-12 max-w-2xl w-full pb-6 sm:pb-6 md:pb-8 lg:pb-12">
                         {/* Article Title */}
-                        <h1 className="text-lg sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black text-white leading-tight mb-2 sm:mb-3 md:mb-4 tracking-tight font-sans">
+                        <h1 className="text-base sm:text-lg md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl font-black text-white leading-tight mb-2 sm:mb-3 md:mb-4 tracking-tight font-sans">
                           {featuredPost.title}
                         </h1>
 
@@ -102,14 +102,14 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
 
                         {/* Article Excerpt */}
                         {featuredPost.excerpt && (
-                          <p className="text-gray-200 leading-relaxed text-sm sm:text-base md:text-lg mb-3 sm:mb-4 md:mb-6 max-w-xl font-serif line-clamp-2 sm:line-clamp-3 md:line-clamp-none">
+                          <p className="text-gray-200 leading-relaxed text-xs sm:text-sm md:text-base lg:text-lg mb-3 sm:mb-4 md:mb-6 max-w-xl font-serif line-clamp-2 sm:line-clamp-3 md:line-clamp-none">
                             {featuredPost.excerpt}
                           </p>
                         )}
 
                         {/* CTA Button */}
                         <div className="inline-block">
-                          <span className="inline-block text-white px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-semibold uppercase tracking-wider transition-all duration-200 font-sans border border-white hover:bg-white hover:text-gray-900">
+                          <span className="inline-block text-white px-3 sm:px-4 md:px-6 py-2 sm:py-2 md:py-3 text-xs sm:text-sm font-semibold uppercase tracking-wider transition-all duration-200 font-sans border border-white hover:bg-white hover:text-gray-900">
                             Read Issue
                           </span>
                         </div>
@@ -125,12 +125,12 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
 
           {/* Other Articles Grid */}
           {otherPosts.length > 0 && (
-            <section className="bg-white p-6 md:p-8 shadow-sm border-t-8" style={{ borderTopColor: '#1e4356' }}>
-              <div className="space-y-12 md:space-y-16">
+            <section className="bg-white p-4 md:p-6 lg:p-8 shadow-sm border-t-4 md:border-t-8" style={{ borderTopColor: '#1e4356' }}>
+              <div className="space-y-8 md:space-y-12 lg:space-y-16">
                 {otherPosts.map((post, index) => (
                   <div key={post.slug}>
                     <article className="group">
-                    <div className="flex flex-col md:flex-row gap-8">
+                    <div className="flex flex-col md:flex-row gap-4 md:gap-6 lg:gap-8">
                       {/* Article Image - 16:9 aspect ratio */}
                       <div className="md:w-1/3 flex-shrink-0">
                         <Link href={`/posts/${post.slug}`}>
@@ -157,8 +157,8 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
                       </div>
 
                       {/* Article Content */}
-                      <div className="flex-1">
-                        <h3 className="text-2xl md:text-3xl font-black text-gray-900 leading-tight mb-4 tracking-tight font-sans">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-xl md:text-2xl lg:text-3xl font-black text-gray-900 leading-tight mb-3 md:mb-4 tracking-tight font-sans">
                           <Link
                             href={`/posts/${post.slug}`}
                             className="hover:text-amber-600 transition-colors duration-200"
@@ -170,11 +170,11 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
                           </Link>
                         </h3>
 
-                        <div className="flex items-center space-x-4 text-sm text-gray-300 mb-4 font-sans">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 text-sm text-gray-300 mb-3 md:mb-4 font-sans space-y-1 sm:space-y-0">
                           {post.author && (
                             <span className="font-medium uppercase tracking-wider">{post.author.name}</span>
                           )}
-                          <span>|</span>
+                          <span className="hidden sm:inline">|</span>
                           <span className="font-medium uppercase tracking-wider">
                             {post.published_at ? new Date(post.published_at).toLocaleDateString('en-US', {
                               year: 'numeric',
@@ -184,13 +184,13 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
                         </div>
 
                         {post.excerpt && (
-                          <p className="text-gray-700 leading-relaxed mb-6 text-lg font-serif">
+                          <p className="text-gray-700 leading-relaxed mb-4 md:mb-6 text-base md:text-lg font-serif">
                             {post.excerpt}
                           </p>
                         )}
 
                         <Link href={`/posts/${post.slug}`}>
-                          <span className="inline-block text-white px-6 py-3 text-sm font-semibold uppercase tracking-wider transition-all duration-200 font-sans border hover:bg-transparent"
+                          <span className="inline-block text-white px-4 md:px-6 py-2 md:py-3 text-xs md:text-sm font-semibold uppercase tracking-wider transition-all duration-200 font-sans border hover:bg-transparent"
                                 style={{ backgroundColor: '#1e4356', borderColor: '#1e4356' }}
                                 onMouseEnter={(e) => {
                                   e.currentTarget.style.backgroundColor = 'transparent';
@@ -209,7 +209,7 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
 
                     {/* Subtle Divider - only show between articles, not after the last one */}
                     {index < otherPosts.length - 1 && (
-                      <div className="border-t border-gray-200 mt-12 md:mt-16"></div>
+                      <div className="border-t border-gray-200 mt-8 md:mt-12 lg:mt-16"></div>
                     )}
                   </div>
                 ))}

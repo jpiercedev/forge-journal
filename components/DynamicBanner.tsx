@@ -46,8 +46,8 @@ export default function DynamicBanner({ className = '' }: DynamicBannerProps) {
   }
 
   return (
-    <div className={`w-full h-[90px] bg-gray-100 ${className}`}>
-      <div className="w-[90%] mx-auto max-w-[1280px] h-full">
+    <div className={`w-full h-[70px] md:h-[90px] bg-gray-100 ${className}`}>
+      <div className="w-full px-4 sm:w-[95%] md:w-[90%] mx-auto max-w-[1280px] h-full">
         <div className="flex items-center justify-center h-full py-2">
           <div
             key={bannerAd.id}
@@ -72,14 +72,14 @@ export default function DynamicBanner({ className = '' }: DynamicBannerProps) {
             <div className="absolute inset-0 bg-gradient-to-r from-blue-900/60 via-red-800/50 to-blue-900/60"></div>
 
             {/* Ad Content */}
-            <div className="relative z-10 flex items-center justify-between h-full px-6">
+            <div className="relative z-10 flex items-center justify-between h-full px-3 md:px-6">
               {/* Left Side - Main Message */}
-              <div className="flex-1">
-                <h3 className="text-white font-bold text-lg font-sans tracking-wide">
+              <div className="flex-1 min-w-0 pr-2">
+                <h3 className="text-white font-bold text-sm md:text-lg font-sans tracking-wide truncate">
                   {bannerAd.headline}
                 </h3>
                 {bannerAd.subheading && (
-                  <p className="text-blue-100 text-sm font-sans">
+                  <p className="text-blue-100 text-xs md:text-sm font-sans truncate">
                     {bannerAd.subheading}
                   </p>
                 )}
@@ -87,8 +87,8 @@ export default function DynamicBanner({ className = '' }: DynamicBannerProps) {
               </div>
 
               {/* Right Side - CTA */}
-              <div className="flex-shrink-0 ml-4">
-                <div className="bg-white text-blue-900 px-4 py-2 font-bold text-sm font-sans uppercase tracking-wider hover:bg-blue-50 transition-colors duration-200 group-hover:scale-105 transform transition-transform">
+              <div className="flex-shrink-0 ml-2 md:ml-4">
+                <div className="bg-white text-blue-900 px-2 md:px-4 py-1 md:py-2 font-bold text-xs md:text-sm font-sans uppercase tracking-wider hover:bg-blue-50 transition-colors duration-200 group-hover:scale-105 transform transition-transform whitespace-nowrap">
                   {bannerAd.cta_text}
                 </div>
               </div>

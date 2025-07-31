@@ -54,7 +54,7 @@ function SupabaseContentRenderer({ content }: { content: any }) {
   }
 
   return (
-    <div>
+    <div className="px-4 md:px-0">
       {content.content.map((block: any, index: number) => {
         switch (block.type) {
           case 'heading':
@@ -82,7 +82,7 @@ function SupabaseContentRenderer({ content }: { content: any }) {
 
           case 'paragraph':
             return (
-              <p key={index} className="mb-4 text-gray-700 leading-relaxed font-sans">
+              <p key={index} className="mb-4 text-base md:text-lg text-gray-700 leading-relaxed font-sans">
                 {block.content?.map((textNode: any, textIndex: number) => (
                   <span key={textIndex}>{textNode.text}</span>
                 ))}
@@ -241,7 +241,7 @@ export default function PostBody({ content }) {
   if (typeof content === 'string' && content.includes('<')) {
     return (
       <div
-        className="font-sans text-gray-700"
+        className="font-sans text-gray-700 px-4 md:px-0"
         style={{ fontFamily: 'Montserrat, sans-serif' }}
         dangerouslySetInnerHTML={{ __html: content }}
       />
@@ -251,9 +251,9 @@ export default function PostBody({ content }) {
   // Check if it's plain text content
   if (typeof content === 'string') {
     return (
-      <div className="font-sans text-gray-700" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+      <div className="font-sans text-gray-700 px-4 md:px-0" style={{ fontFamily: 'Montserrat, sans-serif' }}>
         {content.split('\n').map((paragraph, index) => (
-          <p key={index} className="mb-4">
+          <p key={index} className="mb-4 text-base md:text-lg">
             {paragraph}
           </p>
         ))}
@@ -263,7 +263,7 @@ export default function PostBody({ content }) {
 
   // Fallback for unknown formats
   return (
-    <div className="font-sans text-gray-700">
+    <div className="font-sans text-gray-700 px-4 md:px-0">
       <p>Content format not supported</p>
     </div>
   )
