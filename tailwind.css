@@ -14,11 +14,11 @@
   --color-primary: #1e4356;
   --color-primary-hover: #152e3f;
   --color-primary-light: #f0f4f6;
-  --color-blue-500: #3b82f6;
-  --color-blue-600: #2563eb;
-  --color-blue-700: #1d4ed8;
-  --color-blue-800: #1e40af;
-  --color-blue-900: #1e3a8a;
+  --color-blue-500: #1e4356;
+  --color-blue-600: #1e4356;
+  --color-blue-700: #1e4356;
+  --color-blue-800: #1e4356;
+  --color-blue-900: #152e3f;
 
   /* Status Colors */
   --color-success: #10b981;
@@ -27,8 +27,8 @@
   --color-warning-light: #fef3c7;
   --color-danger: #ef4444;
   --color-danger-light: #fee2e2;
-  --color-info: #3b82f6;
-  --color-info-light: #dbeafe;
+  --color-info: #1e4356;
+  --color-info-light: #f0f4f6;
 
   /* Neutral Grays - TailAdmin Style */
   --color-gray-1: #f9fafb;

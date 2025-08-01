@@ -1,4 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
+import { Resend } from 'resend'
+
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 interface ContactFormData {
   firstName: string
@@ -144,9 +147,10 @@ export default async function handler(
     // Add tags to the contact after creation
     const contactId = virtuousResult.id
     if (contactId) {
-      // Tag IDs from Virtuous - these need to be created in Virtuous first
+      // Tag IDs from Virtuous
       const tagIdsToAdd = [
-        25  // FORGE TEST
+        25,  // The Forge Journal
+        26   // FJ Welcome Series
       ]
 
       for (const tagId of tagIdsToAdd) {
@@ -179,6 +183,218 @@ export default async function handler(
           console.error(`Error adding tag ID ${tagId}:`, tagError)
         }
       }
+    }
+
+    // Send email notification to jonathan@jpierce.dev
+    try {
+      if (process.env.RESEND_API_KEY) {
+        const emailHtml = `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>New Forge Journal Subscription</title>
+              <style>
+                @import url('https://use.typekit.net/43c2b92825d364b55a40fe57ff67fe61d306ab21.css');
+
+                body {
+                  font-family: 'proxima-nova', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                  line-height: 1.6;
+                  color: #374151;
+                  max-width: 600px;
+                  margin: 0 auto;
+                  padding: 0;
+                  background-color: #f9fafb;
+                }
+                .email-container {
+                  background-color: #ffffff;
+                  margin: 20px;
+                  border-radius: 12px;
+                  overflow: hidden;
+                  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+                }
+                .header {
+                  background: white;
+                  color: #1e4356;
+                  padding: 25px 30px;
+                  text-align: center;
+                  position: relative;
+                }
+                .header::after {
+                  content: '';
+                  position: absolute;
+                  bottom: 0;
+                  left: 0;
+                  right: 0;
+                  height: 4px;
+                  background: linear-gradient(90deg, #be9d58 0%, #a8894e 100%);
+                }
+                .logo {
+                  max-width: 200px;
+                  height: auto;
+                  margin-bottom: 15px;
+                }
+                .header h1 {
+                  margin: 0;
+                  font-size: 24px;
+                  font-weight: 700;
+                  letter-spacing: 0.5px;
+                  color: #1e4356;
+                }
+                .header p {
+                  margin: 10px 0 0 0;
+                  font-size: 14px;
+                  color: #6b7280;
+                  font-weight: 400;
+                }
+                .content {
+                  padding: 40px 30px;
+                }
+                .field {
+                  margin-bottom: 25px;
+                }
+                .field-label {
+                  font-weight: 700;
+                  color: #1e4356;
+                  font-size: 13px;
+                  text-transform: uppercase;
+                  letter-spacing: 1px;
+                  margin-bottom: 8px;
+                  display: block;
+                }
+                .field-value {
+                  color: #374151;
+                  font-size: 16px;
+                  line-height: 1.5;
+                  padding: 15px 0;
+                  border-bottom: 1px solid #e5e7eb;
+                }
+                .tags {
+                  background: linear-gradient(135deg, #f0f4f6 0%, #e5f3ff 100%);
+                  padding: 25px;
+                  border-radius: 12px;
+                  margin-top: 30px;
+                  border-left: 4px solid #be9d58;
+                }
+                .tags .field-label {
+                  color: #1e4356;
+                  margin-bottom: 15px;
+                }
+                .tags .field-value {
+                  border-bottom: none;
+                  padding: 0;
+                  font-weight: 500;
+                }
+                .footer {
+                  background-color: #1e4356;
+                  color: white;
+                  padding: 30px;
+                  text-align: center;
+                  font-size: 14px;
+                }
+                .footer p {
+                  margin: 8px 0;
+                  opacity: 0.9;
+                }
+                .footer .contact-id {
+                  color: #be9d58;
+                  font-weight: 600;
+                  font-family: monospace;
+                }
+                .divider {
+                  height: 2px;
+                  background: linear-gradient(90deg, #be9d58 0%, #a8894e 100%);
+                  margin: 30px 0;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="email-container">
+                <div class="header">
+                  <img src="https://uvnbfnobyqbonuxztjuz.supabase.co/storage/v1/object/public/assets/logo-horizontal.png" alt="The Forge Journal" class="logo" />
+                  <h1>🎉 New Forge Journal Subscription</h1>
+                  <p>Shaping leaders and pastors who shape the nation</p>
+                </div>
+
+              <div class="content">
+                <div class="field">
+                  <div class="field-label">Subscriber Name:</div>
+                  <div class="field-value">${formData.firstName} ${formData.lastName}</div>
+                </div>
+
+                <div class="field">
+                  <div class="field-label">Email:</div>
+                  <div class="field-value">${formData.email}</div>
+                </div>
+
+                ${formData.phone ? `
+                <div class="field">
+                  <div class="field-label">Phone:</div>
+                  <div class="field-value">${formData.phone}</div>
+                </div>
+                ` : ''}
+
+                <div class="field">
+                  <div class="field-label">SMS Opt-in:</div>
+                  <div class="field-value">${formData.smsOptIn ? 'Yes' : 'No'}</div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="tags">
+                  <div class="field-label">✅ Successfully Added to Virtuous CRM</div>
+                  <div class="field-value">
+                    <strong>Tags Applied:</strong><br>
+                    • The Forge Journal<br>
+                    • FJ Welcome Series
+                  </div>
+                </div>
+              </div>
+
+              <div class="footer">
+                <p>This subscriber has been successfully added to Virtuous CRM with the appropriate tags.</p>
+                <p>Virtuous Contact ID: <span class="contact-id">${virtuousResult.id || virtuousResult.transactionId || 'N/A'}</span></p>
+              </div>
+            </div>
+          </body>
+        </html>
+        `
+
+        const emailText = `
+New Forge Journal Subscription
+
+Subscriber: ${formData.firstName} ${formData.lastName}
+Email: ${formData.email}
+${formData.phone ? `Phone: ${formData.phone}` : ''}
+SMS Opt-in: ${formData.smsOptIn ? 'Yes' : 'No'}
+
+✅ Successfully added to Virtuous CRM with tags:
+• The Forge Journal
+• FJ Welcome Series
+
+Virtuous Contact ID: ${virtuousResult.id || virtuousResult.transactionId || 'N/A'}
+        `
+
+        const emailResult = await resend.emails.send({
+          from: 'The Forge Journal <onboarding@resend.dev>',
+          to: ['jonathan@jpierce.dev'],
+          subject: `New Forge Journal Subscription: ${formData.firstName} ${formData.lastName}`,
+          html: emailHtml,
+          text: emailText,
+        })
+
+        if (emailResult.error) {
+          console.error('Failed to send notification email:', emailResult.error)
+        } else {
+          console.log('Subscription notification email sent successfully:', emailResult.data?.id)
+        }
+      } else {
+        console.warn('RESEND_API_KEY not configured - skipping email notification')
+      }
+    } catch (emailError) {
+      console.error('Error sending notification email:', emailError)
+      // Don't fail the main operation if email fails
     }
 
     return res.status(200).json({

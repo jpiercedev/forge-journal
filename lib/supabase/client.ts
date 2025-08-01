@@ -274,6 +274,88 @@ export const db = {
       .single()
   },
 
+  async getPostsByCategory(categoryId: string, options: {
+    status?: 'draft' | 'published' | 'archived'
+    limit?: number
+    offset?: number
+    includeAuthor?: boolean
+    includeCategories?: boolean
+  } = {}) {
+    if (!supabase) {
+      return { data: null, error: new Error('Supabase client not available') }
+    }
+
+    try {
+      // First, get post IDs that belong to this category
+      const { data: postCategories, error: pcError } = await supabase
+        .from('post_categories')
+        .select('post_id')
+        .eq('category_id', categoryId)
+
+      if (pcError) {
+        return { data: null, error: pcError }
+      }
+
+      if (!postCategories || postCategories.length === 0) {
+        return { data: [], error: null }
+      }
+
+      const postIds = postCategories.map(pc => pc.post_id)
+
+      // Build the select clause dynamically
+      const selectFields = ['*']
+      if (options.includeAuthor) {
+        selectFields.push('author:authors(*)')
+      }
+      if (options.includeCategories) {
+        selectFields.push('categories:post_categories(category:categories(*))')
+      }
+
+      let query = supabase
+        .from('posts')
+        .select(selectFields.join(', '))
+        .in('id', postIds)
+        .order('published_at', { ascending: false })
+        .order('created_at', { ascending: false })
+
+      if (options.status) {
+        query = query.eq('status', options.status)
+      }
+
+      if (options.limit) {
+        query = query.limit(options.limit)
+      }
+
+      if (options.offset) {
+        query = query.range(options.offset, (options.offset || 0) + (options.limit || 10) - 1)
+      }
+
+      return query
+    } catch (error) {
+      return { data: null, error: error as Error }
+    }
+  },
+
+  async getPostsByCategorySlug(categorySlug: string, options: {
+    status?: 'draft' | 'published' | 'archived'
+    limit?: number
+    offset?: number
+    includeAuthor?: boolean
+    includeCategories?: boolean
+  } = {}) {
+    if (!supabase) {
+      return { data: null, error: new Error('Supabase client not available') }
+    }
+
+    // First get the category to get its ID
+    const categoryResult = await this.getCategoryBySlug(categorySlug)
+    if (categoryResult.error || !categoryResult.data) {
+      return { data: null, error: categoryResult.error || new Error('Category not found') }
+    }
+
+    return this.getPostsByCategory(categoryResult.data.id, options)
+  },
+
   // Ads
   async getAds(type?: 'banner' | 'sidebar', activeOnly = true) {
     if (!supabase) {

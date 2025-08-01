@@ -40,9 +40,9 @@ export default function TopicPage(props: PageProps) {
         <div className="max-w-4xl">
           <div className="mb-8">
             <nav className="text-sm text-gray-600 mb-4">
-              <Link href="/" className="hover:text-blue-800">Home</Link>
+              <Link href="/" className="hover:text-[#1e4356]">Home</Link>
               <span className="mx-2">›</span>
-              <Link href="/topics" className="hover:text-blue-800">Topics</Link>
+              <Link href="/topics" className="hover:text-[#1e4356]">Topics</Link>
               <span className="mx-2">›</span>
               <span className="text-gray-900">{category.title}</span>
             </nav>
@@ -76,7 +76,7 @@ export default function TopicPage(props: PageProps) {
                       <h2 className="text-2xl font-semibold text-gray-900 mb-3">
                         <Link
                           href={`/posts/${post.slug}`}
-                          className="hover:text-blue-800 transition-colors duration-200"
+                          className="hover:text-[#1e4356] transition-colors duration-200"
                         >
                           {post.title}
                         </Link>
@@ -152,7 +152,7 @@ export default function TopicPage(props: PageProps) {
             </p>
             <Link
               href="/topics"
-              className="inline-block bg-blue-800 hover:bg-blue-900 text-white px-6 py-2 text-sm font-medium uppercase tracking-wide transition-colors duration-200"
+              className="inline-block bg-[#1e4356] hover:bg-[#152e3f] text-white px-6 py-2 text-sm font-medium uppercase tracking-wide transition-colors duration-200"
             >
               View All Topics
             </Link>
@@ -185,9 +185,24 @@ export const getStaticProps: GetStaticProps<PageProps, Query> = async (ctx) => {
     }
 
     // Get posts for this category
-    // For now, we'll return an empty array since posts don't have categories assigned yet
-    // This will be updated when the post-category relationship is properly implemented
-    const posts: Post[] = []
+    const { data: posts, error: postsError } = await db.getPostsByCategorySlug(params.slug as string, {
+      status: 'published',
+      limit: 50,
+      includeAuthor: true,
+      includeCategories: true
+    })
+
+    if (postsError) {
+      console.error('Error fetching posts for category:', postsError)
+    }
+
+    const validPosts = Array.isArray(posts) ? posts.filter((post: any) =>
+      post &&
+      typeof post === 'object' &&
+      'id' in post &&
+      'title' in post &&
+      'slug' in post
+    ) : []
 
     // Get all published posts for sidebar
     const { data: allPosts, error: allPostsError } = await db.getPosts({
@@ -227,7 +242,7 @@ export const getStaticProps: GetStaticProps<PageProps, Query> = async (ctx) => {
     return {
       props: {
         category,
-        posts,
+        posts: validPosts,
         allPosts: validAllPosts,
         settings,
       },

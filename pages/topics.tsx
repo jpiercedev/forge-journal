@@ -57,7 +57,7 @@ export default function TopicsPage(props: PageProps) {
                 <h3 className="text-xl font-semibold text-gray-900 mb-3">
                   <Link
                     href={`/topics/${topic.slug}`}
-                    className="hover:text-blue-800 transition-colors duration-200"
+                    className="hover:text-[#1e4356] transition-colors duration-200"
                   >
                     {topic.title}
                   </Link>
@@ -71,7 +71,7 @@ export default function TopicsPage(props: PageProps) {
                   </span>
                   <Link
                     href={`/topics/${topic.slug}`}
-                    className="text-blue-800 hover:text-blue-900 font-medium text-sm uppercase tracking-wide transition-colors duration-200"
+                    className="text-[#1e4356] hover:text-[#152e3f] font-medium text-sm uppercase tracking-wide transition-colors duration-200"
                   >
                     View Articles →
                   </Link>
@@ -88,7 +88,7 @@ export default function TopicsPage(props: PageProps) {
             </p>
             <Link
               href="/"
-              className="inline-block bg-blue-800 hover:bg-blue-900 text-white px-6 py-2 text-sm font-medium uppercase tracking-wide transition-colors duration-200"
+              className="inline-block bg-[#1e4356] hover:bg-[#152e3f] text-white px-6 py-2 text-sm font-medium uppercase tracking-wide transition-colors duration-200"
             >
               Browse All Articles
             </Link>
@@ -192,14 +192,27 @@ export const getStaticProps: GetStaticProps<PageProps> = async () => {
               typeof (category as any).title === 'string' &&
               typeof (category as any).slug === 'string') {
 
-            // For now, we'll set count to 0 since posts don't have categories assigned yet
-            // This will be updated when posts are properly categorized
-            const postCount = 0
+            // Get the actual post count for this category
+            let postCount = 0
+            try {
+              const categoryPostsResult = await db.getPostsByCategory((category as any).id, {
+                status: 'published'
+              })
+              if (categoryPostsResult.data && Array.isArray(categoryPostsResult.data)) {
+                postCount = categoryPostsResult.data.length
+              }
+            } catch (e) {
+              console.error('Error getting post count for category:', (category as any).slug, e)
+              postCount = 0
+            }
 
-            topicsWithCounts.push({
-              ...(category as any),
-              post_count: postCount
-            })
+            // Only include topics that have at least one published post
+            if (postCount > 0) {
+              topicsWithCounts.push({
+                ...(category as any),
+                post_count: postCount
+              })
+            }
           }
         } catch (e) {
           // Skip invalid categories
