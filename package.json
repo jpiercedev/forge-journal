@@ -46,6 +46,7 @@
     "pdf-parse": "^1.1.1",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "resend": "^4.7.0",
     "styled-components": "^6.1.19",
     "swr": "2.3.3",
     "uuid": "^11.1.0"

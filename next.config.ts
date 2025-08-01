@@ -11,6 +11,18 @@ const config: NextConfig = {
       { hostname: 'unsplash.com' }, // Unsplash base domain for any existing URLs
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: '/rss.xml',
+        destination: '/api/rss.xml',
+      },
+      {
+        source: '/sitemap.xml',
+        destination: '/api/sitemap.xml',
+      },
+    ]
+  },
   typescript: {
     // Set this to false if you want production builds to abort if there's type errors
     ignoreBuildErrors: process.env.VERCEL_ENV === 'production',

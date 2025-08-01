@@ -185,22 +185,20 @@ export default function ImportPreview({ preview, onCreatePost, onBack, onEdit }:
         <div className="space-y-6">
           {/* Actions */}
           <div className="bg-white rounded-lg shadow-md p-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4" style={{ fontFamily: 'Merriweather, serif' }}>
+            <h3 className="text-lg font-medium text-gray-900 mb-4 font-sans">
               Actions
             </h3>
             <div className="space-y-3">
               <button
                 onClick={handleCreatePost}
                 disabled={isEditing}
-                className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium"
-                style={{ fontFamily: 'Montserrat, sans-serif' }}
+                className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium font-sans"
               >
                 Create Blog Post
               </button>
               <button
                 onClick={onBack}
-                className="w-full border border-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-50 transition-colors"
-                style={{ fontFamily: 'Montserrat, sans-serif' }}
+                className="w-full border border-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-50 transition-colors font-sans"
               >
                 Start Over
               </button>

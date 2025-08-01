@@ -162,19 +162,19 @@ export default function ForgePostPage(props: ForgePostPageProps) {
                         <div className="ml-4">
                           {isExistingSubscriber ? (
                             <>
-                              <div className="text-lg font-bold text-green-800 mb-3" style={{ fontFamily: 'Proxima Nova, sans-serif' }}>
+                              <div className="text-lg font-bold text-green-800 mb-3 font-sans">
                                 You&apos;re already signed up!
                               </div>
-                              <p className="text-sm text-green-700 leading-relaxed" style={{ fontFamily: 'Proxima Nova, sans-serif' }}>
+                              <p className="text-sm text-green-700 leading-relaxed font-sans">
                                 You&apos;re already part of The Forge Journal family and will continue receiving bold biblical leadership insights and updates from the movement. Thank you for your continued support as we raise up leaders for this critical hour.
                               </p>
                             </>
                           ) : (
                             <>
-                              <div className="text-lg font-bold text-green-800 mb-3" style={{ fontFamily: 'Proxima Nova, sans-serif' }}>
+                              <div className="text-lg font-bold text-green-800 mb-3 font-sans">
                                 Thank you for signing up for The Forge Journal!
                               </div>
-                              <p className="text-sm text-green-700 leading-relaxed" style={{ fontFamily: 'Proxima Nova, sans-serif' }}>
+                              <p className="text-sm text-green-700 leading-relaxed font-sans">
                                 You&apos;re now subscribed to receive bold biblical leadership insights, real stories from pastors in the trenches, and updates from the movement that&apos;s rising to take back our nation—one pulpit at a time. Keep an eye on your inbox for the latest issue and be encouraged as God continues to raise up leaders for this critical hour.
                               </p>
                             </>
@@ -222,7 +222,7 @@ export default function ForgePostPage(props: ForgePostPageProps) {
                       </div>
 
                       <div>
-                        <label htmlFor="lastName" className="block text-base font-medium text-gray-900 mb-2" style={{ fontFamily: 'Proxima Nova, sans-serif' }}>
+                        <label htmlFor="lastName" className="block text-base font-medium text-gray-900 mb-2 font-sans">
                           Last Name *
                         </label>
                         <input
@@ -232,8 +232,7 @@ export default function ForgePostPage(props: ForgePostPageProps) {
                           required
                           value={formData.lastName}
                           onChange={handleInputChange}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-none bg-white text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-base"
-                          style={{ fontFamily: 'Proxima Nova, sans-serif' }}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-none bg-white text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-base font-sans"
                           placeholder=""
                         />
                       </div>
@@ -291,13 +290,12 @@ export default function ForgePostPage(props: ForgePostPageProps) {
                       <button
                         type="submit"
                         disabled={isSubmitting}
-                        className={`w-full py-4 px-6 rounded-none border-2 transition-colors duration-200 font-bold text-base uppercase tracking-wider ${
+                        className={`w-full py-4 px-6 rounded-none border-2 transition-colors duration-200 font-bold text-base uppercase tracking-wider font-sans ${
                           isSubmitting
                             ? 'bg-gray-100 border-gray-300 text-gray-500 cursor-not-allowed'
                             : 'bg-white border-gray-900 text-gray-900'
                         }`}
                         style={{
-                          fontFamily: 'Proxima Nova, sans-serif',
                           backgroundColor: isSubmitting ? undefined : 'white',
                           borderColor: isSubmitting ? undefined : '#374151',
                           color: isSubmitting ? undefined : '#374151'

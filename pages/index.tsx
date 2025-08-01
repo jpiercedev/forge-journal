@@ -38,7 +38,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async () => {
     // Get published posts from Supabase
     const { data: posts, error: postsError } = await db.getPosts({
       status: 'published',
-      limit: 20,
+      limit: 50, // Load more posts to support pagination
       includeAuthor: true
     })
 

@@ -65,8 +65,7 @@ export default function ImportResults({ result, onStartNew }: ImportResultsProps
                   href={postUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 transition-colors font-medium text-center block"
-                  style={{ fontFamily: 'Montserrat, sans-serif' }}
+                  className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 transition-colors font-medium text-center block font-sans"
                 >
                   View Published Post
                 </a>
@@ -76,16 +75,14 @@ export default function ImportResults({ result, onStartNew }: ImportResultsProps
                 href={studioUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-md hover:bg-gray-50 transition-colors font-medium text-center block"
-                style={{ fontFamily: 'Montserrat, sans-serif' }}
+                className="w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-md hover:bg-gray-50 transition-colors font-medium text-center block font-sans"
               >
                 Edit in Sanity Studio
               </a>
               
               <button
                 onClick={onStartNew}
-                className="w-full bg-green-600 text-white py-3 px-4 rounded-md hover:bg-green-700 transition-colors font-medium"
-                style={{ fontFamily: 'Montserrat, sans-serif' }}
+                className="w-full bg-green-600 text-white py-3 px-4 rounded-md hover:bg-green-700 transition-colors font-medium font-sans"
               >
                 Import Another Post
               </button>
@@ -147,8 +144,7 @@ export default function ImportResults({ result, onStartNew }: ImportResultsProps
             <div className="space-y-3">
               <button
                 onClick={onStartNew}
-                className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 transition-colors font-medium"
-                style={{ fontFamily: 'Montserrat, sans-serif' }}
+                className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 transition-colors font-medium font-sans"
               >
                 Try Again
               </button>
@@ -157,8 +153,7 @@ export default function ImportResults({ result, onStartNew }: ImportResultsProps
                 href="/studio"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-md hover:bg-gray-50 transition-colors font-medium text-center block"
-                style={{ fontFamily: 'Montserrat, sans-serif' }}
+                className="w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-md hover:bg-gray-50 transition-colors font-medium text-center block font-sans"
               >
                 Create Post Manually
               </a>

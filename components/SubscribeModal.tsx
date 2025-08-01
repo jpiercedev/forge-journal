@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 interface SubscribeModalProps {
   isOpen: boolean
@@ -17,6 +17,7 @@ export default function SubscribeModal({ isOpen, onClose }: SubscribeModalProps)
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = useState('')
   const [isExistingSubscriber, setIsExistingSubscriber] = useState(false)
+  const [isClosing, setIsClosing] = useState(false)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target
@@ -85,32 +86,58 @@ export default function SubscribeModal({ isOpen, onClose }: SubscribeModalProps)
   }
 
   const handleClose = () => {
-    setFormData({
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      smsOptIn: false
-    })
-    setSubmitStatus('idle')
-    setErrorMessage('')
-    setIsExistingSubscriber(false)
-    onClose()
+    setIsClosing(true)
+    setTimeout(() => {
+      setFormData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        smsOptIn: false
+      })
+      setSubmitStatus('idle')
+      setErrorMessage('')
+      setIsExistingSubscriber(false)
+      setIsClosing(false)
+      onClose()
+    }, 200) // Match animation duration
   }
 
-  if (!isOpen) return null
+  // Reset closing state when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setIsClosing(false)
+    }
+  }, [isOpen])
+
+  if (!isOpen && !isClosing) return null
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
+    <div
+      className="fixed inset-0 z-50 overflow-y-auto transition-opacity duration-200"
+      style={{
+        opacity: isClosing ? 0 : 1,
+      }}
+    >
       {/* Backdrop */}
-      <div 
-        className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
+      <div
+        className="fixed inset-0 transition-opacity duration-200"
+        style={{
+          backgroundColor: '#111827c9',
+          opacity: isClosing ? 0 : 1,
+        }}
         onClick={handleClose}
       />
-      
+
       {/* Modal */}
       <div className="flex min-h-full items-center justify-center p-4">
-        <div className="relative bg-white shadow-xl max-w-md w-full mx-auto">
+        <div
+          className="relative bg-white shadow-xl max-w-md w-full mx-auto transition-all duration-200"
+          style={{
+            transform: isClosing ? 'scale(0.95) translateY(16px)' : 'scale(1) translateY(0)',
+            opacity: isClosing ? 0 : 1,
+          }}
+        >
           {/* Close button */}
           <button
             onClick={handleClose}

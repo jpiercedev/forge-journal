@@ -137,8 +137,7 @@ export default function ImportProgress({ progress, onCancel }: ImportProgressPro
           {onCancel && progress.stage !== 'complete' && progress.stage !== 'error' && (
             <button
               onClick={onCancel}
-              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
-              style={{ fontFamily: 'Montserrat, sans-serif' }}
+              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors font-sans"
             >
               Cancel
             </button>

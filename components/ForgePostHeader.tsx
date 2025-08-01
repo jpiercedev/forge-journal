@@ -65,10 +65,10 @@ export default function ForgePostHeader({ post, volumeInfo }: ForgePostHeaderPro
             {/* Author Info */}
             {author && (
               <div className="space-y-1 sm:space-y-2">
-                <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white font-serif">
+                <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white font-sans">
                   {author.name}
                 </h2>
-                <p className="text-sm sm:text-base font-medium font-serif" style={{ color: '#be9d58' }}>
+                <p className="text-sm sm:text-base font-medium font-sans" style={{ color: '#be9d58' }}>
                   {author.title || 'Author'}
                 </p>
               </div>

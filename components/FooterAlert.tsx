@@ -127,7 +127,7 @@ export default function FooterAlert() {
                     <h3 className="text-lg font-bold text-gray-900 font-sans">
                       Receive The Forge Journal free every week
                     </h3>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-gray-600 font-sans">
                       Get practical insights and theological wisdom delivered to your inbox.
                     </p>
                   </div>

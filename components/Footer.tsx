@@ -79,7 +79,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="https://github.com/sanity-io/nextjs-blog-cms-sanity-v3/issues"
+                  href="https://gracewoodlands.givevirtuous.org/donate/the-forge-journal"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-600 hover:text-gray-900"

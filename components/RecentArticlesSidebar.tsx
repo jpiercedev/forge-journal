@@ -46,7 +46,7 @@ export default function RecentArticlesSidebar({ posts }: RecentArticlesSidebarPr
                   </div>
 
                   {/* Article Title */}
-                  <h3 className="text-lg font-bold text-gray-900 transition-colors duration-200 leading-tight group-hover:text-amber-600 font-serif">
+                  <h3 className="text-lg font-bold text-gray-900 transition-colors duration-200 leading-tight group-hover:text-amber-600 font-sans">
                     {post.title}
                   </h3>
 

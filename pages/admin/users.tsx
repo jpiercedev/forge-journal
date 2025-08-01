@@ -248,7 +248,7 @@ function AdminUsers() {
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <div className="flex items-center space-x-3">
-                      <h4 className="text-lg font-medium text-gray-900" style={{ fontFamily: 'Merriweather, serif' }}>
+                      <h4 className="text-lg font-medium text-gray-900 font-sans">
                         {user.first_name} {user.last_name}
                       </h4>
                       <span
@@ -308,12 +308,12 @@ function AdminUsers() {
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
           <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <div className="mt-3">
-              <h3 className="text-lg font-medium text-gray-900 mb-4" style={{ fontFamily: 'Merriweather, serif' }}>
+              <h3 className="text-lg font-medium text-gray-900 mb-4 font-sans">
                 Create New Admin User
               </h3>
               <form onSubmit={handleCreateUser} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                  <label className="block text-sm font-medium text-gray-700 font-sans">
                     First Name
                   </label>
                   <input

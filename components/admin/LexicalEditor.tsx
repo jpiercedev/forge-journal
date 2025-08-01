@@ -690,14 +690,12 @@ export default function LexicalEditor({
           <RichTextPlugin
             contentEditable={
               <ContentEditable
-                className="w-full min-h-[400px] p-4 focus:outline-none text-base leading-relaxed resize-none"
-                style={{ fontFamily: 'Montserrat, sans-serif' }}
+                className="w-full min-h-[400px] p-4 focus:outline-none text-base leading-relaxed resize-none font-sans"
               />
             }
             placeholder={
               <div
-                className="absolute top-4 left-4 text-gray-400 pointer-events-none"
-                style={{ fontFamily: 'Montserrat, sans-serif' }}
+                className="absolute top-4 left-4 text-gray-400 pointer-events-none font-sans"
               >
                 {placeholder}
               </div>

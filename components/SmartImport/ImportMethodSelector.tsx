@@ -99,13 +99,13 @@ export default function ImportMethodSelector({ onMethodSelect }: ImportMethodSel
               </div>
 
               {/* Description */}
-              <p className="text-gray-600 mb-4" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+              <p className="text-gray-600 mb-4 font-sans">
                 {method.description}
               </p>
 
               {/* Features */}
               <div className="mb-4">
-                <h4 className="text-sm font-medium text-gray-900 mb-2" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                <h4 className="text-sm font-medium text-gray-900 mb-2 font-sans">
                   Features:
                 </h4>
                 <ul className="space-y-1">

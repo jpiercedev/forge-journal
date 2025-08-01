@@ -9,7 +9,7 @@ const navigationItems = [
   { name: 'Topics', href: '/topics' },
   { name: 'Contributors', href: '/contributors' },
   { name: 'Faculty', href: '/faculty' },
-  { name: 'Support The Mission', href: 'https://github.com/sanity-io/nextjs-blog-cms-sanity-v3/issues', external: true, special: true },
+  { name: 'Support The Mission', href: 'https://gracewoodlands.givevirtuous.org/donate/the-forge-journal', external: true, special: true },
 ]
 
 export default function Navigation() {

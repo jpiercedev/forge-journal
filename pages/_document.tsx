@@ -5,6 +5,21 @@ export default function Document() {
     <Html lang="en">
       <Head>
         <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=5.0,user-scalable=yes" />
+
+        {/* Google Analytics */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-EYML1CVSBS"></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-EYML1CVSBS');
+            `,
+          }}
+        />
+        {/* End Google Analytics */}
+
         {/* Meta Pixel Code */}
         <script
           dangerouslySetInnerHTML={{

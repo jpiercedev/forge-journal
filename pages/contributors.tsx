@@ -43,10 +43,10 @@ export default function ContributorsPage({ authors, posts }: ContributorsPagePro
 
           {authors.length === 0 ? (
             <div className="text-center py-16">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4 font-serif">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4 font-sans">
                 No Contributors Found
               </h2>
-              <p className="text-gray-600 font-sans">
+              <p className="text-base text-gray-600 font-sans">
                 Contributors will be displayed here once they are added to the system.
               </p>
             </div>
@@ -54,7 +54,7 @@ export default function ContributorsPage({ authors, posts }: ContributorsPagePro
             <>
               {/* Introduction Paragraph */}
               <div className="mb-12">
-                <p className="text-lg text-gray-700 leading-relaxed font-sans">
+                <p className="text-base text-gray-700 leading-relaxed font-sans">
                   The Forge Journal contributors are pastors, leaders, and mentors who are committed to equipping a new generation to stand strong in truth, lead with conviction, and impact their communities for the Kingdom of God. Each voice brings biblical insight, real-world experience, and a passion to see pastors rise in this critical hour.
                 </p>
               </div>
@@ -113,7 +113,7 @@ export default function ContributorsPage({ authors, posts }: ContributorsPagePro
                           )}
 
                           {author.bio && (
-                            <p className="text-sm md:text-base text-gray-600 leading-relaxed font-sans whitespace-pre-line">
+                            <p className="text-base text-gray-600 leading-relaxed font-sans whitespace-pre-line">
                               {author.bio}
                             </p>
                           )}
@@ -178,7 +178,7 @@ export default function ContributorsPage({ authors, posts }: ContributorsPagePro
                           )}
 
                           {author.bio && (
-                            <p className="text-xs text-gray-600 leading-relaxed font-sans whitespace-pre-line">
+                            <p className="text-base text-gray-600 leading-relaxed font-sans whitespace-pre-line">
                               {author.bio}
                             </p>
                           )}

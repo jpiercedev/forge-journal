@@ -3,6 +3,7 @@ import ImagePlaceholder from 'components/ImagePlaceholder'
 import IndexPageHead from 'components/IndexPageHead'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useState } from 'react'
 import type { Post } from 'lib/supabase/client'
 
 interface Settings {
@@ -20,6 +21,14 @@ export interface ForgeIndexPageProps {
 export default function ForgeIndexPage(props: ForgeIndexPageProps) {
   const { preview, loading, posts, settings } = props
   const [featuredPost, ...otherPosts] = posts || []
+  const [visiblePosts, setVisiblePosts] = useState(6)
+
+  const displayedPosts = otherPosts.slice(0, visiblePosts)
+  const hasMorePosts = otherPosts.length > visiblePosts
+
+  const loadMorePosts = () => {
+    setVisiblePosts(prev => prev + 6)
+  }
 
   return (
     <>
@@ -124,10 +133,10 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
 
 
           {/* Other Articles Grid */}
-          {otherPosts.length > 0 && (
+          {displayedPosts.length > 0 && (
             <section className="bg-white p-4 md:p-6 lg:p-8 shadow-sm border-t-4 md:border-t-8" style={{ borderTopColor: '#1e4356' }}>
               <div className="space-y-8 md:space-y-12 lg:space-y-16">
-                {otherPosts.map((post, index) => (
+                {displayedPosts.map((post, index) => (
                   <div key={post.slug}>
                     <article className="group">
                     <div className="flex flex-col md:flex-row gap-4 md:gap-6 lg:gap-8">
@@ -172,7 +181,27 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
 
                         <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 text-sm text-gray-300 mb-3 md:mb-4 font-sans space-y-1 sm:space-y-0">
                           {post.author && (
-                            <span className="font-medium uppercase tracking-wider">{post.author.name}</span>
+                            <div className="flex items-center space-x-2">
+                              {/* Small contributor photo */}
+                              <div className="w-6 h-6 rounded-full overflow-hidden bg-gray-300 flex-shrink-0">
+                                {post.author.image_url ? (
+                                  <Image
+                                    src={post.author.image_url}
+                                    alt={post.author.name}
+                                    width={24}
+                                    height={24}
+                                    className="w-full h-full object-cover"
+                                  />
+                                ) : (
+                                  <div className="w-full h-full bg-gray-400 flex items-center justify-center">
+                                    <span className="text-xs text-white font-bold">
+                                      {post.author.name.charAt(0)}
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
+                              <span className="font-medium uppercase tracking-wider">{post.author.name}</span>
+                            </div>
                           )}
                           <span className="hidden sm:inline">|</span>
                           <span className="font-medium uppercase tracking-wider">
@@ -184,7 +213,7 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
                         </div>
 
                         {post.excerpt && (
-                          <p className="text-gray-700 leading-relaxed mb-4 md:mb-6 text-base md:text-lg font-serif">
+                          <p className="text-gray-700 leading-relaxed mb-4 md:mb-6 text-sm font-sans">
                             {post.excerpt}
                           </p>
                         )}
@@ -208,12 +237,29 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
                     </article>
 
                     {/* Subtle Divider - only show between articles, not after the last one */}
-                    {index < otherPosts.length - 1 && (
+                    {index < displayedPosts.length - 1 && (
                       <div className="border-t border-gray-200 mt-8 md:mt-12 lg:mt-16"></div>
                     )}
                   </div>
                 ))}
               </div>
+
+              {/* View More Button */}
+              {hasMorePosts && (
+                <div className="mt-12">
+                  {/* Divider line */}
+                  <div className="border-t border-gray-200 mb-8"></div>
+
+                  <div className="text-center">
+                    <button
+                      onClick={loadMorePosts}
+                      className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors font-sans underline decoration-1 underline-offset-4 hover:decoration-2"
+                    >
+                      View More Articles
+                    </button>
+                  </div>
+                </div>
+              )}
             </section>
           )}
         </div>

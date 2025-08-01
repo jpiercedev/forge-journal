@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 export default function SupportPage() {
   useEffect(() => {
     // Redirect to external support page
-    window.location.href = 'https://support.forgejournal.org'
+    window.location.href = 'https://gracewoodlands.givevirtuous.org/donate/the-forge-journal'
   }, [])
 
   return (
@@ -15,8 +15,8 @@ export default function SupportPage() {
         <p className="text-gray-600 mb-6">
           You&apos;re being redirected to our support page.
         </p>
-        <a 
-          href="https://support.forgejournal.org"
+        <a
+          href="https://gracewoodlands.givevirtuous.org/donate/the-forge-journal"
           className="inline-block bg-blue-800 hover:bg-blue-900 text-white px-6 py-2 text-sm font-medium uppercase tracking-wide transition-colors duration-200"
         >
           Continue to Support

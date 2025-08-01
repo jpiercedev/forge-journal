@@ -242,7 +242,6 @@ export default function PostBody({ content }) {
     return (
       <div
         className="font-sans text-gray-700 px-4 md:px-0"
-        style={{ fontFamily: 'Montserrat, sans-serif' }}
         dangerouslySetInnerHTML={{ __html: content }}
       />
     )
@@ -251,7 +250,7 @@ export default function PostBody({ content }) {
   // Check if it's plain text content
   if (typeof content === 'string') {
     return (
-      <div className="font-sans text-gray-700 px-4 md:px-0" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+      <div className="font-sans text-gray-700 px-4 md:px-0">
         {content.split('\n').map((paragraph, index) => (
           <p key={index} className="mb-4 text-base md:text-lg">
             {paragraph}

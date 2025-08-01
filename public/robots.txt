@@ -1,0 +1,30 @@
+# Robots.txt for The Forge Journal
+# https://forgejournal.com/robots.txt
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://forgejournal.com/sitemap.xml
+
+# Disallow admin areas
+Disallow: /admin/
+Disallow: /api/
+
+# Allow important pages
+Allow: /
+Allow: /about
+Allow: /topics
+Allow: /faculty
+Allow: /forge-pastors
+Allow: /subscribe
+Allow: /contact
+Allow: /posts/
+Allow: /privacy-policy
+Allow: /terms-of-service
+
+# RSS Feed
+Allow: /rss.xml
+
+# Crawl delay (optional - be respectful to search engines)
+Crawl-delay: 1
