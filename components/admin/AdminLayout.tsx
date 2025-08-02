@@ -133,7 +133,7 @@ export default function AdminLayout({
 
       <div className="min-h-screen bg-gray-1 flex">
         {/* Sidebar */}
-        <div className={`${sidebarOpen ? 'w-64' : 'w-20'} bg-white border-r border-gray-3 shadow-sm transition-all duration-300 ease-in-out flex flex-col h-screen sticky top-0`}>
+        <div className={`${sidebarOpen ? 'w-64' : 'w-20'} bg-white border-r border-gray-3 shadow-sm transition-all duration-300 ease-in-out flex flex-col h-screen fixed top-0 left-0 z-30`}>
           {/* Sidebar Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-3">
             <div className={`${sidebarOpen ? 'block' : 'hidden'} transition-all duration-300`}>
@@ -233,7 +233,7 @@ export default function AdminLayout({
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className={`flex-1 flex flex-col overflow-hidden ${sidebarOpen ? 'ml-64' : 'ml-20'} transition-all duration-300 ease-in-out`}>
           {/* Top Header */}
           <header className="bg-white shadow-sm border-b border-gray-3">
             <div className="px-6 py-5">
