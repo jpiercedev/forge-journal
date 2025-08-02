@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { Resend } from 'resend'
 import { supabaseAdmin } from '../../../lib/supabase/client'
+import { getNotificationRecipients } from '../../../lib/notifications/recipients'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -432,9 +433,12 @@ SMS Opt-in: ${formData.smsOptIn ? 'Yes' : 'No'}
 Virtuous Contact ID: ${virtuousResult.id || virtuousResult.transactionId || 'N/A'}
         `
 
+        // Get notification recipients from database
+        const recipients = await getNotificationRecipients('subscription')
+
         const emailResult = await resend.emails.send({
           from: 'The Forge Journal <onboarding@resend.dev>',
-          to: ['jason@theforgejournal.com', 'jpierce@gracewoodlands.com'],
+          to: recipients,
           subject: `New Forge Journal Subscription: ${formData.firstName} ${formData.lastName}`,
           html: emailHtml,
           text: emailText,

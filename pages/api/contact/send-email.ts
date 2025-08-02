@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { Resend } from 'resend'
 import { supabaseAdmin } from '../../../lib/supabase/client'
+import { getNotificationRecipients } from '../../../lib/notifications/recipients'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -219,10 +220,13 @@ This message was sent via the contact form on The Forge Journal website.
 Please reply directly to ${formData.email} to respond to this inquiry.
     `
 
+    // Get notification recipients from database
+    const recipients = await getNotificationRecipients('contact')
+
     // Send email via Resend
     const emailResult = await resend.emails.send({
       from: 'The Forge Journal <onboarding@resend.dev>',
-      to: ['jason@theforgejournal.com', 'jpierce@gracewoodlands.com'],
+      to: recipients,
       replyTo: formData.email,
       subject: `Contact Form Submission from ${formData.name}`,
       html: emailHtml,

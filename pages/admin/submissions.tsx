@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import AdminLayout from 'components/admin/AdminLayout'
 import { AdminProvider, withAdminAuth } from 'components/admin/AdminContext'
+import NotificationSettings from 'components/admin/NotificationSettings'
 
 interface Subscriber {
   id: string
@@ -49,6 +50,7 @@ function SubmissionsPage() {
   const [loading, setLoading] = useState(true)
   const [selectedSubmission, setSelectedSubmission] = useState<SubmissionItem | null>(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarType, setSidebarType] = useState<'submission' | 'notifications' | null>(null)
   const [filter, setFilter] = useState<'all' | 'subscribers' | 'contacts'>('all')
   const [statusFilter, setStatusFilter] = useState<'all' | 'new' | 'read' | 'replied' | 'archived'>('all')
 
@@ -109,11 +111,24 @@ function SubmissionsPage() {
   const handleSubmissionClick = (submission: SubmissionItem) => {
     setSelectedSubmission(submission)
     setSidebarOpen(true)
-    
+    setSidebarType('submission')
+
     // Mark contact submissions as read when opened
     if (submission.type === 'contact' && submission.status === 'new') {
       updateSubmissionStatus(submission.id, 'read')
     }
+  }
+
+  const handleNotificationsClick = () => {
+    setSelectedSubmission(null)
+    setSidebarOpen(true)
+    setSidebarType('notifications')
+  }
+
+  const handleCloseSidebar = () => {
+    setSidebarOpen(false)
+    setSidebarType(null)
+    setSelectedSubmission(null)
   }
 
   const updateSubmissionStatus = async (id: string, status: string) => {
@@ -194,8 +209,18 @@ function SubmissionsPage() {
         <div className={`flex-1 ${sidebarOpen ? 'mr-96' : ''} transition-all duration-300`}>
           {/* Header */}
           <div className="mb-6">
-            <h1 className="text-2xl font-bold text-gray-9 font-sans mb-2">Submissions</h1>
-            <p className="text-gray-6 font-sans">Manage newsletter subscribers and contact form submissions</p>
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-2xl font-bold text-gray-9 font-sans mb-2">Submissions</h1>
+                <p className="text-gray-6 font-sans">Manage newsletter subscribers and contact form submissions</p>
+              </div>
+              <button
+                onClick={handleNotificationsClick}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors font-sans"
+              >
+                Notifications
+              </button>
+            </div>
           </div>
 
           {/* Stats Cards */}
@@ -328,7 +353,7 @@ function SubmissionsPage() {
         </div>
 
         {/* Sidebar */}
-        {sidebarOpen && selectedSubmission && (
+        {sidebarOpen && sidebarType === 'submission' && selectedSubmission && (
           <div className="fixed right-0 top-0 h-full w-96 bg-white border-l border-gray-3 shadow-lg z-50 overflow-y-auto">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
@@ -336,7 +361,7 @@ function SubmissionsPage() {
                   {selectedSubmission.type === 'subscriber' ? 'Subscriber Details' : 'Contact Message'}
                 </h3>
                 <button
-                  onClick={() => setSidebarOpen(false)}
+                  onClick={handleCloseSidebar}
                   className="p-2 hover:bg-gray-2 rounded-lg transition-colors"
                 >
                   <svg className="w-5 h-5 text-gray-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -348,13 +373,18 @@ function SubmissionsPage() {
               {selectedSubmission.type === 'subscriber' ? (
                 <SubscriberDetails subscriber={selectedSubmission.data as Subscriber} />
               ) : (
-                <ContactDetails 
-                  contact={selectedSubmission.data as ContactSubmission} 
+                <ContactDetails
+                  contact={selectedSubmission.data as ContactSubmission}
                   onStatusUpdate={(status) => updateSubmissionStatus(selectedSubmission.id, status)}
                 />
               )}
             </div>
           </div>
+        )}
+
+        {/* Notification Settings Sidebar */}
+        {sidebarOpen && sidebarType === 'notifications' && (
+          <NotificationSettings onClose={handleCloseSidebar} />
         )}
       </div>
     </AdminLayout>
