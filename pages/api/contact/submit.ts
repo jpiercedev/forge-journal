@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { Resend } from 'resend'
+import { supabaseAdmin } from '../../../lib/supabase/client'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -121,6 +122,34 @@ export default async function handler(
       // Check if it's a duplicate email error
       if (responseText.includes('email address already exists')) {
         console.log('Email already exists in Virtuous - treating as success')
+
+        // Save/update subscriber in our database even if they exist in Virtuous
+        try {
+          const { data: subscriber, error: dbError } = await supabaseAdmin
+            .from('subscribers')
+            .upsert({
+              first_name: formData.firstName.trim(),
+              last_name: formData.lastName.trim(),
+              email: formData.email.trim().toLowerCase(),
+              phone: formData.phone?.trim() || null,
+              sms_opt_in: formData.smsOptIn,
+              is_existing: true,
+              source: 'website'
+            }, {
+              onConflict: 'email'
+            })
+            .select()
+            .single()
+
+          if (dbError) {
+            console.error('Error saving existing subscriber to database:', dbError)
+          } else {
+            console.log('Existing subscriber saved/updated in database:', subscriber)
+          }
+        } catch (dbError) {
+          console.error('Database error for existing subscriber:', dbError)
+        }
+
         return res.status(200).json({
           success: true,
           message: 'Welcome back! You\'re already part of The Forge Journal family and will continue receiving bold biblical leadership insights and updates from the movement. Thank you for your continued support as we raise up leaders for this critical hour.',
@@ -143,6 +172,33 @@ export default async function handler(
       virtuousResult = { message: 'Contact created successfully' }
     }
     console.log('Virtuous API success:', virtuousResult)
+
+    // Save subscriber to our database
+    try {
+      const { data: subscriber, error: dbError } = await supabaseAdmin
+        .from('subscribers')
+        .insert({
+          first_name: formData.firstName.trim(),
+          last_name: formData.lastName.trim(),
+          email: formData.email.trim().toLowerCase(),
+          phone: formData.phone?.trim() || null,
+          sms_opt_in: formData.smsOptIn,
+          virtuous_contact_id: virtuousResult?.id || null,
+          is_existing: false,
+          source: 'website'
+        })
+        .select()
+        .single()
+
+      if (dbError) {
+        console.error('Error saving subscriber to database:', dbError)
+      } else {
+        console.log('Subscriber saved to database:', subscriber)
+      }
+    } catch (dbError) {
+      console.error('Database error:', dbError)
+      // Don't fail the request if database save fails
+    }
 
     // Add tags to the contact after creation
     const contactId = virtuousResult.id
@@ -378,7 +434,7 @@ Virtuous Contact ID: ${virtuousResult.id || virtuousResult.transactionId || 'N/A
 
         const emailResult = await resend.emails.send({
           from: 'The Forge Journal <onboarding@resend.dev>',
-          to: ['jonathan@jpierce.dev'],
+          to: ['jason@theforgejournal.com', 'jpierce@gracewoodlands.com'],
           subject: `New Forge Journal Subscription: ${formData.firstName} ${formData.lastName}`,
           html: emailHtml,
           text: emailText,

@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { Resend } from 'resend'
+import { supabaseAdmin } from '../../../lib/supabase/client'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -219,11 +220,9 @@ Please reply directly to ${formData.email} to respond to this inquiry.
     `
 
     // Send email via Resend
-    // Note: In testing mode, can only send to jonathan@jpierce.dev
-    // Change to jnelson@gracewoodlands.com once domain is verified
     const emailResult = await resend.emails.send({
       from: 'The Forge Journal <onboarding@resend.dev>',
-      to: ['jonathan@jpierce.dev'],
+      to: ['jason@theforgejournal.com', 'jpierce@gracewoodlands.com'],
       replyTo: formData.email,
       subject: `Contact Form Submission from ${formData.name}`,
       html: emailHtml,
@@ -239,6 +238,29 @@ Please reply directly to ${formData.email} to respond to this inquiry.
     }
 
     console.log('Contact email sent successfully:', emailResult.data?.id)
+
+    // Save contact submission to our database
+    try {
+      const { data: submission, error: dbError } = await supabaseAdmin
+        .from('contact_submissions')
+        .insert({
+          name: formData.name.trim(),
+          email: formData.email.trim().toLowerCase(),
+          message: formData.message.trim(),
+          status: 'new'
+        })
+        .select()
+        .single()
+
+      if (dbError) {
+        console.error('Error saving contact submission to database:', dbError)
+      } else {
+        console.log('Contact submission saved to database:', submission)
+      }
+    } catch (dbError) {
+      console.error('Database error:', dbError)
+      // Don't fail the request if database save fails
+    }
 
     return res.status(200).json({
       success: true,
