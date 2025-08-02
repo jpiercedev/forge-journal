@@ -211,7 +211,7 @@ Virtuous Contact ID: ${virtuousResult?.id || virtuousResult?.transactionId || 'N
     const recipients = await getNotificationRecipients('subscription')
 
     const emailResult = await resend.emails.send({
-      from: 'The Forge Journal <onboarding@resend.dev>',
+      from: 'The Forge Journal <notifications@theforgejournal.com>',
       to: recipients,
       subject: `${isExisting ? 'Existing' : 'New'} Forge Journal Subscription: ${formData.firstName} ${formData.lastName}`,
       html: emailHtml,
