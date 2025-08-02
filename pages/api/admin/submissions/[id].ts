@@ -13,13 +13,16 @@ interface SubmissionResponse {
   error?: string
 }
 
-export default withAdminAuth(async (req: NextApiRequest, res: NextApiResponse<SubmissionResponse>) => {
+export default withAdminAuth(async (req, res) => {
   const { id } = req.query
 
   if (!id || typeof id !== 'string') {
     return res.status(400).json({
       success: false,
-      error: 'Invalid submission ID'
+      error: {
+        code: 'INVALID_ID',
+        message: 'Invalid submission ID'
+      }
     })
   }
 
@@ -32,19 +35,25 @@ export default withAdminAuth(async (req: NextApiRequest, res: NextApiResponse<Su
       default:
         return res.status(405).json({
           success: false,
-          error: 'Method not allowed'
+          error: {
+            code: 'METHOD_NOT_ALLOWED',
+            message: 'Method not allowed'
+          }
         })
     }
   } catch (error) {
     console.error('Submission detail API error:', error)
     return res.status(500).json({
       success: false,
-      error: 'Internal server error'
+      error: {
+        code: 'INTERNAL_ERROR',
+        message: 'Internal server error'
+      }
     })
   }
 })
 
-async function handleGetSubmission(req: NextApiRequest, res: NextApiResponse<SubmissionResponse>, id: string) {
+async function handleGetSubmission(req: any, res: any, id: string) {
   // Check if it's a contact submission or subscriber
   const { data: contactSubmission, error: contactError } = await supabaseAdmin
     .from('contact_submissions')
@@ -81,17 +90,23 @@ async function handleGetSubmission(req: NextApiRequest, res: NextApiResponse<Sub
 
   return res.status(404).json({
     success: false,
-    error: 'Submission not found'
+    error: {
+      code: 'NOT_FOUND',
+      message: 'Submission not found'
+    }
   })
 }
 
-async function handleUpdateSubmission(req: NextApiRequest, res: NextApiResponse<SubmissionResponse>, id: string) {
+async function handleUpdateSubmission(req: any, res: any, id: string) {
   const updateData: UpdateSubmissionRequest = req.body
 
   if (!updateData.status) {
     return res.status(400).json({
       success: false,
-      error: 'Status is required'
+      error: {
+        code: 'MISSING_FIELD',
+        message: 'Status is required'
+      }
     })
   }
 
@@ -110,14 +125,20 @@ async function handleUpdateSubmission(req: NextApiRequest, res: NextApiResponse<
     console.error('Error updating contact submission:', error)
     return res.status(500).json({
       success: false,
-      error: 'Failed to update submission'
+      error: {
+        code: 'UPDATE_FAILED',
+        message: 'Failed to update submission'
+      }
     })
   }
 
   if (!updatedSubmission) {
     return res.status(404).json({
       success: false,
-      error: 'Contact submission not found'
+      error: {
+        code: 'NOT_FOUND',
+        message: 'Contact submission not found'
+      }
     })
   }
 

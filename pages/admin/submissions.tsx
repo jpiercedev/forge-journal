@@ -1,5 +1,5 @@
 // Admin Submissions Page for Forge Journal
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import AdminLayout from 'components/admin/AdminLayout'
 import { AdminProvider, withAdminAuth } from 'components/admin/AdminContext'
 
@@ -52,14 +52,14 @@ function SubmissionsPage() {
   const [filter, setFilter] = useState<'all' | 'subscribers' | 'contacts'>('all')
   const [statusFilter, setStatusFilter] = useState<'all' | 'new' | 'read' | 'replied' | 'archived'>('all')
 
-  const loadSubmissions = async () => {
+  const loadSubmissions = useCallback(async () => {
     setLoading(true)
     try {
       const params = new URLSearchParams({
         type: filter,
         status: statusFilter
       })
-      
+
       const response = await fetch(`/api/admin/submissions?${params}`, {
         credentials: 'include',
       })
@@ -67,7 +67,7 @@ function SubmissionsPage() {
 
       if (data.success) {
         const { subscribers, contactSubmissions, stats: statsData } = data.data
-        
+
         // Combine and format submissions
         const formattedSubmissions: SubmissionItem[] = [
           ...subscribers.map((sub: Subscriber) => ({
@@ -91,7 +91,7 @@ function SubmissionsPage() {
 
         // Sort by date (newest first)
         formattedSubmissions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-        
+
         setSubmissions(formattedSubmissions)
         setStats(statsData)
       }
@@ -100,11 +100,11 @@ function SubmissionsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [filter, statusFilter])
 
   useEffect(() => {
     loadSubmissions()
-  }, [filter, statusFilter])
+  }, [filter, statusFilter, loadSubmissions])
 
   const handleSubmissionClick = (submission: SubmissionItem) => {
     setSelectedSubmission(submission)

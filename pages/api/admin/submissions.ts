@@ -41,11 +41,14 @@ interface SubmissionsResponse {
   error?: string
 }
 
-export default withAdminAuth(async (req: NextApiRequest, res: NextApiResponse<SubmissionsResponse>) => {
+export default withAdminAuth(async (req, res) => {
   if (req.method !== 'GET') {
     return res.status(405).json({
       success: false,
-      error: 'Method not allowed'
+      error: {
+        code: 'METHOD_NOT_ALLOWED',
+        message: 'Method not allowed'
+      }
     })
   }
 
@@ -77,7 +80,10 @@ export default withAdminAuth(async (req: NextApiRequest, res: NextApiResponse<Su
         console.error('Error fetching subscribers:', subscribersError)
         return res.status(500).json({
           success: false,
-          error: 'Failed to fetch subscribers'
+          error: {
+            code: 'FETCH_FAILED',
+            message: 'Failed to fetch subscribers'
+          }
         })
       }
 
@@ -103,7 +109,10 @@ export default withAdminAuth(async (req: NextApiRequest, res: NextApiResponse<Su
         console.error('Error fetching contact submissions:', contactsError)
         return res.status(500).json({
           success: false,
-          error: 'Failed to fetch contact submissions'
+          error: {
+            code: 'FETCH_FAILED',
+            message: 'Failed to fetch contact submissions'
+          }
         })
       }
 
@@ -143,7 +152,10 @@ export default withAdminAuth(async (req: NextApiRequest, res: NextApiResponse<Su
     console.error('Submissions API error:', error)
     return res.status(500).json({
       success: false,
-      error: 'Internal server error'
+      error: {
+        code: 'INTERNAL_ERROR',
+        message: 'Internal server error'
+      }
     })
   }
 })
