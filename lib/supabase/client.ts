@@ -615,6 +615,73 @@ export const adminDb = {
       .select('*')
       .eq('id', id)
       .single()
+  },
+
+  // Ad Analytics
+  async getAdClicks(adId?: string, limit = 100) {
+    let query = supabaseAdmin
+      .from('ad_clicks')
+      .select(`
+        id,
+        ad_id,
+        clicked_at,
+        user_ip,
+        user_agent,
+        referrer,
+        page_url,
+        ads!inner(title, headline, type)
+      `)
+      .order('clicked_at', { ascending: false })
+      .limit(limit)
+
+    if (adId) {
+      query = query.eq('ad_id', adId)
+    }
+
+    return query
+  },
+
+  async getAdAnalytics(adId?: string) {
+    // Get click counts by ad
+    let clickQuery = supabaseAdmin
+      .from('ad_clicks')
+      .select(`
+        ad_id,
+        ads!inner(title, headline, type, click_count)
+      `)
+
+    if (adId) {
+      clickQuery = clickQuery.eq('ad_id', adId)
+    }
+
+    const { data: clickData, error: clickError } = await clickQuery
+
+    if (clickError) {
+      return { data: null, error: clickError }
+    }
+
+    // Get click counts by date for the last 30 days
+    const thirtyDaysAgo = new Date()
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+
+    let dateQuery = supabaseAdmin
+      .from('ad_clicks')
+      .select('ad_id, clicked_at')
+      .gte('clicked_at', thirtyDaysAgo.toISOString())
+
+    if (adId) {
+      dateQuery = dateQuery.eq('ad_id', adId)
+    }
+
+    const { data: dateData, error: dateError } = await dateQuery
+
+    return {
+      data: {
+        clickData,
+        dateData,
+      },
+      error: dateError,
+    }
   }
 }
 

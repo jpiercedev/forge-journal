@@ -33,10 +33,29 @@ export default function SidebarAd({ className = '' }: SidebarAdProps) {
     }
   }
 
-  const handleAdClick = () => {
-    if (sidebarAd?.cta_link) {
-      window.open(sidebarAd.cta_link, '_blank', 'noopener,noreferrer')
+  const handleAdClick = async () => {
+    if (!sidebarAd?.cta_link) return
+
+    // Track the click
+    try {
+      await fetch('/api/ads/track-click', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ad_id: sidebarAd.id,
+          page_url: window.location.href,
+          referrer: document.referrer,
+        }),
+      })
+    } catch (error) {
+      console.error('Failed to track ad click:', error)
+      // Don't block the user's click if tracking fails
     }
+
+    // Open the link
+    window.open(sidebarAd.cta_link, '_blank', 'noopener,noreferrer')
   }
 
   // Don't render anything if loading or no ad

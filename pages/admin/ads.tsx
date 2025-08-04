@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import AdminLayout from 'components/admin/AdminLayout'
 import Alert from 'components/admin/Alert'
 import ImageUpload from 'components/ImageUpload'
+import AdAnalytics from 'components/admin/AdAnalytics'
 import { AdminProvider, useAdmin, withAdminAuth } from 'components/admin/AdminContext'
 import type { Ad } from 'types/ads'
 
@@ -290,6 +291,9 @@ function AdsPage() {
           />
         )}
 
+        {/* Analytics Dashboard */}
+        <AdAnalytics />
+
         {/* Create/Edit Form */}
         {showCreateForm && (
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
@@ -504,6 +508,13 @@ function AdsPage() {
                       <div className="flex items-center space-x-4 text-sm text-gray-500 font-sans">
                         <span>CTA: {ad.cta_text}</span>
                         <span>Order: {ad.display_order}</span>
+                        <span className="flex items-center">
+                          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </svg>
+                          {ad.click_count || 0} clicks
+                        </span>
                         <span>Created: {new Date(ad.created_at).toLocaleDateString()}</span>
                       </div>
                     </div>
