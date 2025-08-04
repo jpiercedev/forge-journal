@@ -35,26 +35,61 @@ export default function IndexPageHead({ settings }: IndexPageHeadProps) {
     ogImage = {},
   } = settings
   const ogImageTitle = ogImage?.title || demo.ogImageTitle
+  
+  const siteUrl = process.env.VERCEL_URL 
+    ? `https://${process.env.VERCEL_URL}` 
+    : 'https://forgejournal.com'
+  
+  const siteDescription = 'Shaping leaders and pastors who shape the nation. Biblical insights and practical wisdom for ministry leadership.'
 
   return (
     <Head>
       <title>{stegaClean(title)}</title>
       <Meta />
+      
+      {/* Basic Meta Tags */}
       <meta
         key="description"
         name="description"
-        content={toPlainText(description)}
+        content={toPlainText(description) || siteDescription}
       />
+      
+      {/* Open Graph Meta Tags */}
+      <meta property="og:type" content="website" />
+      <meta property="og:site_name" content="The Forge Journal" />
+      <meta property="og:title" content={stegaClean(title)} />
+      <meta 
+        property="og:description" 
+        content={toPlainText(description) || siteDescription} 
+      />
+      <meta property="og:url" content={siteUrl} />
       <meta
         property="og:image"
-        // Because OG images must have a absolute URL, we use the
-        // `VERCEL_URL` environment variable to get the deployment’s URL.
-        // More info:
-        // https://vercel.com/docs/concepts/projects/environment-variables
-        content={`${
-          process.env.VERCEL_URL ? 'https://' + process.env.VERCEL_URL : ''
-        }/api/og?${new URLSearchParams({ title: ogImageTitle })}`}
+        content={`${siteUrl}/api/og-homepage`}
       />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:type" content="image/png" />
+      <meta property="og:image:alt" content="The Forge Journal - Shaping leaders and pastors who shape the nation" />
+      
+      {/* Twitter Card Meta Tags */}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:site" content="@ForgeJournalX" />
+      <meta name="twitter:creator" content="@ForgeJournalX" />
+      <meta name="twitter:title" content={stegaClean(title)} />
+      <meta 
+        name="twitter:description" 
+        content={toPlainText(description) || siteDescription} 
+      />
+      <meta
+        name="twitter:image"
+        content={`${siteUrl}/api/og-homepage`}
+      />
+      
+      {/* Additional Meta Tags */}
+      <meta name="robots" content="index, follow" />
+      <meta name="author" content="The Forge Journal" />
+      <link rel="canonical" href={siteUrl} />
     </Head>
   )
 }
