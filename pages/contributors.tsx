@@ -1,6 +1,7 @@
 import { GetStaticProps } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
+import { useState } from 'react'
 import { db, Author, type Post } from 'lib/supabase/client'
 import ForgeLayout from 'components/ForgeLayout'
 
@@ -9,9 +10,40 @@ interface ContributorsPageProps {
   posts: Post[]
 }
 
+interface BioProps {
+  bio: string
+  maxLength?: number
+  className?: string
+}
+
+function Bio({ bio, maxLength = 200, className = "" }: BioProps) {
+  const [isExpanded, setIsExpanded] = useState(false)
+
+  const shouldTruncate = bio.length > maxLength
+  const displayText = isExpanded || !shouldTruncate
+    ? bio
+    : bio.substring(0, maxLength).trim() + '...'
+
+  return (
+    <div className={className}>
+      <p className="text-base text-gray-600 leading-relaxed font-sans whitespace-pre-line">
+        {displayText}
+      </p>
+      {shouldTruncate && (
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="mt-2 text-sm font-medium text-forge-teal hover:text-forge-teal-dark transition-colors duration-200 focus:outline-none focus:underline"
+        >
+          {isExpanded ? 'Read Less' : 'Read More'}
+        </button>
+      )}
+    </div>
+  )
+}
+
 export default function ContributorsPage({ authors, posts }: ContributorsPageProps) {
   // Define featured author names
-  const featuredNames = ['PASTOR STEVE RIGGLE', 'DR. JASON NELSON', 'DR. SAM THOMAS']
+  const featuredNames = ['PASTOR STEVE RIGGLE', 'DR. JASON J NELSON']
 
   // Separate featured and regular authors
   const featuredAuthors = authors.filter(author => featuredNames.includes(author.name))
@@ -113,9 +145,7 @@ export default function ContributorsPage({ authors, posts }: ContributorsPagePro
                           )}
 
                           {author.bio && (
-                            <p className="text-base text-gray-600 leading-relaxed font-sans whitespace-pre-line">
-                              {author.bio}
-                            </p>
+                            <Bio bio={author.bio} maxLength={300} />
                           )}
                         </div>
                       </div>
@@ -178,9 +208,7 @@ export default function ContributorsPage({ authors, posts }: ContributorsPagePro
                           )}
 
                           {author.bio && (
-                            <p className="text-base text-gray-600 leading-relaxed font-sans whitespace-pre-line">
-                              {author.bio}
-                            </p>
+                            <Bio bio={author.bio} maxLength={150} />
                           )}
                         </div>
                       </div>

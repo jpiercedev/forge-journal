@@ -228,12 +228,14 @@ export const db = {
       return { data, error }
     }
 
-    // Custom ordering: Steve Riggle first, Jason Nelson second, then others
+    // Custom ordering: Steve Riggle first, Jason J Nelson second, Sam Thomas third, then others
     const orderedAuthors = data.sort((a, b) => {
       if (a.name === 'PASTOR STEVE RIGGLE') return -1
       if (b.name === 'PASTOR STEVE RIGGLE') return 1
-      if (a.name === 'DR. JASON NELSON') return -1
-      if (b.name === 'DR. JASON NELSON') return 1
+      if (a.name === 'DR. JASON J NELSON') return -1
+      if (b.name === 'DR. JASON J NELSON') return 1
+      if (a.name === 'DR. SAM THOMAS') return -1
+      if (b.name === 'DR. SAM THOMAS') return 1
       return 0
     })
 
@@ -502,12 +504,14 @@ export const adminDb = {
       return { data, error }
     }
 
-    // Custom ordering: Steve Riggle first, Jason Nelson second, then others
+    // Custom ordering: Steve Riggle first, Jason J Nelson second, Sam Thomas third, then others
     const orderedAuthors = data.sort((a, b) => {
       if (a.name === 'PASTOR STEVE RIGGLE') return -1
       if (b.name === 'PASTOR STEVE RIGGLE') return 1
-      if (a.name === 'DR. JASON NELSON') return -1
-      if (b.name === 'DR. JASON NELSON') return 1
+      if (a.name === 'DR. JASON J NELSON') return -1
+      if (b.name === 'DR. JASON J NELSON') return 1
+      if (a.name === 'DR. SAM THOMAS') return -1
+      if (b.name === 'DR. SAM THOMAS') return 1
       return 0
     })
 
