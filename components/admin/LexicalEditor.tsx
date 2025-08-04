@@ -293,7 +293,7 @@ function ToolbarPlugin() {
         onClick={() => formatText('bold')}
         className={`flex items-center justify-center w-8 h-8 rounded transition-colors ${
           isBold
-            ? 'bg-blue-100 text-blue-700'
+            ? 'bg-[#f0f4f6] text-[#1e4356]'
             : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
         }`}
         title="Bold"

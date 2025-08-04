@@ -97,6 +97,16 @@ export default function AdminLayout({
       ),
     },
     {
+      name: 'Submissions',
+      href: '/admin/submissions',
+      section: 'submissions',
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+        </svg>
+      ),
+    },
+    {
       name: 'Admin Users',
       href: '/admin/users',
       section: 'users',
@@ -123,7 +133,7 @@ export default function AdminLayout({
 
       <div className="min-h-screen bg-gray-1 flex">
         {/* Sidebar */}
-        <div className={`${sidebarOpen ? 'w-64' : 'w-20'} bg-white border-r border-gray-3 shadow-sm transition-all duration-300 ease-in-out flex flex-col h-screen sticky top-0`}>
+        <div className={`${sidebarOpen ? 'w-64' : 'w-20'} bg-white border-r border-gray-3 shadow-sm transition-all duration-300 ease-in-out flex flex-col h-screen fixed top-0 left-0 z-30`}>
           {/* Sidebar Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-3">
             <div className={`${sidebarOpen ? 'block' : 'hidden'} transition-all duration-300`}>
@@ -223,7 +233,7 @@ export default function AdminLayout({
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className={`flex-1 flex flex-col overflow-hidden ${sidebarOpen ? 'ml-64' : 'ml-20'} transition-all duration-300 ease-in-out`}>
           {/* Top Header */}
           <header className="bg-white shadow-sm border-b border-gray-3">
             <div className="px-6 py-5">

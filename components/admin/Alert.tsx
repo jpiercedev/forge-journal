@@ -60,9 +60,9 @@ export default function Alert({
         }
       case 'info':
         return {
-          container: 'bg-blue-50 border-blue-200',
-          icon: 'text-blue-400',
-          text: 'text-blue-700'
+          container: 'bg-[#f0f4f6] border-[#1e4356]/20',
+          icon: 'text-[#1e4356]',
+          text: 'text-[#1e4356]'
         }
       default:
         return {

@@ -88,7 +88,7 @@ export default function DynamicBanner({ className = '' }: DynamicBannerProps) {
 
               {/* Right Side - CTA */}
               <div className="flex-shrink-0 ml-2 md:ml-4">
-                <div className="bg-white text-blue-900 px-2 md:px-4 py-1 md:py-2 font-bold text-xs md:text-sm font-sans uppercase tracking-wider hover:bg-blue-50 transition-colors duration-200 group-hover:scale-105 transform transition-transform whitespace-nowrap">
+                <div className="bg-white text-[#1e4356] px-2 md:px-4 py-1 md:py-2 font-bold text-xs md:text-sm font-sans uppercase tracking-wider hover:bg-[#f0f4f6] transition-colors duration-200 group-hover:scale-105 transform transition-transform whitespace-nowrap">
                   {bannerAd.cta_text}
                 </div>
               </div>

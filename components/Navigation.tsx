@@ -52,8 +52,8 @@ export default function Navigation() {
                   item.special
                     ? 'text-red-900 hover:text-red-800 hover:border-b-2 hover:border-red-800'
                     : isActive(item.href)
-                    ? 'text-blue-600 border-b-2 border-blue-600'
-                    : 'text-gray-700 hover:text-blue-600 hover:border-b-2 hover:border-blue-600'
+                    ? 'text-[#1e4356] border-b-2 border-[#1e4356]'
+                    : 'text-gray-700 hover:text-[#1e4356] hover:border-b-2 hover:border-[#1e4356]'
                 }`}
                 style={item.special ? { color: '#B91C1C' } : {}}
               >

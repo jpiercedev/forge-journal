@@ -62,7 +62,7 @@ export default function ImportProgress({ progress, onCancel }: ImportProgressPro
       case 'error':
         return 'text-red-600';
       default:
-        return 'text-blue-600';
+        return 'text-[#1e4356]';
     }
   };
 
