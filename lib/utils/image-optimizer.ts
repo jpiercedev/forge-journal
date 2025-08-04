@@ -94,10 +94,9 @@ export async function optimizeImageBuffer(
 
   // Apply format-specific optimizations
   if (format === 'webp') {
-    sharpInstance = sharpInstance.webp({ 
+    sharpInstance = sharpInstance.webp({
       quality,
-      effort: 6, // Higher effort for better compression
-      progressive
+      effort: 6 // Higher effort for better compression
     })
   } else if (format === 'jpeg') {
     sharpInstance = sharpInstance.jpeg({ 

@@ -70,6 +70,8 @@ export interface Post {
   excerpt?: string
   cover_image_url?: string
   cover_image_alt?: string
+  video_url?: string
+  hide_featured_image?: boolean
   author_id?: string
   published_at?: string
   created_at: string
@@ -79,7 +81,7 @@ export interface Post {
   word_count: number
   reading_time: number
   status: 'draft' | 'published' | 'archived'
-  
+
   // Relations (when joined)
   author?: Author
   categories?: Category[]

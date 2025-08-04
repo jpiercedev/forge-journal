@@ -72,6 +72,8 @@ export interface SupabasePostData {
   excerpt?: string;
   cover_image_url?: string;
   cover_image_alt?: string;
+  video_url?: string;
+  hide_featured_image?: boolean;
   author_id?: string;
   published_at?: string;
   seo_title?: string;

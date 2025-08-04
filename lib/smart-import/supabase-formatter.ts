@@ -10,6 +10,8 @@ export interface SupabasePostData {
   excerpt?: string
   cover_image_url?: string
   cover_image_alt?: string
+  video_url?: string
+  hide_featured_image?: boolean
   author_id?: string
   published_at?: string
   seo_title?: string
@@ -29,6 +31,8 @@ export async function formatForSupabase(
     createAuthor?: boolean
     authorName?: string
     status?: 'draft' | 'published'
+    video_url?: string
+    hide_featured_image?: boolean
   } = {}
 ): Promise<SupabasePostData> {
   const { title, content, excerpt, author, publishedAt, images } = parsedContent
@@ -76,6 +80,8 @@ export async function formatForSupabase(
     excerpt,
     cover_image_url: coverImageUrl,
     cover_image_alt: coverImageAlt,
+    video_url: options.video_url || null,
+    hide_featured_image: options.hide_featured_image || false,
     author_id: authorId,
     published_at: publishedDate,
     seo_title: seoTitle,

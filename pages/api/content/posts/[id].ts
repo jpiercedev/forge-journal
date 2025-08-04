@@ -97,6 +97,8 @@ async function handleUpdatePost(req: any, res: NextApiResponse<ApiResponse>, id:
       author_id,
       category_ids,
       cover_image_url,
+      video_url,
+      hide_featured_image,
     } = req.body
 
     // Validate required fields
@@ -129,6 +131,8 @@ async function handleUpdatePost(req: any, res: NextApiResponse<ApiResponse>, id:
       word_count: wordCount,
       reading_time: readingTime,
       cover_image_url: cover_image_url || null,
+      video_url: video_url || null,
+      hide_featured_image: hide_featured_image || false,
       updated_at: new Date().toISOString(),
     }
 

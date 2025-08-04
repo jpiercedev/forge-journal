@@ -7,6 +7,7 @@ import AdminLayout from 'components/admin/AdminLayout'
 import { AdminProvider, useAdmin, withAdminAuth } from 'components/admin/AdminContext'
 import LexicalEditor from 'components/admin/LexicalEditor'
 import ImageUpload from 'components/ImageUpload'
+import VideoEmbed, { isValidVideoUrl } from 'components/VideoEmbed'
 import Alert from 'components/admin/Alert'
 
 interface Post {
@@ -20,6 +21,8 @@ interface Post {
   created_at: string
   updated_at: string
   author_id?: string
+  video_url?: string
+  hide_featured_image?: boolean
   author?: {
     id: string
     name: string
@@ -75,6 +78,8 @@ function PostEditPage() {
     author_id: '',
     category_ids: [] as string[],
     cover_image: '',
+    video_url: '',
+    hide_featured_image: false,
   })
 
   const loadPost = useCallback(async () => {
@@ -123,6 +128,8 @@ function PostEditPage() {
         author_id: post.author_id || '',
         category_ids: post.categories?.map(c => c.id) || [],
         cover_image: post.cover_image_url || '',
+        video_url: post.video_url || '',
+        hide_featured_image: post.hide_featured_image || false,
       })
     }
   }, [post])
@@ -195,6 +202,8 @@ function PostEditPage() {
         ...formData,
         content: formData.content, // Lexical provides HTML content
         cover_image_url: formData.cover_image, // Map cover_image to cover_image_url for database
+        video_url: formData.video_url || null,
+        hide_featured_image: formData.hide_featured_image,
       }
 
       // Remove the cover_image field since we're using cover_image_url
@@ -619,6 +628,52 @@ function PostEditPage() {
                   showPreview={true}
                   showOptimizationStats={true}
                 />
+              </div>
+
+              <div>
+                <label htmlFor="video_url" className="block text-sm font-medium text-gray-700 font-sans mb-2">
+                  Video URL
+                  <span className="text-xs text-gray-500 ml-2">
+                    (YouTube, Vimeo, Wistia, Loom, or Twitch)
+                  </span>
+                </label>
+                <input
+                  type="url"
+                  id="video_url"
+                  name="video_url"
+                  value={formData.video_url}
+                  onChange={handleInputChange}
+                  className="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-forge-teal focus:border-forge-teal font-sans"
+                  placeholder="https://www.youtube.com/watch?v=..."
+                />
+
+                {formData.video_url && (
+                  <div className="mt-3">
+                    {isValidVideoUrl(formData.video_url) ? (
+                      <VideoEmbed url={formData.video_url} title={formData.title || 'Video Preview'} />
+                    ) : (
+                      <div className="text-sm text-red-600 font-sans">
+                        Invalid video URL. Please check the URL and try again.
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {formData.video_url && (
+                  <div className="mt-3">
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={formData.hide_featured_image}
+                        onChange={(e) => setFormData(prev => ({ ...prev, hide_featured_image: e.target.checked }))}
+                        className="rounded border-gray-300 text-forge-teal focus:ring-forge-teal"
+                      />
+                      <span className="ml-2 text-sm text-gray-700 font-sans">
+                        Hide featured image when video is present
+                      </span>
+                    </label>
+                  </div>
+                )}
               </div>
 
               <div>
