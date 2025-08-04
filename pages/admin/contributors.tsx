@@ -403,10 +403,12 @@ function AdminAuthors() {
                       value={createForm.image_url}
                       onChange={(url) => setCreateForm(prev => ({ ...prev, image_url: url }))}
                       onError={(error) => setError(error)}
+                      onSuccess={(message) => setSuccess(message)}
                       folder="authors"
                       placeholder="Upload a photo for this contributor"
                       maxSize={5 * 1024 * 1024} // 5MB
                       showPreview={true}
+                      showOptimizationStats={true}
                     />
                   </div>
 

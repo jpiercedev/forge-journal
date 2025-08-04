@@ -5,6 +5,14 @@ import { withAdminAuth, ApiResponse } from '../../../lib/auth/middleware'
 import { uploadFile, getPublicUrl } from '../../../lib/supabase/storage'
 import formidable from 'formidable'
 import fs from 'fs'
+import {
+  optimizeImageBuffer,
+  getOptimizationPreset,
+  suggestOptimizationPreset,
+  formatFileSize,
+  calculateCompressionStats,
+  isValidImageType
+} from '../../../lib/utils/image-optimizer'
 
 // Disable Next.js body parser for file uploads
 export const config = {
@@ -17,7 +25,11 @@ interface UploadResponse {
   url: string
   path: string
   size: number
+  originalSize: number
   type: string
+  optimized: boolean
+  reduction?: number
+  format: string
 }
 
 export default withAdminAuth(async (req, res) => {
@@ -75,23 +87,35 @@ async function handleUpload(
       })
     }
 
-    // Generate unique filename
-    const fileExt = file.originalFilename?.split('.').pop()?.toLowerCase() || 'jpg'
+    // Read original file buffer
+    const originalBuffer = fs.readFileSync(file.filepath)
+    const originalSize = originalBuffer.length
+
+    // Determine optimization preset based on folder
+    let optimizationPreset = 'coverImage'
+    if (folder === 'contributors' || folder === 'authors') {
+      optimizationPreset = 'avatar'
+    } else if (folder === 'ads' || folder === 'advertisements') {
+      optimizationPreset = 'advertisement'
+    }
+
+    // Optimize the image
+    const optimizationOptions = getOptimizationPreset(optimizationPreset as any)
+    const optimizationResult = await optimizeImageBuffer(originalBuffer, optimizationOptions)
+
+    // Generate unique filename with optimized extension
     const sanitizedName = file.originalFilename
       ?.replace(/\.[^/.]+$/, '') // Remove extension
       ?.replace(/[^a-z0-9]/gi, '-') // Replace non-alphanumeric with dash
       ?.toLowerCase()
       ?.substring(0, 20) || 'upload' // Limit length
-    
-    const fileName = `${sanitizedName}-${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`
+
+    const fileName = `${sanitizedName}-${Date.now()}-${Math.random().toString(36).substring(2)}.${optimizationResult.format}`
     const filePath = `${folder}/${fileName}`
 
-    // Read file buffer
-    const fileBuffer = fs.readFileSync(file.filepath)
-
-    // Upload to Supabase storage
-    await uploadFile('assets', filePath, fileBuffer, {
-      contentType: file.mimetype,
+    // Upload optimized image to Supabase storage
+    await uploadFile('assets', filePath, optimizationResult.buffer, {
+      contentType: `image/${optimizationResult.format}`,
       cacheControl: '3600'
     })
 
@@ -101,15 +125,22 @@ async function handleUpload(
     // Clean up temporary file
     fs.unlinkSync(file.filepath)
 
+    // Calculate compression stats
+    const compressionStats = calculateCompressionStats(originalSize, optimizationResult.optimizedSize)
+
     return res.status(200).json({
       success: true,
       data: {
         url: publicUrl,
         path: filePath,
-        size: file.size,
-        type: file.mimetype
+        size: optimizationResult.optimizedSize,
+        originalSize: originalSize,
+        type: `image/${optimizationResult.format}`,
+        optimized: true,
+        reduction: compressionStats.reduction,
+        format: optimizationResult.format
       },
-      message: 'File uploaded successfully'
+      message: `File uploaded and optimized successfully (${compressionStats.reduction}% reduction)`
     })
 
   } catch (error) {

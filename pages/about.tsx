@@ -96,7 +96,7 @@ export default function AboutPage(props: PageProps) {
           <div className="mb-8">
             <div className="py-4 px-6 mb-8 border-t-4 border-b-4 shadow-lg" style={{ backgroundColor: '#B91C1C', borderColor: '#991B1B' }}>
               <h2 className="text-xl md:text-2xl font-bold text-center font-sans uppercase tracking-wide text-white">
-                Shaping Minds who Shape the Nation
+                Shaping Minds that Shape the Nation
               </h2>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-6 font-sans">

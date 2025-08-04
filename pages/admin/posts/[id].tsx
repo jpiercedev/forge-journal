@@ -612,10 +612,12 @@ function PostEditPage() {
                   value={formData.cover_image}
                   onChange={(url) => setFormData(prev => ({ ...prev, cover_image: url }))}
                   onError={(error) => setError(error)}
+                  onSuccess={(message) => setSuccess(message)}
                   folder="posts"
                   placeholder="Upload a cover image for your post"
                   maxSize={5 * 1024 * 1024} // 5MB
                   showPreview={true}
+                  showOptimizationStats={true}
                 />
               </div>
 

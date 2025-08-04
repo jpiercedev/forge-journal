@@ -5,6 +5,7 @@ interface ImageUploadProps {
   value?: string
   onChange: (url: string) => void
   onError?: (error: string) => void
+  onSuccess?: (message: string) => void
   label?: string
   placeholder?: string
   folder?: string // Folder within the assets bucket (e.g., 'posts', 'authors')
@@ -12,22 +13,31 @@ interface ImageUploadProps {
   accept?: string
   maxSize?: number // in bytes
   showPreview?: boolean
+  showOptimizationStats?: boolean // Show compression statistics
 }
 
 export default function ImageUpload({
   value,
   onChange,
   onError,
+  onSuccess,
   label = 'Image',
   placeholder = 'Upload an image',
   folder = 'uploads',
   className = '',
   accept = 'image/*',
   maxSize = 5 * 1024 * 1024, // 5MB default
-  showPreview = true
+  showPreview = true,
+  showOptimizationStats = true
 }: ImageUploadProps) {
   const [isUploading, setIsUploading] = useState(false)
   const [dragActive, setDragActive] = useState(false)
+  const [optimizationStats, setOptimizationStats] = useState<{
+    reduction: number
+    originalSize: number
+    optimizedSize: number
+    format: string
+  } | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const validateFile = (file: File): boolean => {
@@ -46,11 +56,20 @@ export default function ImageUpload({
     return true
   }
 
+  const formatFileSize = (bytes: number): string => {
+    if (bytes === 0) return '0 B'
+    const k = 1024
+    const sizes = ['B', 'KB', 'MB', 'GB']
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i]
+  }
+
   const uploadFile = async (file: File) => {
     if (!validateFile(file)) return
 
     setIsUploading(true)
     onError?.('') // Clear any previous errors
+    setOptimizationStats(null) // Clear previous stats
 
     try {
       // Create form data for upload
@@ -71,7 +90,25 @@ export default function ImageUpload({
         throw new Error(result.error?.message || 'Upload failed')
       }
 
+      // Store optimization stats if available
+      if (result.data.optimized && result.data.reduction !== undefined) {
+        setOptimizationStats({
+          reduction: result.data.reduction,
+          originalSize: result.data.originalSize,
+          optimizedSize: result.data.size,
+          format: result.data.format
+        })
+      }
+
       onChange(result.data.url)
+
+      // Show success message with optimization info
+      if (result.data.optimized && onSuccess) {
+        const reductionText = result.data.reduction ? ` (${result.data.reduction.toFixed(1)}% smaller)` : ''
+        onSuccess(`Image uploaded and optimized successfully${reductionText}`)
+      } else if (onSuccess) {
+        onSuccess('Image uploaded successfully')
+      }
     } catch (error) {
       console.error('Upload error:', error)
       onError?.(error instanceof Error ? error.message : 'Failed to upload image')
@@ -216,6 +253,32 @@ export default function ImageUpload({
                 </p>
               </>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Optimization Stats */}
+      {showOptimizationStats && optimizationStats && (
+        <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+          <div className="flex items-center space-x-2">
+            <div className="flex-shrink-0">
+              <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-green-800">
+                Image Optimized Successfully
+              </p>
+              <div className="text-xs text-green-600 space-y-1">
+                <div>
+                  Size: {formatFileSize(optimizationStats.originalSize)} → {formatFileSize(optimizationStats.optimizedSize)}
+                </div>
+                <div>
+                  Reduction: {optimizationStats.reduction.toFixed(1)}% • Format: {optimizationStats.format.toUpperCase()}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}

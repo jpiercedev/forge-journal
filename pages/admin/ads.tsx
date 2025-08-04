@@ -367,10 +367,12 @@ function AdsPage() {
                   value={createForm.image_url}
                   onChange={(url) => setCreateForm({ ...createForm, image_url: url })}
                   onError={(error) => setError(error)}
+                  onSuccess={(message) => setSuccess(message)}
                   folder="ads"
                   placeholder="Upload an image for this ad"
                   maxSize={5 * 1024 * 1024} // 5MB
                   showPreview={true}
+                  showOptimizationStats={true}
                 />
               </div>
 
