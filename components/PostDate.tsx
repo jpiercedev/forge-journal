@@ -1,8 +1,10 @@
-import { format, parseISO } from 'date-fns'
+import { formatPostDate } from 'lib/utils/date-formatting'
 
 export default function PostDate({ dateString }: { dateString: string }) {
   if (!dateString) return null
 
-  const date = parseISO(dateString)
-  return <time dateTime={dateString} className="font-sans">{format(date, 'LLLL	d, yyyy')}</time>
+  const formattedDate = formatPostDate(dateString)
+  if (!formattedDate) return null
+
+  return <time dateTime={dateString} className="font-sans">{formattedDate}</time>
 }

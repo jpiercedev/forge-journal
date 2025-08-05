@@ -132,7 +132,6 @@ export default function ForgePostPage(props: ForgePostPageProps) {
           <article className="max-w-none bg-white p-8 shadow-sm">
             <ForgePostHeader
               post={post}
-              volumeInfo="FEBRUARY 2025 | VOLUME 54, ISSUE 2"
             />
 
             {/* Article Content */}

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import AdminLayout from 'components/admin/AdminLayout'
 import { AdminProvider, useAdmin, withAdminAuth } from 'components/admin/AdminContext'
+import { formatAdminDate } from 'lib/utils/date-formatting'
 
 interface Post {
   id: string
@@ -111,13 +112,7 @@ function PostsManagement() {
     post.author?.name.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    })
-  }
+  // Import the date formatting utility at the top of the file
 
   if (loading) {
     return (
@@ -252,8 +247,8 @@ function PostsManagement() {
                         {post.author?.name} • {post.word_count} words • {post.reading_time} min read
                       </p>
                       <p>
-                        Created: {formatDate(post.created_at)}
-                        {post.published_at && ` • Published: ${formatDate(post.published_at)}`}
+                        Created: {formatAdminDate(post.created_at)}
+                        {post.published_at && ` • Published: ${formatAdminDate(post.published_at)}`}
                       </p>
                       {post.excerpt && (
                         <p className="mt-2 text-gray-5 line-clamp-2">{post.excerpt}</p>

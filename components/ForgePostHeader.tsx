@@ -2,6 +2,7 @@ import ImagePlaceholder from 'components/ImagePlaceholder'
 import VideoEmbed from 'components/VideoEmbed'
 import Image from 'next/image'
 import type { Post } from 'lib/supabase/client'
+import { formatForgeHeaderDate } from 'lib/utils/date-formatting'
 
 interface ForgePostHeaderProps {
   post: Pick<Post, 'title' | 'author' | 'cover_image_url' | 'published_at' | 'video_url' | 'hide_featured_image'>
@@ -11,13 +12,10 @@ interface ForgePostHeaderProps {
 export default function ForgePostHeader({ post, volumeInfo }: ForgePostHeaderProps) {
   const { title, published_at, author, cover_image_url, video_url, hide_featured_image } = post
 
-  // Format date to match the design (e.g., "FEBRUARY 2025 | VOLUME 54, ISSUE 2")
-  const formattedDate = published_at ? new Date(published_at).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long'
-  }).toUpperCase() : ''
+  // Format date to match the design (e.g., "JULY 2024")
+  const formattedDate = formatForgeHeaderDate(published_at)
 
-  const displayVolumeInfo = volumeInfo || `${formattedDate} | VOLUME 1, ISSUE 1`
+  const displayVolumeInfo = volumeInfo || formattedDate
 
   // Determine whether to show the featured image
   const shouldShowFeaturedImage = !hide_featured_image || !video_url
