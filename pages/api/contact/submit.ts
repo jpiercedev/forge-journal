@@ -450,13 +450,16 @@ export default async function handler(
       }
 
       // Apply tags asynchronously to avoid blocking user response
-      setImmediate(async () => {
+      Promise.resolve().then(async () => {
         try {
+          console.log(`Starting tag application for contact ${contactId}:`, tagsToApply)
           await applyVirtuousTags(contactId, tagsToApply)
           console.log(`Successfully processed tags for contact ${contactId}:`, tagsToApply)
         } catch (error) {
           console.error(`Error applying tags to contact ${contactId}:`, error)
         }
+      }).catch(error => {
+        console.error(`Async tag processing failed for contact ${contactId}:`, error)
       })
     }
 
