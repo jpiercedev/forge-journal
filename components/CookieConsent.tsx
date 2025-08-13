@@ -103,6 +103,9 @@ export default function CookieConsent() {
     localStorage.setItem(COOKIE_CONSENT_KEY, 'true')
     localStorage.setItem(COOKIE_PREFERENCES_KEY, JSON.stringify(prefs))
     localStorage.setItem('forge-journal-consent-date', new Date().toISOString())
+
+    // Dispatch custom event to notify other components that consent was given
+    window.dispatchEvent(new CustomEvent('cookieConsentChanged'))
   }
 
   const handlePreferenceChange = (type: keyof CookiePreferences, value: boolean) => {

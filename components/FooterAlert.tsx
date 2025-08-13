@@ -31,11 +31,10 @@ export default function FooterAlert() {
     }
 
     // Only show the subscribe banner after user has made a cookie consent decision
-    // hasConsent will be true if user has given consent, false if they haven't made a decision yet
-    // We need to check if they've actually made a decision (either accept or reject)
+    // We check both the hook state and localStorage to catch real-time changes
     const consentGiven = localStorage.getItem('forge-journal-cookie-consent')
 
-    if (consentGiven) {
+    if (consentGiven && hasConsent !== null) {
       // User has made a cookie consent decision, show the subscribe banner
       const timer = setTimeout(() => {
         setIsVisible(true)
@@ -44,6 +43,43 @@ export default function FooterAlert() {
       return () => clearTimeout(timer)
     }
   }, [hasConsent, cookieLoading])
+
+  // Additional effect to listen for storage changes (when consent is given in real-time)
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'forge-journal-cookie-consent' && e.newValue === 'true') {
+        // Cookie consent was just given, check if we should show the banner
+        const dismissed = localStorage.getItem('forgeJournalAlertDismissed')
+        if (!dismissed && !isVisible) {
+          setTimeout(() => {
+            setIsVisible(true)
+          }, 2000)
+        }
+      }
+    }
+
+    // Listen for storage changes from other tabs/windows
+    window.addEventListener('storage', handleStorageChange)
+
+    // Also listen for custom events from the same tab
+    const handleConsentChange = () => {
+      const consentGiven = localStorage.getItem('forge-journal-cookie-consent')
+      const dismissed = localStorage.getItem('forgeJournalAlertDismissed')
+
+      if (consentGiven && !dismissed && !isVisible) {
+        setTimeout(() => {
+          setIsVisible(true)
+        }, 2000)
+      }
+    }
+
+    window.addEventListener('cookieConsentChanged', handleConsentChange)
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange)
+      window.removeEventListener('cookieConsentChanged', handleConsentChange)
+    }
+  }, [isVisible])
 
   const handleDismiss = () => {
     setIsVisible(false)
