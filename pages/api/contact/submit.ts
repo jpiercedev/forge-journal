@@ -438,8 +438,11 @@ export default async function handler(
     // Apply tags to the contact using dynamic tagging system
     const contactId = virtuousResult.id
     if (contactId) {
-      // Build list of tags to apply
-      const tagsToApply = ['forge-journal-submission'] // Base subscription tag
+      // Build list of tags to apply - include both base tags
+      const tagsToApply = [
+        'the-forge-journal',        // Base tag: "The Forge Journal" (ID: 25)
+        'forge-journal-submission'  // Base tag: "FJ Welcome Series" (ID: 26)
+      ]
 
       // Add marketing source tag if present
       if (formData.marketingSource) {
