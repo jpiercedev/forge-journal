@@ -37,8 +37,8 @@ async function lookupAndCacheTag(tagName: string): Promise<TagLookupResult> {
       }
     }
 
-    // Not in cache, look up in Virtuous
-    const virtuousResponse = await fetch('https://api.virtuoussoftware.com/api/Tag', {
+    // Not in cache, look up in Virtuous (get all tags with pagination)
+    const virtuousResponse = await fetch('https://api.virtuoussoftware.com/api/Tag?take=100', {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${process.env.VIRTUOUS_API_KEY}`,
