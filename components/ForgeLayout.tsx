@@ -287,8 +287,8 @@ export default function ForgeLayout({
         />
       </footer>
 
-      {/* Footer Alert - Temporarily disabled to avoid conflict with cookie consent */}
-      {/* <FooterAlert /> */}
+      {/* Footer Alert - Subscribe Banner */}
+      <FooterAlert />
 
       {/* Subscribe Modal */}
       <SubscribeModal

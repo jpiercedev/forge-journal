@@ -1,8 +1,10 @@
 import { useEffect,useState } from 'react'
 import { useMarketingSource } from 'hooks/useMarketingSource'
+import { useCookieConsent } from 'hooks/useCookieConsent'
 
 export default function FooterAlert() {
   const { source: marketingSource } = useMarketingSource()
+  const { hasConsent, isLoading: cookieLoading } = useCookieConsent()
   const [isVisible, setIsVisible] = useState(false)
   const [isDismissed, setIsDismissed] = useState(false)
   const [formData, setFormData] = useState({
@@ -18,6 +20,9 @@ export default function FooterAlert() {
   const [isExistingSubscriber, setIsExistingSubscriber] = useState(false)
 
   useEffect(() => {
+    // Don't show anything while cookie consent is still loading
+    if (cookieLoading) return
+
     // Check if user has already dismissed the alert
     const dismissed = localStorage.getItem('forgeJournalAlertDismissed')
     if (dismissed) {
@@ -25,13 +30,20 @@ export default function FooterAlert() {
       return
     }
 
-    // Show alert after 3 seconds delay
-    const timer = setTimeout(() => {
-      setIsVisible(true)
-    }, 3000)
+    // Only show the subscribe banner after user has made a cookie consent decision
+    // hasConsent will be true if user has given consent, false if they haven't made a decision yet
+    // We need to check if they've actually made a decision (either accept or reject)
+    const consentGiven = localStorage.getItem('forge-journal-cookie-consent')
 
-    return () => clearTimeout(timer)
-  }, [])
+    if (consentGiven) {
+      // User has made a cookie consent decision, show the subscribe banner
+      const timer = setTimeout(() => {
+        setIsVisible(true)
+      }, 2000)
+
+      return () => clearTimeout(timer)
+    }
+  }, [hasConsent, cookieLoading])
 
   const handleDismiss = () => {
     setIsVisible(false)

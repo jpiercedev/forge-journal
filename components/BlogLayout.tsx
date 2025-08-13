@@ -1,6 +1,7 @@
 import AlertBanner from 'components/AlertBanner'
 import CookieConsent from 'components/CookieConsent'
 import Footer from 'components/Footer'
+import FooterAlert from 'components/FooterAlert'
 import Navigation from 'components/Navigation'
 
 export default function Layout({
@@ -20,6 +21,9 @@ export default function Layout({
         <main className="flex-grow">{children}</main>
         <Footer />
       </div>
+
+      {/* Footer Alert - Subscribe Banner */}
+      <FooterAlert />
 
       {/* Cookie Consent Banner */}
       <CookieConsent />
