@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { Resend } from 'resend'
 import { supabaseAdmin } from '../../../lib/supabase/client'
 import { getNotificationRecipients } from '../../../lib/notifications/recipients'
+import { applyVirtuousTags } from '../admin/virtuous-tags'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -434,45 +435,26 @@ export default async function handler(
       // Don't fail the request if database save fails
     }
 
-    // Add tags to the contact after creation
+    // Apply tags to the contact using dynamic tagging system
     const contactId = virtuousResult.id
     if (contactId) {
-      // Tag IDs from Virtuous
-      const tagIdsToAdd = [
-        25,  // The Forge Journal
-        26   // FJ Welcome Series
-      ]
+      // Build list of tags to apply
+      const tagsToApply = ['forge-journal-submission'] // Base subscription tag
 
-      for (const tagId of tagIdsToAdd) {
-        try {
-          const tagResponse = await fetch('https://api.virtuoussoftware.com/api/ContactTag', {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${process.env.VIRTUOUS_API_KEY}`,
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            },
-            body: JSON.stringify({
-              contactId: contactId,
-              tagId: tagId
-            })
-          })
-
-          const tagResponseText = await tagResponse.text()
-
-          if (tagResponse.ok) {
-            console.log(`Successfully added tag ID ${tagId} to contact ${contactId}`)
-          } else {
-            console.error(`Failed to add tag ID ${tagId}:`, {
-              status: tagResponse.status,
-              statusText: tagResponse.statusText,
-              body: tagResponseText
-            })
-          }
-        } catch (tagError) {
-          console.error(`Error adding tag ID ${tagId}:`, tagError)
-        }
+      // Add marketing source tag if present
+      if (formData.marketingSource) {
+        tagsToApply.push(formData.marketingSource)
       }
+
+      // Apply tags asynchronously to avoid blocking user response
+      setImmediate(async () => {
+        try {
+          await applyVirtuousTags(contactId, tagsToApply)
+          console.log(`Successfully processed tags for contact ${contactId}:`, tagsToApply)
+        } catch (error) {
+          console.error(`Error applying tags to contact ${contactId}:`, error)
+        }
+      })
     }
 
     // Send admin notification email for new subscriber
