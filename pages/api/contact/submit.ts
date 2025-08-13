@@ -440,8 +440,8 @@ export default async function handler(
     if (contactId) {
       // Build list of tags to apply - include both base tags
       const tagsToApply = [
-        'the-forge-journal',        // Base tag: "The Forge Journal" (ID: 25)
-        'forge-journal-submission'  // Base tag: "FJ Welcome Series" (ID: 26)
+        'The Forge Journal',        // Base tag: "The Forge Journal" (ID: 25)
+        'FJ Welcome Series'         // Base tag: "FJ Welcome Series" (ID: 26)
       ]
 
       // Add marketing source tag if present
