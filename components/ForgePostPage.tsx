@@ -7,6 +7,7 @@ import type { Post } from 'lib/supabase/client'
 import Error from 'next/error'
 import Script from 'next/script'
 import { useState } from 'react'
+import { useMarketingSource } from 'hooks/useMarketingSource'
 
 // Settings type for compatibility
 interface Settings {
@@ -29,6 +30,7 @@ export default function ForgePostPage(props: ForgePostPageProps) {
   const { title = demo.title } = settings || {}
 
   const slug = post?.slug
+  const { source: marketingSource } = useMarketingSource()
 
   // Contact form state - matching exact Virtuous iframe form fields
   const [formData, setFormData] = useState({
@@ -71,7 +73,10 @@ export default function ForgePostPage(props: ForgePostPageProps) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          ...formData,
+          marketingSource
+        })
       })
 
       let result

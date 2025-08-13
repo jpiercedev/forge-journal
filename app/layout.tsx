@@ -21,6 +21,13 @@ export default function RootLayout({
             __html: `
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
+
+              // Set default consent state
+              gtag('consent', 'default', {
+                'analytics_storage': 'denied',
+                'ad_storage': 'denied'
+              });
+
               gtag('js', new Date());
               gtag('config', 'G-EYML1CVSBS');
             `,
@@ -42,7 +49,10 @@ export default function RootLayout({
               t.src=v;s=b.getElementsByTagName(e)[0];
               s.parentNode.insertBefore(t,s)}(window, document,'script',
               'https://connect.facebook.net/en_US/fbevents.js');
+
               fbq('init', '4064782077097627');
+              // Set default consent to revoked
+              fbq('consent', 'revoke');
               fbq('track', 'PageView');
             `,
           }}

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useMarketingSource } from 'hooks/useMarketingSource'
 
 interface SubscribeModalProps {
   isOpen: boolean
@@ -6,6 +7,7 @@ interface SubscribeModalProps {
 }
 
 export default function SubscribeModal({ isOpen, onClose }: SubscribeModalProps) {
+  const { source: marketingSource } = useMarketingSource()
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -47,7 +49,10 @@ export default function SubscribeModal({ isOpen, onClose }: SubscribeModalProps)
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          ...formData,
+          marketingSource
+        })
       })
 
       let result

@@ -1,6 +1,8 @@
 import { useEffect,useState } from 'react'
+import { useMarketingSource } from 'hooks/useMarketingSource'
 
 export default function FooterAlert() {
+  const { source: marketingSource } = useMarketingSource()
   const [isVisible, setIsVisible] = useState(false)
   const [isDismissed, setIsDismissed] = useState(false)
   const [formData, setFormData] = useState({
@@ -65,7 +67,10 @@ export default function FooterAlert() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          ...formData,
+          marketingSource
+        })
       })
 
       let result

@@ -234,6 +234,7 @@ interface ContactFormData {
   email: string
   phone?: string
   smsOptIn: boolean
+  marketingSource?: string
 }
 
 interface VirtuousContact {
@@ -302,12 +303,18 @@ export default async function handler(
       })
     }
 
+    // Prepare tags array with base tag and marketing source if available
+    const tags = ['forge-journal-submission']
+    if (formData.marketingSource) {
+      tags.push(formData.marketingSource)
+    }
+
     const contact: VirtuousContact = {
       contactType: 'Household', // Use 'Household' as it's the working contact type
       referenceSource: 'Forge Journal Website',
       name: `${formData.firstName.trim()} ${formData.lastName.trim()}`,
       description: 'Contact from Forge Journal website newsletter signup',
-      tags: ['forge-journal-submission'],
+      tags: tags,
       contactIndividuals: [
         {
           firstName: formData.firstName.trim(),
@@ -412,7 +419,7 @@ export default async function handler(
           sms_opt_in: formData.smsOptIn,
           virtuous_contact_id: virtuousResult?.id || null,
           is_existing: false,
-          source: 'website'
+          source: formData.marketingSource || 'website'
         })
         .select()
         .single()

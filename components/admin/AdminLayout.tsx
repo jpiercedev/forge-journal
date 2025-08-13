@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import { useAdmin } from './AdminContext'
+import CookieConsent from 'components/CookieConsent'
 
 interface AdminUser {
   id: string
@@ -266,6 +267,9 @@ export default function AdminLayout({
           </main>
         </div>
       </div>
+
+      {/* Cookie Consent Banner */}
+      <CookieConsent />
     </>
   )
 }

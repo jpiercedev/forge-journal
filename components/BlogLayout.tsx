@@ -1,4 +1,5 @@
 import AlertBanner from 'components/AlertBanner'
+import CookieConsent from 'components/CookieConsent'
 import Footer from 'components/Footer'
 import Navigation from 'components/Navigation'
 
@@ -19,6 +20,9 @@ export default function Layout({
         <main className="flex-grow">{children}</main>
         <Footer />
       </div>
+
+      {/* Cookie Consent Banner */}
+      <CookieConsent />
     </>
   )
 }

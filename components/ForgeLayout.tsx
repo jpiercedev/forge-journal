@@ -1,5 +1,6 @@
 import AlertBanner from 'components/AlertBanner'
 import AuthorSidebar from 'components/AuthorSidebar'
+import CookieConsent from 'components/CookieConsent'
 import FooterAlert from 'components/FooterAlert'
 import ForgeHeader from 'components/ForgeHeader'
 import DynamicBanner from 'components/DynamicBanner'
@@ -7,8 +8,9 @@ import RecentArticlesSidebar from 'components/RecentArticlesSidebar'
 import SidebarAd from 'components/SidebarAd'
 import SubscribeModal from 'components/SubscribeModal'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { Post } from 'lib/supabase/client'
+import { captureMarketingSource } from 'lib/utils/cookieUtils'
 
 interface ForgeLayoutProps {
   children: React.ReactNode
@@ -32,6 +34,11 @@ export default function ForgeLayout({
   searchBar,
 }: ForgeLayoutProps) {
   const [isSubscribeModalOpen, setIsSubscribeModalOpen] = useState(false)
+
+  // Capture marketing source from URL parameters on mount
+  useEffect(() => {
+    captureMarketingSource()
+  }, [])
   return (
     <div className="min-h-screen bg-gray-100 overflow-x-hidden">
       <AlertBanner preview={preview} loading={loading} />
@@ -189,6 +196,11 @@ export default function ForgeLayout({
                   </Link>
                 </li>
                 <li>
+                  <Link href="/cookie-preferences" className="text-gray-600 hover:text-gray-900 text-sm transition-colors">
+                    Cookie Preferences
+                  </Link>
+                </li>
+                <li>
                   <Link href="/terms-of-service" className="text-gray-600 hover:text-gray-900 text-sm transition-colors">
                     Terms of Service
                   </Link>
@@ -275,14 +287,17 @@ export default function ForgeLayout({
         />
       </footer>
 
-      {/* Footer Alert */}
-      <FooterAlert />
+      {/* Footer Alert - Temporarily disabled to avoid conflict with cookie consent */}
+      {/* <FooterAlert /> */}
 
       {/* Subscribe Modal */}
       <SubscribeModal
         isOpen={isSubscribeModalOpen}
         onClose={() => setIsSubscribeModalOpen(false)}
       />
+
+      {/* Cookie Consent Banner */}
+      <CookieConsent />
     </div>
   )
 }

@@ -2,6 +2,7 @@ import ForgeLayout from 'components/ForgeLayout'
 import { db, type Post } from 'lib/supabase/client'
 import { GetStaticProps } from 'next'
 import Head from 'next/head'
+import Link from 'next/link'
 
 interface PageProps {
   posts: Post[]
@@ -106,8 +107,20 @@ export default function PrivacyPolicy({ posts }: PageProps) {
             </ul>
 
             <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4 font-sans">Cookies</h2>
+            <p className="text-gray-700 mb-4">
+              Our website uses cookies to enhance your browsing experience and analyze site usage. We use different types of cookies for various purposes:
+            </p>
+            <ul className="list-disc pl-6 mb-4 text-gray-700">
+              <li><strong>Necessary Cookies:</strong> Essential for the website to function properly</li>
+              <li><strong>Analytics Cookies:</strong> Help us understand how visitors interact with our website</li>
+              <li><strong>Marketing Cookies:</strong> Used to track visitors across websites for advertising purposes</li>
+            </ul>
             <p className="text-gray-700 mb-6">
-              Our website uses cookies to enhance your browsing experience and analyze site usage. You can control cookie settings through your browser preferences, though some features may not function properly if cookies are disabled.
+              You can manage your cookie preferences at any time by visiting our{' '}
+              <Link href="/cookie-preferences" className="text-red-700 hover:text-red-800 underline">
+                Cookie Preferences
+              </Link>{' '}
+              page. You can also control cookie settings through your browser preferences, though some features may not function properly if cookies are disabled.
             </p>
 
             <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4 font-sans">Third-Party Services</h2>
@@ -132,7 +145,7 @@ export default function PrivacyPolicy({ posts }: PageProps) {
                 Email: privacy@forgejournal.com
               </p>
               <p className="text-gray-700">
-                Website: <a href="/contact" className="text-red-700 hover:text-red-800">Contact Form</a>
+                Website: <Link href="/contact" className="text-red-700 hover:text-red-800">Contact Form</Link>
               </p>
             </div>
           </div>
