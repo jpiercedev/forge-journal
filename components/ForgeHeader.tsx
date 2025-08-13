@@ -76,9 +76,9 @@ export default function ForgeHeader() {
             <button
               onClick={() => setIsSubscribeModalOpen(true)}
               className="text-gray-700 px-3 py-2 text-sm font-bold uppercase tracking-wider transition-colors duration-200 font-sans"
-              style={{ color: 'inherit' }}
-              onMouseEnter={(e) => e.currentTarget.style.color = '#be9d58'}
-              onMouseLeave={(e) => e.currentTarget.style.color = '#374151'}
+              style={{ color: '#B91C1C' }}
+              onMouseEnter={(e) => e.currentTarget.style.color = '#991B1B'}
+              onMouseLeave={(e) => e.currentTarget.style.color = '#B91C1C'}
             >
               SUBSCRIBE
             </button>
@@ -162,9 +162,9 @@ export default function ForgeHeader() {
               <button
                 onClick={() => setIsSubscribeModalOpen(true)}
                 className="text-gray-700 block px-3 py-2 text-sm font-bold uppercase tracking-wider font-sans w-full text-left"
-                style={{ color: 'inherit' }}
-                onMouseEnter={(e) => e.currentTarget.style.color = '#be9d58'}
-                onMouseLeave={(e) => e.currentTarget.style.color = '#374151'}
+                style={{ color: '#B91C1C' }}
+                onMouseEnter={(e) => e.currentTarget.style.color = '#991B1B'}
+                onMouseLeave={(e) => e.currentTarget.style.color = '#B91C1C'}
               >
                 SUBSCRIBE
               </button>
