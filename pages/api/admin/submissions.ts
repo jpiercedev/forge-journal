@@ -9,6 +9,7 @@ interface Subscriber {
   last_name: string
   email: string
   phone?: string
+  state?: string
   sms_opt_in: boolean
   virtuous_contact_id?: string
   is_existing: boolean

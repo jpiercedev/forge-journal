@@ -9,6 +9,7 @@ import LexicalEditor from 'components/admin/LexicalEditor'
 import ImageUpload from 'components/ImageUpload'
 import VideoEmbed, { isValidVideoUrl } from 'components/VideoEmbed'
 import Alert from 'components/admin/Alert'
+import PostScheduler from 'components/admin/PostScheduler'
 
 interface Post {
   id: string
@@ -18,6 +19,7 @@ interface Post {
   excerpt?: string
   status: 'draft' | 'published' | 'archived'
   published_at?: string
+  scheduled_publish_at?: string
   created_at: string
   updated_at: string
   author_id?: string
@@ -460,6 +462,54 @@ function PostEditPage() {
 
       {/* Edit Form */}
       <form id="edit-post-form" onSubmit={handleSubmit} className="space-y-6">
+        {/* Status and Scheduling Section */}
+        <div className="bg-white shadow-sm rounded-lg border border-gray-200 p-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="status" className="block text-sm font-medium text-gray-700 font-sans mb-2">
+                Status
+              </label>
+              <div className="relative">
+                <select
+                  id="status"
+                  name="status"
+                  value={formData.status}
+                  onChange={handleInputChange}
+                  className="block w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-forge-teal focus:border-forge-teal font-sans appearance-none bg-white text-sm"
+                >
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                  <option value="archived">Archived</option>
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              {/* Post Scheduler */}
+              <PostScheduler
+                postId={post?.id || ''}
+                currentStatus={formData.status}
+                scheduledPublishAt={post?.scheduled_publish_at}
+                onScheduleSuccess={() => {
+                  setSuccess('Post scheduled for publishing successfully!')
+                  // Refresh the post data to get updated scheduled_publish_at
+                  loadPost()
+                }}
+                onCancelSuccess={() => {
+                  setSuccess('Scheduled publishing canceled successfully!')
+                  // Refresh the post data to clear scheduled_publish_at
+                  loadPost()
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
         <div className="bg-white shadow-sm rounded-lg border border-gray-200 p-6">
           <h3 className="text-lg font-bold text-gray-900 font-sans mb-4">Basic Information</h3>
           
@@ -565,30 +615,6 @@ function PostEditPage() {
             
             <div className="space-y-4">
               <div>
-                <label htmlFor="status" className="block text-sm font-medium text-gray-700 font-sans">
-                  Status
-                </label>
-                <div className="relative">
-                  <select
-                    id="status"
-                    name="status"
-                    value={formData.status}
-                    onChange={handleInputChange}
-                    className="mt-1 block w-full pl-4 pr-10 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-forge-teal focus:border-forge-teal font-sans appearance-none bg-white"
-                  >
-                    <option value="draft">Draft</option>
-                    <option value="published">Published</option>
-                    <option value="archived">Archived</option>
-                  </select>
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                    <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-
-              <div>
                 <label htmlFor="author_id" className="block text-sm font-medium text-gray-700 font-sans">
                   Author
                 </label>
@@ -628,6 +654,21 @@ function PostEditPage() {
                   showPreview={true}
                   showOptimizationStats={true}
                 />
+
+                {/* Unsplash Quick Link */}
+                <div className="mt-3">
+                  <a
+                    href="https://unsplash.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-600 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-gray-700 transition-colors font-sans"
+                  >
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Need an image for your post?
+                  </a>
+                </div>
               </div>
 
               <div>
@@ -736,6 +777,8 @@ function PostEditPage() {
             </div>
           </div>
         </div>
+
+
 
 
       </form>

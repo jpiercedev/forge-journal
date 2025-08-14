@@ -10,6 +10,7 @@ interface Subscriber {
   last_name: string
   email: string
   phone?: string
+  state?: string
   sms_opt_in: boolean
   virtuous_contact_id?: string
   is_existing: boolean
@@ -410,6 +411,12 @@ function SubscriberDetails({ subscriber }: { subscriber: Subscriber }) {
             <div>
               <label className="text-xs text-gray-5 font-sans">Phone</label>
               <p className="text-sm text-gray-9 font-sans">{subscriber.phone}</p>
+            </div>
+          )}
+          {subscriber.state && (
+            <div>
+              <label className="text-xs text-gray-5 font-sans">State</label>
+              <p className="text-sm text-gray-9 font-sans">{subscriber.state}</p>
             </div>
           )}
         </div>

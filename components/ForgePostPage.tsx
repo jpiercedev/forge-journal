@@ -8,6 +8,7 @@ import Error from 'next/error'
 import Script from 'next/script'
 import { useState } from 'react'
 import { useMarketingSource } from 'hooks/useMarketingSource'
+import { US_STATES } from 'lib/constants/states'
 
 // Settings type for compatibility
 interface Settings {
@@ -38,6 +39,7 @@ export default function ForgePostPage(props: ForgePostPageProps) {
     lastName: '',
     email: '',
     phone: '',
+    state: '',
     smsOptIn: false
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -45,8 +47,10 @@ export default function ForgePostPage(props: ForgePostPageProps) {
   const [errorMessage, setErrorMessage] = useState('')
   const [isExistingSubscriber, setIsExistingSubscriber] = useState(false)
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target
+    const type = (e.target as HTMLInputElement).type
+    const checked = (e.target as HTMLInputElement).checked
 
     if (type === 'checkbox') {
       setFormData(prev => ({
@@ -98,6 +102,7 @@ export default function ForgePostPage(props: ForgePostPageProps) {
           lastName: '',
           email: '',
           phone: '',
+          state: '',
           smsOptIn: false
         })
       } else {
@@ -257,6 +262,28 @@ export default function ForgePostPage(props: ForgePostPageProps) {
                         style={{ fontFamily: 'Proxima Nova, sans-serif' }}
                         placeholder=""
                       />
+                    </div>
+
+                    <div>
+                      <label htmlFor="state" className="block text-base font-medium text-gray-900 mb-2" style={{ fontFamily: 'Proxima Nova, sans-serif' }}>
+                        State *
+                      </label>
+                      <select
+                        id="state"
+                        name="state"
+                        required
+                        value={formData.state}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-none bg-white text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-base"
+                        style={{ fontFamily: 'Proxima Nova, sans-serif' }}
+                      >
+                        <option value="">Select your state</option>
+                        {US_STATES.map((state) => (
+                          <option key={state.value} value={state.value}>
+                            {state.label}
+                          </option>
+                        ))}
+                      </select>
                     </div>
 
                     <div>

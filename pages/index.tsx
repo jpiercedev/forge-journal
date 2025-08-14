@@ -56,6 +56,29 @@ export const getStaticProps: GetStaticProps<PageProps> = async () => {
       }
     }
 
+    // Get current featured post
+    let featuredPost = null
+    try {
+      const { data: featuredData, error: featuredError } = await db.supabase
+        .rpc('get_current_featured_post')
+
+      if (!featuredError && featuredData && featuredData.length > 0) {
+        // Get the full post data for the featured post
+        const { data: fullFeaturedPost, error: fullPostError } = await db.getPostById(
+          featuredData[0].post_id,
+          true, // include author
+          false // don't need categories for homepage
+        )
+
+        if (!fullPostError && fullFeaturedPost) {
+          featuredPost = fullFeaturedPost
+        }
+      }
+    } catch (error) {
+      console.warn('Error fetching featured post:', error)
+      // Continue without featured post
+    }
+
     // Default settings
     const settings: Settings = {
       title: 'Forge Journal',
@@ -80,9 +103,18 @@ export const getStaticProps: GetStaticProps<PageProps> = async () => {
       }
     }
 
+    // Arrange posts with featured post first
+    let arrangedPosts = [...validPosts]
+    if (featuredPost) {
+      // Remove featured post from the list if it exists there
+      arrangedPosts = validPosts.filter(post => post.id !== featuredPost.id)
+      // Add featured post to the beginning
+      arrangedPosts.unshift(featuredPost)
+    }
+
     return {
       props: {
-        posts: validPosts,
+        posts: arrangedPosts,
         settings,
       },
       revalidate: 60, // Revalidate every minute

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useMarketingSource } from 'hooks/useMarketingSource'
+import { US_STATES } from 'lib/constants/states'
 
 interface SubscribeModalProps {
   isOpen: boolean
@@ -13,6 +14,7 @@ export default function SubscribeModal({ isOpen, onClose }: SubscribeModalProps)
     lastName: '',
     email: '',
     phone: '',
+    state: '',
     smsOptIn: false
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -21,8 +23,10 @@ export default function SubscribeModal({ isOpen, onClose }: SubscribeModalProps)
   const [isExistingSubscriber, setIsExistingSubscriber] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target
+    const type = (e.target as HTMLInputElement).type
+    const checked = (e.target as HTMLInputElement).checked
 
     if (type === 'checkbox') {
       setFormData(prev => ({
@@ -74,6 +78,7 @@ export default function SubscribeModal({ isOpen, onClose }: SubscribeModalProps)
           lastName: '',
           email: '',
           phone: '',
+          state: '',
           smsOptIn: false
         })
       } else {
@@ -98,6 +103,7 @@ export default function SubscribeModal({ isOpen, onClose }: SubscribeModalProps)
         lastName: '',
         email: '',
         phone: '',
+        state: '',
         smsOptIn: false
       })
       setSubmitStatus('idle')
@@ -210,6 +216,26 @@ export default function SubscribeModal({ isOpen, onClose }: SubscribeModalProps)
                     className="w-full px-4 py-3 border border-gray-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors font-sans"
                     placeholder="Enter your email address"
                   />
+                </div>
+                <div>
+                  <label htmlFor="modal-state" className="block text-sm font-medium text-gray-700 mb-2 font-sans">
+                    State
+                  </label>
+                  <select
+                    id="modal-state"
+                    name="state"
+                    value={formData.state}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors font-sans"
+                  >
+                    <option value="">Select your state</option>
+                    {US_STATES.map((state) => (
+                      <option key={state.value} value={state.value}>
+                        {state.label}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div>
                   <label htmlFor="modal-phone" className="block text-sm font-medium text-gray-700 mb-2 font-sans">

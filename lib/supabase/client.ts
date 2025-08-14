@@ -74,6 +74,7 @@ export interface Post {
   hide_featured_image?: boolean
   author_id?: string
   published_at?: string
+  scheduled_publish_at?: string
   created_at: string
   updated_at: string
   seo_title?: string

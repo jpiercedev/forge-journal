@@ -13,6 +13,7 @@ interface Post {
   slug: string
   status: 'draft' | 'published' | 'archived'
   published_at?: string
+  scheduled_publish_at?: string
   created_at: string
   updated_at: string
   author?: {
@@ -241,6 +242,14 @@ function PostsManagement() {
                       >
                         {post.status}
                       </span>
+                      {post.scheduled_publish_at && post.status === 'draft' && (
+                        <span className="inline-flex items-center px-2 py-1 text-xs rounded-full font-medium font-sans bg-primary-light text-primary">
+                          <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          Scheduled
+                        </span>
+                      )}
                     </div>
                     <div className="text-sm text-gray-6 font-sans space-y-1">
                       <p>
@@ -249,6 +258,7 @@ function PostsManagement() {
                       <p>
                         Created: {formatAdminDate(post.created_at)}
                         {post.published_at && ` • Published: ${formatAdminDate(post.published_at)}`}
+                        {post.scheduled_publish_at && post.status === 'draft' && ` • Scheduled: ${formatAdminDate(post.scheduled_publish_at)}`}
                       </p>
                       {post.excerpt && (
                         <p className="mt-2 text-gray-5 line-clamp-2">{post.excerpt}</p>

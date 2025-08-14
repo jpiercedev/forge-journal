@@ -162,6 +162,11 @@ async function sendAdminNotificationEmail(formData: ContactFormData, virtuousRes
               ` : ''}
 
               <div class="field">
+                <div class="field-label">State:</div>
+                <div class="field-value">${formData.state}</div>
+              </div>
+
+              <div class="field">
                 <div class="field-label">SMS Opt-in:</div>
                 <div class="field-value">${formData.smsOptIn ? 'Yes' : 'No'}</div>
               </div>
@@ -198,6 +203,7 @@ ${isExisting ? 'Existing' : 'New'} Forge Journal Subscription
 Subscriber: ${formData.firstName} ${formData.lastName}
 Email: ${formData.email}
 ${formData.phone ? `Phone: ${formData.phone}` : ''}
+State: ${formData.state}
 SMS Opt-in: ${formData.smsOptIn ? 'Yes' : 'No'}
 Status: ${isExisting ? 'Existing Subscriber (Updated)' : 'New Subscriber'}
 
@@ -234,6 +240,7 @@ interface ContactFormData {
   lastName: string
   email: string
   phone?: string
+  state: string
   smsOptIn: boolean
   marketingSource?: string
 }
@@ -254,6 +261,11 @@ interface VirtuousContact {
       isOptedIn: boolean
       isPrimary: boolean
     }>
+    addresses?: Array<{
+      type: string
+      state: string
+      isPrimary: boolean
+    }>
   }>
 }
 
@@ -269,9 +281,9 @@ export default async function handler(
     const formData: ContactFormData = req.body
 
     // Validate required fields
-    if (!formData.firstName || !formData.lastName || !formData.email) {
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.state) {
       return res.status(400).json({
-        error: 'Missing required fields: firstName, lastName, and email are required'
+        error: 'Missing required fields: firstName, lastName, email, and state are required'
       })
     }
 
@@ -321,7 +333,14 @@ export default async function handler(
           firstName: formData.firstName.trim(),
           lastName: formData.lastName.trim(),
           isPrimary: true,
-          contactMethods: contactMethods
+          contactMethods: contactMethods,
+          addresses: [
+            {
+              type: 'Home',
+              state: formData.state.trim(),
+              isPrimary: true
+            }
+          ]
         }
       ]
     }
@@ -364,6 +383,7 @@ export default async function handler(
               last_name: formData.lastName.trim(),
               email: formData.email.trim().toLowerCase(),
               phone: formData.phone?.trim() || null,
+              state: formData.state.trim(),
               sms_opt_in: formData.smsOptIn,
               is_existing: true,
               source: 'website'
@@ -417,6 +437,7 @@ export default async function handler(
           last_name: formData.lastName.trim(),
           email: formData.email.trim().toLowerCase(),
           phone: formData.phone?.trim() || null,
+          state: formData.state.trim(),
           sms_opt_in: formData.smsOptIn,
           virtuous_contact_id: virtuousResult?.id || null,
           is_existing: false,

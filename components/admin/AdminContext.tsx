@@ -3,6 +3,7 @@
 
 import React, { createContext, useContext, useReducer, useEffect, useCallback, ReactNode } from 'react'
 import { useRouter } from 'next/router'
+import { useScheduledPostPublisher } from '../../hooks/useScheduledPostPublisher'
 
 // Types
 interface AdminUser {
@@ -242,6 +243,12 @@ export function AdminProvider({ children }: AdminProviderProps) {
       dispatch({ type: 'SET_CURRENT_SECTION', payload: section })
     }
   }, [router.pathname])
+
+  // Auto-publish scheduled posts when in admin (for local development)
+  useScheduledPostPublisher({
+    enabled: state.isAuthenticated && router.pathname.includes('/admin/'),
+    intervalMinutes: 2 // Check every 2 minutes
+  })
 
   // Helper functions
   const login = async (credentials: { email: string; password: string }): Promise<boolean> => {

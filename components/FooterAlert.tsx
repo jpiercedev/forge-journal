@@ -1,6 +1,7 @@
 import { useEffect,useState } from 'react'
 import { useMarketingSource } from 'hooks/useMarketingSource'
 import { useCookieConsent } from 'hooks/useCookieConsent'
+import { US_STATES } from 'lib/constants/states'
 
 export default function FooterAlert() {
   const { source: marketingSource } = useMarketingSource()
@@ -12,6 +13,7 @@ export default function FooterAlert() {
     lastName: '',
     email: '',
     phone: '',
+    state: '',
     smsOptIn: false
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -87,8 +89,10 @@ export default function FooterAlert() {
     localStorage.setItem('forgeJournalAlertDismissed', 'true')
   }
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target
+    const type = (e.target as HTMLInputElement).type
+    const checked = (e.target as HTMLInputElement).checked
 
     if (type === 'checkbox') {
       setFormData(prev => ({
@@ -140,6 +144,7 @@ export default function FooterAlert() {
           lastName: '',
           email: '',
           phone: '',
+          state: '',
           smsOptIn: false
         })
 
@@ -225,6 +230,22 @@ export default function FooterAlert() {
                         placeholder="Phone (Optional)"
                         className="px-3 py-2 text-sm border border-gray-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors font-sans"
                       />
+                    </div>
+                    <div>
+                      <select
+                        name="state"
+                        value={formData.state}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full px-3 py-2 text-sm border border-gray-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors font-sans"
+                      >
+                        <option value="">Select your state</option>
+                        {US_STATES.map((state) => (
+                          <option key={state.value} value={state.value}>
+                            {state.label}
+                          </option>
+                        ))}
+                      </select>
                     </div>
 
                     {formData.phone && (
