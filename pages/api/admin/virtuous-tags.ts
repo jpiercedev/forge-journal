@@ -133,11 +133,16 @@ async function sendTagNotFoundEmail(tagName: string) {
  * Apply tags to a Virtuous contact
  */
 export async function applyVirtuousTags(contactId: number, tagNames: string[]): Promise<void> {
-  const tagPromises = tagNames.map(async (tagName) => {
-    const result = await lookupAndCacheTag(tagName)
-    
-    if (result.found && result.tagId) {
-      try {
+  console.log(`Applying ${tagNames.length} tags to contact ${contactId} sequentially:`, tagNames)
+
+  // Apply tags sequentially with delays to avoid rate limiting
+  for (let i = 0; i < tagNames.length; i++) {
+    const tagName = tagNames[i]
+
+    try {
+      const result = await lookupAndCacheTag(tagName)
+
+      if (result.found && result.tagId) {
         const tagResponse = await fetch('https://api.virtuoussoftware.com/api/ContactTag', {
           method: 'POST',
           headers: {
@@ -156,16 +161,22 @@ export async function applyVirtuousTags(contactId: number, tagNames: string[]): 
         } else {
           console.error(`Failed to apply tag "${tagName}":`, await tagResponse.text())
         }
-      } catch (error) {
-        console.error(`Error applying tag "${tagName}":`, error)
-      }
-    } else {
-      console.log(`Tag "${tagName}" not found in Virtuous - email notification sent`)
-    }
-  })
 
-  // Execute all tag applications in parallel
-  await Promise.all(tagPromises)
+        // Add delay between tag applications (except for the last one)
+        if (i < tagNames.length - 1) {
+          console.log(`Waiting 750ms before applying next tag to avoid rate limiting...`)
+          await new Promise(resolve => setTimeout(resolve, 750))
+        }
+
+      } else {
+        console.log(`Tag "${tagName}" not found in Virtuous - email notification sent`)
+      }
+    } catch (error) {
+      console.error(`Error applying tag "${tagName}":`, error)
+    }
+  }
+
+  console.log(`Completed applying all tags to contact ${contactId}`)
 }
 
 export default async function handler(
