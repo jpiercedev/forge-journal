@@ -371,7 +371,7 @@ function NewPostPage() {
                 Schedule Publishing
               </h4>
               <p className="text-sm text-blue-700 font-sans">
-                After creating this post, you'll be able to schedule it for automatic publishing at a specific date and time.
+                After creating this post, you&apos;ll be able to schedule it for automatic publishing at a specific date and time.
               </p>
             </div>
           </div>

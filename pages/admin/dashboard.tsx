@@ -690,7 +690,7 @@ function Dashboard() {
             </div>
             {selectedPost && (
               <p className="text-xs text-gray-600 font-sans mt-3 text-center">
-                "{selectedPost.title}" will become the featured post
+                &ldquo;{selectedPost.title}&rdquo; will become the featured post
               </p>
             )}
           </div>

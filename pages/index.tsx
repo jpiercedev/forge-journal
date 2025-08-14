@@ -1,5 +1,5 @@
 import IndexPage from 'components/IndexPage'
-import { db, type Post } from 'lib/supabase/client'
+import { db, supabaseAdmin, type Post } from 'lib/supabase/client'
 import { GetStaticProps } from 'next'
 import type { SharedPageProps } from 'pages/_app'
 
@@ -59,7 +59,7 @@ export const getStaticProps: GetStaticProps<PageProps> = async () => {
     // Get current featured post
     let featuredPost = null
     try {
-      const { data: featuredData, error: featuredError } = await db.supabase
+      const { data: featuredData, error: featuredError } = await supabaseAdmin
         .rpc('get_current_featured_post')
 
       if (!featuredError && featuredData && featuredData.length > 0) {
