@@ -2,6 +2,7 @@ import ForgeLayout from 'components/ForgeLayout'
 import { db, type Post } from 'lib/supabase/client'
 import { GetStaticProps } from 'next'
 import Head from 'next/head'
+import Link from 'next/link'
 import { useState } from 'react'
 import type { SharedPageProps } from 'pages/_app'
 
@@ -129,6 +130,25 @@ export default function AboutPage(props: PageProps) {
               and presentation, ensuring that each issue serves as a valuable resource for
               your ministry library.
             </p>
+
+            <div className="bg-white border border-gray-200 p-6 mt-8">
+              <h3 className="text-xl font-semibold text-gray-900 mb-3 font-sans">Our Foundation</h3>
+              <Link
+                href="/what-we-believe"
+                className="inline-block text-white px-4 py-2 text-sm font-semibold uppercase tracking-wider transition-all duration-200 font-sans border hover:bg-transparent"
+                style={{ backgroundColor: '#1e4356', borderColor: '#1e4356' }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                  e.currentTarget.style.color = '#1e4356';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#1e4356';
+                  e.currentTarget.style.color = 'white';
+                }}
+              >
+                What We Believe
+              </Link>
+            </div>
 
             <div className="bg-white border border-gray-200 p-6 mt-8">
               <h3 className="text-xl font-semibold text-gray-900 mb-3 font-sans">Get Involved</h3>

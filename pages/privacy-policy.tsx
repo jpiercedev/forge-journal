@@ -31,33 +31,33 @@ export default function PrivacyPolicy({ posts }: PageProps) {
             <div className="border-b-4 border-gray-900 w-16 mb-8"></div>
           </div>
 
-          <div className="prose prose-lg max-w-none">
-            <p className="text-lg text-gray-700 mb-6">
+          <div className="prose max-w-none">
+            <p className="text-sm text-gray-700 mb-6 font-sans">
               <strong>Effective Date:</strong> January 1, 2025
             </p>
 
-            <p className="text-gray-700 mb-6">
+            <p className="text-sm text-gray-700 mb-6 font-sans">
               At The Forge Journal, we are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or subscribe to our services.
             </p>
 
-            <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4 font-sans">Information We Collect</h2>
-            
-            <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-3 font-sans">Personal Information</h3>
-            <p className="text-gray-700 mb-4">
+            <h2 className="text-lg font-bold text-gray-900 mt-8 mb-4 font-sans">Information We Collect</h2>
+
+            <h3 className="text-base font-semibold text-gray-900 mt-6 mb-3 font-sans">Personal Information</h3>
+            <p className="text-sm text-gray-700 mb-4 font-sans">
               We may collect personal information that you voluntarily provide to us, including:
             </p>
-            <ul className="list-disc pl-6 mb-6 text-gray-700">
+            <ul className="list-disc pl-6 mb-6 text-sm text-gray-700 font-sans">
               <li>Name and email address when you subscribe to our newsletter</li>
               <li>Phone number if you opt-in to SMS communications</li>
               <li>Contact information when you reach out to us</li>
               <li>Comments and feedback you provide</li>
             </ul>
 
-            <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-3 font-sans">Automatically Collected Information</h3>
-            <p className="text-gray-700 mb-4">
+            <h3 className="text-base font-semibold text-gray-900 mt-6 mb-3 font-sans">Automatically Collected Information</h3>
+            <p className="text-sm text-gray-700 mb-4 font-sans">
               When you visit our website, we may automatically collect certain information, including:
             </p>
-            <ul className="list-disc pl-6 mb-6 text-gray-700">
+            <ul className="list-disc pl-6 mb-6 text-sm text-gray-700 font-sans">
               <li>IP address and browser information</li>
               <li>Device type and operating system</li>
               <li>Pages visited and time spent on our site</li>
@@ -65,11 +65,11 @@ export default function PrivacyPolicy({ posts }: PageProps) {
               <li>Cookies and similar tracking technologies</li>
             </ul>
 
-            <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4 font-sans">How We Use Your Information</h2>
-            <p className="text-gray-700 mb-4">
+            <h2 className="text-lg font-bold text-gray-900 mt-8 mb-4 font-sans">How We Use Your Information</h2>
+            <p className="text-sm text-gray-700 mb-4 font-sans">
               We use the information we collect to:
             </p>
-            <ul className="list-disc pl-6 mb-6 text-gray-700">
+            <ul className="list-disc pl-6 mb-6 text-sm text-gray-700 font-sans">
               <li>Deliver our newsletter and content to subscribers</li>
               <li>Send SMS updates if you&apos;ve opted in</li>
               <li>Respond to your inquiries and provide customer support</li>
@@ -78,27 +78,27 @@ export default function PrivacyPolicy({ posts }: PageProps) {
               <li>Comply with legal obligations</li>
             </ul>
 
-            <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4 font-sans">Information Sharing</h2>
-            <p className="text-gray-700 mb-4">
+            <h2 className="text-lg font-bold text-gray-900 mt-8 mb-4 font-sans">Information Sharing</h2>
+            <p className="text-sm text-gray-700 mb-4 font-sans">
               We do not sell, trade, or rent your personal information to third parties. We may share your information only in the following circumstances:
             </p>
-            <ul className="list-disc pl-6 mb-6 text-gray-700">
+            <ul className="list-disc pl-6 mb-6 text-sm text-gray-700 font-sans">
               <li>With service providers who help us operate our website and deliver our services</li>
               <li>When required by law or to protect our rights</li>
               <li>In connection with a business transfer or merger</li>
               <li>With your explicit consent</li>
             </ul>
 
-            <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4 font-sans">Data Security</h2>
-            <p className="text-gray-700 mb-6">
+            <h2 className="text-lg font-bold text-gray-900 mt-8 mb-4 font-sans">Data Security</h2>
+            <p className="text-sm text-gray-700 mb-6 font-sans">
               We implement appropriate technical and organizational security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. However, no method of transmission over the internet is 100% secure.
             </p>
 
-            <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4 font-sans">Your Rights</h2>
-            <p className="text-gray-700 mb-4">
+            <h2 className="text-lg font-bold text-gray-900 mt-8 mb-4 font-sans">Your Rights</h2>
+            <p className="text-sm text-gray-700 mb-4 font-sans">
               You have the right to:
             </p>
-            <ul className="list-disc pl-6 mb-6 text-gray-700">
+            <ul className="list-disc pl-6 mb-6 text-sm text-gray-700 font-sans">
               <li>Access and update your personal information</li>
               <li>Unsubscribe from our communications at any time</li>
               <li>Request deletion of your personal data</li>
@@ -106,16 +106,16 @@ export default function PrivacyPolicy({ posts }: PageProps) {
               <li>Contact us with privacy-related questions</li>
             </ul>
 
-            <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4 font-sans">Cookies</h2>
-            <p className="text-gray-700 mb-4">
+            <h2 className="text-lg font-bold text-gray-900 mt-8 mb-4 font-sans">Cookies</h2>
+            <p className="text-sm text-gray-700 mb-4 font-sans">
               Our website uses cookies to enhance your browsing experience and analyze site usage. We use different types of cookies for various purposes:
             </p>
-            <ul className="list-disc pl-6 mb-4 text-gray-700">
+            <ul className="list-disc pl-6 mb-4 text-sm text-gray-700 font-sans">
               <li><strong>Necessary Cookies:</strong> Essential for the website to function properly</li>
               <li><strong>Analytics Cookies:</strong> Help us understand how visitors interact with our website</li>
               <li><strong>Marketing Cookies:</strong> Used to track visitors across websites for advertising purposes</li>
             </ul>
-            <p className="text-gray-700 mb-6">
+            <p className="text-sm text-gray-700 mb-6 font-sans">
               You can manage your cookie preferences at any time by visiting our{' '}
               <Link href="/cookie-preferences" className="text-red-700 hover:text-red-800 underline">
                 Cookie Preferences
@@ -123,31 +123,17 @@ export default function PrivacyPolicy({ posts }: PageProps) {
               page. You can also control cookie settings through your browser preferences, though some features may not function properly if cookies are disabled.
             </p>
 
-            <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4 font-sans">Third-Party Services</h2>
-            <p className="text-gray-700 mb-6">
+            <h2 className="text-lg font-bold text-gray-900 mt-8 mb-4 font-sans">Third-Party Services</h2>
+            <p className="text-sm text-gray-700 mb-6 font-sans">
               Our website may contain links to third-party websites or use third-party services. We are not responsible for the privacy practices of these external sites. We encourage you to review their privacy policies.
             </p>
 
-            <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4 font-sans">Changes to This Policy</h2>
-            <p className="text-gray-700 mb-6">
+            <h2 className="text-lg font-bold text-gray-900 mt-8 mb-4 font-sans">Changes to This Policy</h2>
+            <p className="text-sm text-gray-700 mb-6 font-sans">
               We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the new policy on this page and updating the effective date.
             </p>
 
-            <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4 font-sans">Contact Us</h2>
-            <p className="text-gray-700 mb-6">
-              If you have any questions about this Privacy Policy or our privacy practices, please contact us at:
-            </p>
-            <div className="bg-gray-50 p-6 rounded-lg">
-              <p className="text-gray-700 mb-2">
-                <strong>The Forge Journal</strong>
-              </p>
-              <p className="text-gray-700 mb-2">
-                Email: privacy@forgejournal.com
-              </p>
-              <p className="text-gray-700">
-                Website: <Link href="/contact" className="text-red-700 hover:text-red-800">Contact Form</Link>
-              </p>
-            </div>
+
           </div>
         </div>
       </ForgeLayout>

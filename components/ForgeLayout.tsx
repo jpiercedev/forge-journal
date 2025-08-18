@@ -206,6 +206,11 @@ export default function ForgeLayout({
                   </Link>
                 </li>
                 <li>
+                  <Link href="/what-we-believe" className="text-gray-600 hover:text-gray-900 text-sm transition-colors">
+                    Statement of Faith
+                  </Link>
+                </li>
+                <li>
                   <Link href="/contact" className="text-gray-600 hover:text-gray-900 text-sm transition-colors">
                     Contact
                   </Link>

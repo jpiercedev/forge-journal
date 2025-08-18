@@ -270,6 +270,10 @@ export default function FooterAlert() {
                       </div>
                     )}
 
+                    <p className="text-xs text-gray-500 text-center mb-3 font-sans">
+                      By signing up, you agree to receive emails from FORGE and other Grace Ministries. Unsubscribe anytime.
+                    </p>
+
                     <div className="flex justify-end">
                       <button
                         type="submit"

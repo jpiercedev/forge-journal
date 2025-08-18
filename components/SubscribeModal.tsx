@@ -274,6 +274,10 @@ export default function SubscribeModal({ isOpen, onClose }: SubscribeModalProps)
                   </div>
                 )}
 
+                <p className="text-xs text-gray-500 text-center mb-4 font-sans">
+                  By signing up, you agree to receive emails from FORGE and other Grace Ministries. Unsubscribe anytime.
+                </p>
+
                 <button
                   type="submit"
                   disabled={isSubmitting}

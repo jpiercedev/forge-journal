@@ -351,7 +351,7 @@ export default function ForgePostPage(props: ForgePostPageProps) {
                     </div>
 
                     <p className="text-sm text-gray-600 text-center mt-4" style={{ fontFamily: 'Proxima Nova, sans-serif' }}>
-                      We respect your privacy and will never share your information.
+                      By signing up, you agree to receive emails from FORGE and other Grace Ministries. Unsubscribe anytime.
                     </p>
                   </form>
                   )}
