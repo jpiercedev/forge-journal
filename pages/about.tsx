@@ -131,37 +131,36 @@ export default function AboutPage(props: PageProps) {
               your ministry library.
             </p>
 
-            <div className="bg-white border border-gray-200 p-6 mt-8">
-              <h3 className="text-xl font-semibold text-gray-900 mb-3 font-sans">Our Foundation</h3>
-              <Link
-                href="/what-we-believe"
-                className="inline-block text-white px-4 py-2 text-sm font-semibold uppercase tracking-wider transition-all duration-200 font-sans border hover:bg-transparent"
-                style={{ backgroundColor: '#1e4356', borderColor: '#1e4356' }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                  e.currentTarget.style.color = '#1e4356';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = '#1e4356';
-                  e.currentTarget.style.color = 'white';
-                }}
-              >
+            <Link
+              href="/what-we-believe"
+              className="block w-full text-center text-white px-6 py-3 text-sm font-semibold uppercase tracking-wider transition-all duration-200 font-sans border hover:bg-transparent mt-8 no-underline"
+              style={{
+                backgroundColor: '#1e4356',
+                borderColor: '#1e4356',
+                textDecoration: 'none'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.color = '#1e4356';
+                e.currentTarget.style.textDecoration = 'none';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#1e4356';
+                e.currentTarget.style.color = 'white';
+                e.currentTarget.style.textDecoration = 'none';
+              }}
+            >
+              <span className="flex items-center justify-center">
                 What We Believe
-              </Link>
-            </div>
+                <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </span>
+            </Link>
+          </div>
 
-            <div className="bg-white border border-gray-200 p-6 mt-8">
-              <h3 className="text-xl font-semibold text-gray-900 mb-3 font-sans">Get Involved</h3>
-              <p className="text-base text-gray-700 leading-relaxed font-sans">
-                We welcome contributions from pastors, theologians, and church leaders who
-                share our commitment to biblical faithfulness and practical ministry wisdom.
-                If you&apos;re interested in contributing to The Forge Journal, please contact us
-                to learn more about our submission guidelines.
-              </p>
-            </div>
-
-            {/* Contact Form Section */}
-            <div className="mt-12 bg-gray-50 p-8 border border-gray-200">
+          {/* Contact Form Section */}
+          <div className="mt-8 bg-gray-50 p-8 border border-gray-200">
               <h2 className="text-2xl font-bold text-gray-900 mb-6 font-sans">Contact Us</h2>
 
               {submitStatus === 'success' ? (
@@ -261,7 +260,6 @@ export default function AboutPage(props: PageProps) {
                 </form>
               )}
             </div>
-          </div>
         </div>
       </ForgeLayout>
     </>

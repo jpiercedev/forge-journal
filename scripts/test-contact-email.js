@@ -1,54 +1,21 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { Resend } from 'resend'
-import { supabaseAdmin } from '../../../lib/supabase/client'
-import { getNotificationRecipients } from '../../../lib/notifications/recipients'
+// Test script to send a contact form email with specified details
+const { Resend } = require('resend')
+require('dotenv').config({ path: '.env.local' })
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
-interface ContactFormData {
-  name: string
-  email: string
-  message: string
-}
-
-interface ApiResponse {
-  success: boolean
-  message?: string
-  error?: string
-}
-
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<ApiResponse>
-) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({
-      success: false,
-      error: 'Method not allowed'
-    })
-  }
-
+async function sendTestContactEmail() {
   try {
-    const formData: ContactFormData = req.body
-
-    // Validate required fields
-    if (!formData.name || !formData.email || !formData.message) {
-      return res.status(400).json({
-        success: false,
-        error: 'Missing required fields: name, email, and message are required'
-      })
+    console.log('Sending test contact email...')
+    
+    // Test form data as specified
+    const formData = {
+      name: 'Jonathan Pierce',
+      email: 'jmdp87@gmail.com',
+      message: 'Test Message'
     }
 
-    // Check if Resend API key is configured
-    if (!process.env.RESEND_API_KEY) {
-      console.error('RESEND_API_KEY environment variable is not set')
-      return res.status(500).json({
-        success: false,
-        error: 'Server configuration error'
-      })
-    }
-
-    // Create email content
+    // Create email content (ACTUAL template from contact form)
     const emailHtml = `
       <!DOCTYPE html>
       <html>
@@ -173,7 +140,7 @@ export default async function handler(
           <div class="email-container">
             <div class="header">
               <img src="https://uvnbfnobyqbonuxztjuz.supabase.co/storage/v1/object/public/assets/logo-horizontal.png" alt="The Forge Journal" class="logo" />
-              <h1>New Contact Form Submission</h1>
+              <h1>📧 New Contact Form Submission</h1>
               <p>Shaping leaders and pastors who shape the nation</p>
             </div>
 
@@ -220,62 +187,30 @@ This message was sent via the contact form on The Forge Journal website.
 Please reply directly to ${formData.email} to respond to this inquiry.
     `
 
-    // Get notification recipients from database (same as subscription notifications)
-    const recipients = await getNotificationRecipients('subscription')
-
-    // Send email via Resend
+    // Send test email to jonathan@jpierce.dev
     const emailResult = await resend.emails.send({
       from: 'The Forge Journal <notifications@theforgejournal.com>',
-      to: recipients,
+      to: ['jonathan@jpierce.dev'],
       replyTo: formData.email,
-      subject: `Contact Form Submission from ${formData.name}`,
+      subject: `TEST - Contact Form Submission from ${formData.name}`,
       html: emailHtml,
       text: emailText,
     })
 
     if (emailResult.error) {
       console.error('Resend API error:', emailResult.error)
-      return res.status(500).json({
-        success: false,
-        error: 'Failed to send email'
-      })
+      return
     }
 
-    console.log('Contact email sent successfully:', emailResult.data?.id)
-
-    // Save contact submission to our database
-    try {
-      const { data: submission, error: dbError } = await supabaseAdmin
-        .from('contact_submissions')
-        .insert({
-          name: formData.name.trim(),
-          email: formData.email.trim().toLowerCase(),
-          message: formData.message.trim(),
-          status: 'new'
-        })
-        .select()
-        .single()
-
-      if (dbError) {
-        console.error('Error saving contact submission to database:', dbError)
-      } else {
-        console.log('Contact submission saved to database:', submission)
-      }
-    } catch (dbError) {
-      console.error('Database error:', dbError)
-      // Don't fail the request if database save fails
-    }
-
-    return res.status(200).json({
-      success: true,
-      message: 'Your message has been sent successfully. We\'ll get back to you soon!'
-    })
+    console.log('Test contact email sent successfully!')
+    console.log('Email ID:', emailResult.data?.id)
+    console.log('Sent to: jonathan@jpierce.dev')
+    console.log('From details:', formData)
 
   } catch (error) {
-    console.error('Contact form error:', error)
-    return res.status(500).json({
-      success: false,
-      error: 'An unexpected error occurred. Please try again.'
-    })
+    console.error('Error sending test email:', error)
   }
 }
+
+// Run the test
+sendTestContactEmail()
