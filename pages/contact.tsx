@@ -213,13 +213,6 @@ export default function Contact({ posts }: PageProps) {
                   </p>
                 </div>
 
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2 font-sans">Technical Support</h3>
-                  <p className="text-base text-gray-600 font-sans">
-                    Having trouble with our website or need technical assistance? Let us know and we&apos;ll help you get back on track.
-                  </p>
-                </div>
-
                 <div className="bg-gray-50 p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-3 font-sans">Stay Connected</h3>
                   <p className="text-base text-gray-600 mb-4 font-sans">
