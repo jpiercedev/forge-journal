@@ -42,12 +42,17 @@ function Bio({ bio, maxLength = 200, className = "" }: BioProps) {
 }
 
 export default function ContributorsPage({ authors, posts }: ContributorsPageProps) {
-  // Define featured author names
-  const featuredNames = ['PASTOR STEVE RIGGLE', 'DR. JASON J NELSON']
+  // Define featured author names (these will always appear first in the featured section)
+  const featuredNames = ['PASTOR STEVE RIGGLE', 'DR. JASON J. NELSON']
 
   // Separate featured and regular authors
   const featuredAuthors = authors.filter(author => featuredNames.includes(author.name))
   const regularAuthors = authors.filter(author => !featuredNames.includes(author.name))
+
+  // Ensure featured authors are in the correct order (Steve Riggle first, then Jason J. Nelson)
+  const orderedFeaturedAuthors = featuredNames
+    .map(name => featuredAuthors.find(author => author.name === name))
+    .filter(Boolean) as Author[]
 
   return (
     <>
@@ -92,10 +97,10 @@ export default function ContributorsPage({ authors, posts }: ContributorsPagePro
               </div>
 
               {/* Featured Contributors Section */}
-              {featuredAuthors.length > 0 && (
+              {orderedFeaturedAuthors.length > 0 && (
                 <div className="mb-16">
                   <div className="space-y-8">
-                    {featuredAuthors.map((author) => (
+                    {orderedFeaturedAuthors.map((author) => (
                       <div
                         key={author.id}
                         className="bg-gray-50 border border-gray-300 p-4 md:p-8 flex flex-col md:flex-row gap-4 md:gap-8 items-center md:items-start"
