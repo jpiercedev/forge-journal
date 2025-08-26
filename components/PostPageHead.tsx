@@ -30,8 +30,17 @@ export default function PostPageHead({ settings, post }: PostPageHeadProps) {
   const postUrl = `${siteUrl}/posts/${post.slug}`
   const postDescription = post.excerpt || 'Read this article on The Forge Journal - Shaping leaders and pastors who shape the nation.'
 
-  // Always use the generated OG image for consistent 16:9 cropping and branding
-  const ogImageUrl = `${siteUrl}/api/og-post?slug=${encodeURIComponent(post.slug)}`
+  // Use direct JPEG cover image URL for better iOS Messenger compatibility
+  // Fall back to generated OG image if no cover image or if it's not JPEG
+  const isJpegCoverImage = post.cover_image_url && post.cover_image_url.includes('.jpg')
+  const ogImageUrl = isJpegCoverImage
+    ? post.cover_image_url
+    : `${siteUrl}/api/og-post?slug=${encodeURIComponent(post.slug)}`
+
+  // Set appropriate image type and dimensions based on source
+  const ogImageType = isJpegCoverImage ? 'image/jpeg' : 'image/png'
+  const ogImageWidth = isJpegCoverImage ? '1920' : '1200'
+  const ogImageHeight = isJpegCoverImage ? '1080' : '630'
 
   return (
     <Head>
@@ -54,9 +63,9 @@ export default function PostPageHead({ settings, post }: PostPageHeadProps) {
       {/* Image meta tags - Multiple formats for different platforms */}
       <meta property="og:image" content={ogImageUrl} />
       <meta property="og:image:secure_url" content={ogImageUrl} />
-      <meta property="og:image:width" content="1200" />
-      <meta property="og:image:height" content="630" />
-      <meta property="og:image:type" content="image/png" />
+      <meta property="og:image:width" content={ogImageWidth} />
+      <meta property="og:image:height" content={ogImageHeight} />
+      <meta property="og:image:type" content={ogImageType} />
       <meta property="og:image:alt" content={`${post.title} - The Forge Journal`} />
 
       {/* Additional image references for broader platform support */}
