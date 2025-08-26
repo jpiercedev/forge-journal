@@ -24,30 +24,7 @@ export default function AuthorSidebar({ author }: AuthorSidebarProps) {
     <div className="bg-white p-6 shadow-sm mb-6">
       <h2 className="text-lg font-bold text-gray-900 mb-4 font-sans">About the Author</h2>
       
-      {/* Author Image */}
-      <div className="w-full h-48 overflow-hidden bg-gray-200 mb-4">
-        {author.image_url ? (
-          <Image
-            src={author.image_url}
-            alt={author.image_alt || author.name}
-            width={280}
-            height={192}
-            className="w-full h-full object-cover"
-            data-nosnippet="true"
-            data-pin-nopin="true"
-            role="presentation"
-            aria-hidden="true"
-          />
-        ) : (
-          <ImagePlaceholder
-            width={280}
-            height={192}
-            aspectRatio="landscape"
-            text="Author Photo"
-            className="w-full h-full"
-          />
-        )}
-      </div>
+      {/* Temporarily removed author images to prevent social media crawlers from using them as thumbnails */}
       
       {/* Author Name */}
       <h3 className="text-lg font-bold text-gray-900 mb-2 font-sans">{author.name}</h3>

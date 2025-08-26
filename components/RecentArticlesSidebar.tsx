@@ -24,30 +24,7 @@ export default function RecentArticlesSidebar({ posts }: RecentArticlesSidebarPr
               <article className="group">
               <Link href={`/posts/${post.slug}`}>
                 <div className="space-y-3">
-                  {/* Article Image - 1:1 aspect ratio */}
-                  <div className="aspect-square overflow-hidden bg-gray-200">
-                    {post.cover_image_url ? (
-                      <Image
-                        src={post.cover_image_url || ''}
-                        alt={post.title}
-                        width={320}
-                        height={320}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-                        data-nosnippet="true"
-                        data-pin-nopin="true"
-                        role="presentation"
-                        aria-hidden="true"
-                      />
-                    ) : (
-                      <ImagePlaceholder
-                        width={320}
-                        height={320}
-                        aspectRatio="square"
-                        text="Featured Image"
-                        className="w-full h-full"
-                      />
-                    )}
-                  </div>
+                  {/* Removed images to prevent social media crawlers from using them as thumbnails */}
 
                   {/* Article Title */}
                   <h3 className="text-lg font-bold text-gray-900 transition-colors duration-200 leading-tight group-hover:text-amber-600 font-sans">

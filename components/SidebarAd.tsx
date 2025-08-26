@@ -77,22 +77,7 @@ export default function SidebarAd({ className = '' }: SidebarAdProps) {
         }}
         aria-label={`${sidebarAd.headline} - ${sidebarAd.cta_text}`}
       >
-        {/* Ad Image */}
-        {sidebarAd.image_url && (
-          <div className="aspect-[4/3] overflow-hidden bg-gray-200">
-            <Image
-              src={sidebarAd.image_url}
-              alt={sidebarAd.image_alt || sidebarAd.headline}
-              width={400}
-              height={300}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              data-nosnippet="true"
-              data-pin-nopin="true"
-              role="presentation"
-              aria-hidden="true"
-            />
-          </div>
-        )}
+        {/* Temporarily removed ad images to prevent social media crawlers from using them as thumbnails */}
 
         {/* Ad Content */}
         <div className="p-6">

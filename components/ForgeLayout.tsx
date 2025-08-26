@@ -50,14 +50,14 @@ export default function ForgeLayout({
 
       <main className="w-full px-4 sm:w-[95%] md:w-[90%] mx-auto pt-3 pb-6 max-w-[1280px]">
         <div className={`${showSidebar ? 'lg:grid lg:grid-cols-4 lg:gap-6' : ''} flex flex-col lg:flex-row gap-4 lg:gap-6`}>
-          {/* Main Content Area - 3/4 width */}
-          <div className={`${showSidebar ? 'lg:col-span-3' : 'w-full'} min-w-0`}>
+          {/* Main Content Area - 3/4 width - MOVED TO APPEAR FIRST IN DOM */}
+          <div className={`${showSidebar ? 'lg:col-span-3 lg:order-1' : 'w-full'} min-w-0 order-1`}>
             {children}
           </div>
 
-          {/* Sidebar - 1/4 width */}
+          {/* Sidebar - 1/4 width - MOVED TO APPEAR SECOND IN DOM */}
           {showSidebar && (
-            <div className="lg:col-span-1 space-y-4 lg:space-y-6 min-w-0">
+            <div className="lg:col-span-1 space-y-4 lg:space-y-6 min-w-0 order-2 lg:order-2">
               {/* Tagline Section - Sidebar */}
               {showTagline && (
                 <div
