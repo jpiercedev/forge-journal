@@ -33,6 +33,10 @@ export default function AuthorSidebar({ author }: AuthorSidebarProps) {
             width={280}
             height={192}
             className="w-full h-full object-cover"
+            data-nosnippet="true"
+            data-pin-nopin="true"
+            role="presentation"
+            aria-hidden="true"
           />
         ) : (
           <ImagePlaceholder
