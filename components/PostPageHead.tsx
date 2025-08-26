@@ -41,23 +41,30 @@ export default function PostPageHead({ settings, post }: PostPageHeadProps) {
       {/* Basic Meta Tags */}
       <meta name="description" content={postDescription} />
 
-      {/* Open Graph Meta Tags */}
+      {/* Critical: Ensure og:url comes first for proper social media linking */}
+      <meta property="og:url" content={postUrl} />
+
+      {/* Open Graph Meta Tags - Ordered for maximum compatibility */}
       <meta property="og:type" content="article" />
+      <meta property="og:locale" content="en_US" />
       <meta property="og:site_name" content="The Forge Journal" />
       <meta property="og:title" content={stegaClean(post.title || siteTitle)} />
       <meta property="og:description" content={postDescription} />
-      <meta property="og:url" content={postUrl} />
+
+      {/* Image meta tags - Multiple formats for different platforms */}
       <meta property="og:image" content={ogImageUrl} />
+      <meta property="og:image:secure_url" content={ogImageUrl} />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
       <meta property="og:image:type" content="image/png" />
       <meta property="og:image:alt" content={`${post.title} - The Forge Journal`} />
 
-      {/* Additional image meta tags for better social media support */}
-      <meta property="og:image:secure_url" content={ogImageUrl} />
+      {/* Additional image references for broader platform support */}
       <meta name="image" content={ogImageUrl} />
       <meta itemProp="image" content={ogImageUrl} />
       <link rel="image_src" href={ogImageUrl} />
+
+      {/* Removed duplicate image meta tags - now consolidated above */}
 
       {/* Article specific OG tags */}
       {post.published_at && (
