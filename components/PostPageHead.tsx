@@ -30,9 +30,8 @@ export default function PostPageHead({ settings, post }: PostPageHeadProps) {
   const postUrl = `${siteUrl}/posts/${post.slug}`
   const postDescription = post.excerpt || 'Read this article on The Forge Journal - Shaping leaders and pastors who shape the nation.'
 
-  // Use the post's featured image directly for social media sharing
-  // This ensures social media crawlers use the correct image instead of sidebar images
-  const ogImageUrl = post.cover_image_url || `${siteUrl}/api/og-post?slug=${encodeURIComponent(post.slug)}`
+  // Always use the generated OG image for consistent 16:9 cropping and branding
+  const ogImageUrl = `${siteUrl}/api/og-post?slug=${encodeURIComponent(post.slug)}`
 
   return (
     <Head>
@@ -55,14 +54,10 @@ export default function PostPageHead({ settings, post }: PostPageHeadProps) {
       <meta property="og:image:alt" content={`${post.title} - The Forge Journal`} />
 
       {/* Additional image meta tags for better social media support */}
-      {post.cover_image_url && (
-        <>
-          <meta property="og:image:secure_url" content={post.cover_image_url} />
-          <meta name="image" content={post.cover_image_url} />
-          <meta itemProp="image" content={post.cover_image_url} />
-          <link rel="image_src" href={post.cover_image_url} />
-        </>
-      )}
+      <meta property="og:image:secure_url" content={ogImageUrl} />
+      <meta name="image" content={ogImageUrl} />
+      <meta itemProp="image" content={ogImageUrl} />
+      <link rel="image_src" href={ogImageUrl} />
 
       {/* Article specific OG tags */}
       {post.published_at && (
@@ -85,7 +80,7 @@ export default function PostPageHead({ settings, post }: PostPageHeadProps) {
       <meta name="twitter:creator" content="@ForgeJournalX" />
       <meta name="twitter:title" content={stegaClean(post.title || siteTitle)} />
       <meta name="twitter:description" content={postDescription} />
-      <meta name="twitter:image" content={post.cover_image_url || ogImageUrl} />
+      <meta name="twitter:image" content={ogImageUrl} />
 
       {/* Additional Meta Tags */}
       <meta name="robots" content="index, follow" />
