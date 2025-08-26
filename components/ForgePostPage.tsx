@@ -127,6 +127,24 @@ export default function ForgePostPage(props: ForgePostPageProps) {
     <>
       <PostPageHead settings={settings} post={post} />
 
+      {/* Hidden featured image for social media crawlers - appears first in DOM */}
+      {post?.cover_image_url && (
+        <img
+          src={post.cover_image_url}
+          alt={post.title}
+          style={{
+            position: 'absolute',
+            left: '-9999px',
+            top: '-9999px',
+            width: '1px',
+            height: '1px',
+            opacity: 0,
+            pointerEvents: 'none'
+          }}
+          aria-hidden="true"
+        />
+      )}
+
       <ForgeLayout
         preview={preview}
         loading={loading}
