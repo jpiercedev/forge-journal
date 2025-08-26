@@ -99,7 +99,7 @@ export default function WhatWeBelievePage(props: PageProps) {
                 (Luke 24:49; Acts 1:8; Romans 8:9-11, 13-15; 15:18,19; II Corinthians 1:21, 22; Ephesians 3:14-19; 5:18-20)
               </p>
               <p className="text-base text-gray-700 leading-relaxed mb-4 font-sans">
-                We believe in the personal baptism with the Holy Spirit as received by believers "at the beginning." We believe in the present day manifestation of all the gifts of the Holy Spirit in the Church.
+                We believe in the personal baptism with the Holy Spirit as received by believers &ldquo;at the beginning.&rdquo; We believe in the present day manifestation of all the gifts of the Holy Spirit in the Church.
               </p>
               <p className="text-sm text-gray-600 italic font-sans">
                 (John 1:33; 20:21-23; Acts 1:8; 2:4; 4:31; 8:17; 10:44-46; 19:3-6; Romans 12:6-8; I Corinthians 12:13, 27-31; 14:1-40; Ephesians 5:18)
@@ -133,7 +133,7 @@ export default function WhatWeBelievePage(props: PageProps) {
                 (Genesis 1:27-28; Matthew 5:27-28; Proverbs 6:25-26; I Corinthians 6:9-10,18; I Thessalonians 4:3-8)
               </p>
               <p className="text-base text-gray-700 leading-relaxed mb-4 font-sans">
-                We affirm that biological sex is a gift of God to every individual and to the human community to which that individual belongs. We believe that according to Scripture each person was intentionally woven together in their mother's womb.
+                We affirm that biological sex is a gift of God to every individual and to the human community to which that individual belongs. We believe that according to Scripture each person was intentionally woven together in their mother&rsquo;s womb.
               </p>
               <p className="text-sm text-gray-600 italic mb-4 font-sans">
                 (Psalm 139:13)

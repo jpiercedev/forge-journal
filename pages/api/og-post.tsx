@@ -8,11 +8,19 @@ const height = 630
 
 export default async function ogPost(req: NextRequest) {
   const { searchParams } = new URL(req.url)
-  
+
   const title = searchParams.get('title') || 'Forge Journal'
   const excerpt = searchParams.get('excerpt') || ''
   const imageUrl = searchParams.get('image') || ''
   const author = searchParams.get('author') || ''
+
+  // Skip WebP images as they're not supported by @vercel/og
+  // Use a gradient background instead for WebP images
+  let processedImageUrl = imageUrl
+  if (imageUrl && imageUrl.includes('.webp')) {
+    // Don't use WebP images - fall back to gradient background
+    processedImageUrl = ''
+  }
 
   // Truncate title and excerpt to fit nicely
   const truncatedTitle = title.length > 80 ? title.substring(0, 77) + '...' : title
@@ -30,9 +38,9 @@ export default async function ogPost(req: NextRequest) {
         }}
       >
         {/* Background Image */}
-        {imageUrl && (
+        {processedImageUrl && (
           <img
-            src={imageUrl}
+            src={processedImageUrl}
             alt=""
             style={{
               position: 'absolute',
@@ -54,7 +62,7 @@ export default async function ogPost(req: NextRequest) {
             left: 0,
             width: '100%',
             height: '100%',
-            background: imageUrl 
+            background: processedImageUrl
               ? 'linear-gradient(to bottom, rgba(30, 67, 86, 0.8) 0%, rgba(30, 67, 86, 0.9) 100%)'
               : 'linear-gradient(135deg, #1e4356 0%, #be9d58 50%, #1e4356 100%)',
           }}
