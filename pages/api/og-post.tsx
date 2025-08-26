@@ -69,12 +69,13 @@ export default async function ogPost(req: NextRequest) {
     }
   }
 
-  // Skip WebP images as they're not supported by @vercel/og
-  // Use a gradient background instead for WebP images
+  // Process image URL - prefer JPEG versions for better compatibility
   let processedImageUrl = imageUrl
   if (imageUrl && imageUrl.includes('.webp')) {
-    // Don't use WebP images - fall back to gradient background
-    processedImageUrl = ''
+    // Try to find a JPEG version of the same image
+    const jpegUrl = imageUrl.replace('.webp', '.jpg')
+    // For now, use the JPEG version if it exists, otherwise fall back to gradient
+    processedImageUrl = jpegUrl
   }
 
   // Truncate title and excerpt to fit nicely

@@ -13,6 +13,7 @@
     "optimize-supabase": "node scripts/optimize-supabase-images.js",
     "optimize-supabase-posts": "node scripts/optimize-supabase-images.js posts",
     "optimize-supabase-contributors": "node scripts/optimize-supabase-images.js contributors",
+    "convert-webp-to-jpeg": "node scripts/convert-webp-to-jpeg.js",
     "update-image-refs": "node scripts/update-image-references.js",
     "update-image-refs-dry": "node scripts/update-image-references.js --dry-run",
     "test-optimization": "node scripts/test-optimization.js",

@@ -29,12 +29,12 @@ export interface OptimizationResult {
  * Default optimization settings for different image types
  */
 export const OPTIMIZATION_PRESETS = {
-  // For blog post cover images
+  // For blog post cover images - Use JPEG for better social media compatibility
   coverImage: {
     quality: 85,
     maxWidth: 1920,
     maxHeight: 1080,
-    format: 'webp' as const,
+    format: 'jpeg' as const,
     progressive: true
   },
   
