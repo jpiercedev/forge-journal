@@ -1,18 +1,73 @@
 import { ImageResponse } from '@vercel/og'
 import type { NextRequest } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
 
 export const config = { runtime: 'edge' }
 
 const width = 1200
 const height = 630
 
+// Initialize Supabase client for edge runtime
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+
+const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false
+  }
+})
+
 export default async function ogPost(req: NextRequest) {
   const { searchParams } = new URL(req.url)
 
-  const title = searchParams.get('title') || 'Forge Journal'
-  const excerpt = searchParams.get('excerpt') || ''
-  const imageUrl = searchParams.get('image') || ''
-  const author = searchParams.get('author') || ''
+  // Get post identifier - can be slug or ID
+  const slug = searchParams.get('slug')
+  const id = searchParams.get('id')
+
+  // Fallback to URL parameters if no slug/id provided
+  const fallbackTitle = searchParams.get('title') || 'Forge Journal'
+  const fallbackExcerpt = searchParams.get('excerpt') || ''
+  const fallbackImageUrl = searchParams.get('image') || ''
+  const fallbackAuthor = searchParams.get('author') || ''
+
+  let title = fallbackTitle
+  let excerpt = fallbackExcerpt
+  let imageUrl = fallbackImageUrl
+  let author = fallbackAuthor
+
+  // Fetch post data from database if slug or id is provided
+  if (slug || id) {
+    try {
+      let query = supabase
+        .from('posts')
+        .select(`
+          title,
+          excerpt,
+          cover_image_url,
+          author:authors(name)
+        `)
+        .eq('status', 'published')
+
+      if (slug) {
+        query = query.eq('slug', slug)
+      } else if (id) {
+        query = query.eq('id', id)
+      }
+
+      const { data: post, error } = await query.single()
+
+      if (!error && post) {
+        title = post.title || fallbackTitle
+        excerpt = post.excerpt || fallbackExcerpt
+        imageUrl = post.cover_image_url || fallbackImageUrl
+        author = (post.author as any)?.name || fallbackAuthor
+      }
+    } catch (error) {
+      console.error('Error fetching post data for OG image:', error)
+      // Fall back to URL parameters
+    }
+  }
 
   // Skip WebP images as they're not supported by @vercel/og
   // Use a gradient background instead for WebP images

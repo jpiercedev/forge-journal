@@ -30,15 +30,8 @@ export default function PostPageHead({ settings, post }: PostPageHeadProps) {
   const postUrl = `${siteUrl}/posts/${post.slug}`
   const postDescription = post.excerpt || 'Read this article on The Forge Journal - Shaping leaders and pastors who shape the nation.'
 
-  // Generate OG image URL for blog posts
-  const ogImageUrl = post.cover_image_url
-    ? `${siteUrl}/api/og-post?${new URLSearchParams({
-        title: post.title || 'Forge Journal',
-        excerpt: post.excerpt || '',
-        image: post.cover_image_url,
-        author: post.author?.name || ''
-      })}`
-    : `${siteUrl}/api/og?${new URLSearchParams({ title: post.title || 'Forge Journal' })}`
+  // Generate OG image URL for blog posts using slug to fetch data directly from database
+  const ogImageUrl = `${siteUrl}/api/og-post?slug=${encodeURIComponent(post.slug)}`
 
   return (
     <Head>
