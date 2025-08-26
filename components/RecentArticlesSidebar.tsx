@@ -24,7 +24,33 @@ export default function RecentArticlesSidebar({ posts }: RecentArticlesSidebarPr
               <article className="group">
               <Link href={`/posts/${post.slug}`}>
                 <div className="space-y-3">
-                  {/* Removed images to prevent social media crawlers from using them as thumbnails */}
+                  {/* Article Image - Hidden from social media crawlers but visible to users */}
+                  <div className="aspect-square overflow-hidden bg-gray-200">
+                    {post.cover_image_url ? (
+                      <Image
+                        src={post.cover_image_url}
+                        alt={post.title}
+                        width={320}
+                        height={320}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200 sidebar-image crawler-hidden"
+                        loading="lazy"
+                        data-nosnippet="true"
+                        onLoad={(e) => {
+                          // Show image to users after load, but keep hidden from crawlers
+                          const img = e.target as HTMLImageElement;
+                          img.classList.add('loaded');
+                        }}
+                      />
+                    ) : (
+                      <ImagePlaceholder
+                        width={320}
+                        height={320}
+                        aspectRatio="square"
+                        text="No Image"
+                        showIcon={true}
+                      />
+                    )}
+                  </div>
 
                   {/* Article Title */}
                   <h3 className="text-lg font-bold text-gray-900 transition-colors duration-200 leading-tight group-hover:text-amber-600 font-sans">

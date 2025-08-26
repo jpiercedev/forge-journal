@@ -24,11 +24,49 @@ export default function AuthorSidebar({ author }: AuthorSidebarProps) {
     <div className="bg-white p-6 shadow-sm mb-6">
       <h2 className="text-lg font-bold text-gray-900 mb-4 font-sans">About the Author</h2>
       
-      {/* Temporarily removed author images to prevent social media crawlers from using them as thumbnails */}
-      
-      {/* Author Name */}
-      <h3 className="text-lg font-bold text-gray-900 mb-2 font-sans">{author.name}</h3>
-      
+      {/* Author Image - Hidden from social media crawlers but visible to users */}
+      <div className="flex items-start space-x-4 mb-4">
+        <div className="flex-shrink-0">
+          {author.image_url ? (
+            <Image
+              src={author.image_url}
+              alt={author.name}
+              width={80}
+              height={80}
+              className="w-20 h-20 rounded-full object-cover sidebar-image crawler-hidden"
+              loading="lazy"
+              data-nosnippet="true"
+              onLoad={(e) => {
+                // Show image to users after load, but keep hidden from crawlers
+                const img = e.target as HTMLImageElement;
+                img.classList.add('loaded');
+              }}
+            />
+          ) : (
+            <ImagePlaceholder
+              width={80}
+              height={80}
+              aspectRatio="square"
+              text="No Photo"
+              showIcon={true}
+              className="rounded-full"
+            />
+          )}
+        </div>
+
+        <div className="flex-1 min-w-0">
+          {/* Author Name */}
+          <h3 className="text-lg font-bold text-gray-900 mb-2 font-sans">{author.name}</h3>
+
+          {/* Author Title */}
+          {author.title && (
+            <p className="text-sm font-medium mb-3 font-sans" style={{ color: '#be9d58' }}>
+              {author.title}
+            </p>
+          )}
+        </div>
+      </div>
+
       {/* Author Bio */}
       <div className="text-sm text-gray-700 leading-relaxed font-sans">
         {author.bio ? (

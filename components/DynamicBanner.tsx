@@ -70,7 +70,13 @@ export default function DynamicBanner({ className = '' }: DynamicBannerProps) {
         <div className="flex items-center justify-center h-full py-2">
           <div
             key={bannerAd.id}
-            className="w-full h-full relative overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300 group bg-gradient-to-r from-blue-900 via-red-800 to-blue-900"
+            className="w-full h-full relative overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300 group"
+            style={{
+              backgroundImage: bannerAd.image_url ? `url("${bannerAd.image_url}")` : 'linear-gradient(to right, #1e3a8a, #991b1b, #1e3a8a)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat'
+            }}
             onClick={handleAdClick}
             role="button"
             tabIndex={0}
@@ -81,7 +87,10 @@ export default function DynamicBanner({ className = '' }: DynamicBannerProps) {
             }}
             aria-label={`${bannerAd.headline} - ${bannerAd.cta_text}`}
           >
-            {/* Ad Content - Removed background images to prevent social media crawlers from using them */}
+            {/* Overlay for better text readability - lighter so background image shows through */}
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-900/60 via-red-800/50 to-blue-900/60"></div>
+
+            {/* Ad Content */}
             <div className="relative z-10 flex items-center justify-between h-full px-3 md:px-6">
               {/* Left Side - Main Message */}
               <div className="flex-1 min-w-0 pr-2">
@@ -96,7 +105,7 @@ export default function DynamicBanner({ className = '' }: DynamicBannerProps) {
 
               </div>
 
-              {/* Right Side - CTA - Removed any potential images */}
+              {/* Right Side - CTA */}
               <div className="flex-shrink-0 ml-2 md:ml-4">
                 <div className="bg-white text-[#1e4356] px-2 md:px-4 py-1 md:py-2 font-bold text-xs md:text-sm font-sans uppercase tracking-wider hover:bg-[#f0f4f6] transition-colors duration-200 group-hover:scale-105 transform transition-transform whitespace-nowrap">
                   {bannerAd.cta_text}

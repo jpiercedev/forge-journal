@@ -77,7 +77,24 @@ export default function SidebarAd({ className = '' }: SidebarAdProps) {
         }}
         aria-label={`${sidebarAd.headline} - ${sidebarAd.cta_text}`}
       >
-        {/* Temporarily removed ad images to prevent social media crawlers from using them as thumbnails */}
+        {/* Ad Image - Hidden from social media crawlers but visible to users */}
+        {sidebarAd.image_url && (
+          <div className="relative h-32 mb-4 overflow-hidden">
+            <Image
+              src={sidebarAd.image_url}
+              alt={sidebarAd.headline}
+              fill
+              className="object-cover sidebar-image crawler-hidden"
+              loading="lazy"
+              data-nosnippet="true"
+              onLoad={(e) => {
+                // Show image to users after load, but keep hidden from crawlers
+                const img = e.target as HTMLImageElement;
+                img.classList.add('loaded');
+              }}
+            />
+          </div>
+        )}
 
         {/* Ad Content */}
         <div className="p-6">

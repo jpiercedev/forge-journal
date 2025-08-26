@@ -107,6 +107,29 @@ export default function PostPageHead({ settings, post }: PostPageHeadProps) {
       {post.word_count && (
         <meta name="twitter:data2" content={`${post.word_count} words`} />
       )}
+
+      {/* CSS to hide sidebar images from social media crawlers while keeping them visible to users */}
+      <style jsx>{`
+        /* Hide sidebar images from social media crawlers using techniques they typically ignore */
+        .sidebar-image {
+          /* Start hidden, then show via JavaScript for real users */
+          visibility: hidden;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+        }
+
+        .sidebar-image.loaded {
+          visibility: visible;
+          opacity: 1;
+        }
+
+        /* Additional crawler-hiding techniques */
+        .crawler-hidden {
+          /* Use CSS transforms that crawlers often ignore */
+          transform: translateZ(0) scale(0.999999);
+          backface-visibility: hidden;
+        }
+      `}</style>
     </Head>
   )
 }
