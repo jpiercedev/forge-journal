@@ -275,7 +275,7 @@ export default function ForgeLayout({
               "@type": "Organization",
               "name": "The Forge Journal",
               "description": "Shaping leaders and pastors who shape the nation. Biblical insights and practical wisdom for ministry leadership.",
-              "url": "https://forgejournal.com",
+              "url": "https://theforgejournal.com",
               "logo": "https://uvnbfnobyqbonuxztjuz.supabase.co/storage/v1/object/public/assets/logo-horizontal.png",
               "sameAs": [
                 "https://x.com/ForgeJournalX",
@@ -285,7 +285,7 @@ export default function ForgeLayout({
               "contactPoint": {
                 "@type": "ContactPoint",
                 "contactType": "customer service",
-                "url": "https://forgejournal.com/contact"
+                "url": "https://theforgejournal.com/contact"
               }
             })
           }}

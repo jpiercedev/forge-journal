@@ -36,9 +36,9 @@ export default function IndexPageHead({ settings }: IndexPageHeadProps) {
   } = settings
   const ogImageTitle = ogImage?.title || demo.ogImageTitle
   
-  const siteUrl = process.env.VERCEL_URL 
-    ? `https://${process.env.VERCEL_URL}` 
-    : 'https://forgejournal.com'
+  const siteUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : 'https://theforgejournal.com'
   
   const siteDescription = 'Shaping leaders and pastors who shape the nation. Biblical insights and practical wisdom for ministry leadership.'
 

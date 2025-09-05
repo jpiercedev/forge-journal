@@ -7,7 +7,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://forgejournal.com'
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://theforgejournal.com'
     const currentDate = new Date().toISOString()
 
     // Static pages

@@ -72,11 +72,14 @@ export default async function handler(
     }
 
     // Search for our target tags
-    const orangeTag = allTags.find(tag => 
+    const orangeTag = allTags.find(tag =>
       tag.tagName && tag.tagName.toLowerCase().includes('orange')
     )
-    const texasTag = allTags.find(tag => 
+    const texasTag = allTags.find(tag =>
       tag.tagName && tag.tagName.toLowerCase().includes('texas')
+    )
+    const houstonTag = allTags.find(tag =>
+      tag.tagName && tag.tagName.toLowerCase().includes('houston')
     )
 
     return res.status(200).json({
@@ -84,15 +87,20 @@ export default async function handler(
       totalFound: allTags.length,
       allTagNames: allTags.map(tag => tag.tagName).sort(),
       targetTags: {
-        orange: orangeTag ? { 
-          id: orangeTag.id, 
-          name: orangeTag.tagName, 
-          group: orangeTag.tagGroupName 
+        orange: orangeTag ? {
+          id: orangeTag.id,
+          name: orangeTag.tagName,
+          group: orangeTag.tagGroupName
         } : null,
-        texas: texasTag ? { 
-          id: texasTag.id, 
-          name: texasTag.tagName, 
-          group: texasTag.tagGroupName 
+        texas: texasTag ? {
+          id: texasTag.id,
+          name: texasTag.tagName,
+          group: texasTag.tagGroupName
+        } : null,
+        houston: houstonTag ? {
+          id: houstonTag.id,
+          name: houstonTag.tagName,
+          group: houstonTag.tagGroupName
         } : null
       }
     })

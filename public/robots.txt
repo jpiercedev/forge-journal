@@ -1,11 +1,11 @@
 # Robots.txt for The Forge Journal
-# https://forgejournal.com/robots.txt
+# https://theforgejournal.com/robots.txt
 
 User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://forgejournal.com/sitemap.xml
+Sitemap: https://theforgejournal.com/sitemap.xml
 
 # Disallow admin areas
 Disallow: /admin/

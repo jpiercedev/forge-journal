@@ -77,12 +77,12 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
                       )}
                     </div>
 
-                    {/* Accent Color Overlay */}
-                    <div className="absolute inset-0" style={{ backgroundColor: '#1e4356', opacity: 0.5 }}></div>
+                    {/* Accent Color Overlay - reduced opacity to show more of the image */}
+                    <div className="absolute inset-0" style={{ backgroundColor: '#1e4356', opacity: 0.3 }}></div>
 
-                    {/* Semi-transparent Overlay - stronger on mobile for better text readability */}
+                    {/* Semi-transparent Overlay - reduced opacity to show more of the image */}
                     <div className="absolute inset-0" style={{
-                      background: 'linear-gradient(to right, rgba(30, 67, 86, 0.9), rgba(30, 67, 86, 0.8), rgba(30, 67, 86, 0.3))'
+                      background: 'linear-gradient(to right, rgba(30, 67, 86, 0.6), rgba(30, 67, 86, 0.5), rgba(30, 67, 86, 0.2))'
                     }}></div>
 
                     {/* Content Overlay */}

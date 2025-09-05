@@ -25,7 +25,7 @@ export default function PostPageHead({ settings, post }: PostPageHeadProps) {
 
   const siteUrl = process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}`
-    : 'https://forgejournal.com'
+    : 'https://theforgejournal.com'
 
   const postUrl = `${siteUrl}/posts/${post.slug}`
   const postDescription = post.excerpt || 'Read this article on The Forge Journal - Shaping leaders and pastors who shape the nation.'

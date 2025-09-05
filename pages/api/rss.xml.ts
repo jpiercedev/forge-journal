@@ -19,7 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(500).json({ message: 'Error fetching posts' })
     }
 
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://forgejournal.com'
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://theforgejournal.com'
     const currentDate = new Date().toUTCString()
 
     const rssItems = (posts || []).map((post: any) => {
@@ -33,7 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       <link>${postUrl}</link>
       <guid isPermaLink="true">${postUrl}</guid>
       <pubDate>${pubDate}</pubDate>
-      ${post.author ? `<author>noreply@forgejournal.com (${post.author.name})</author>` : ''}
+      ${post.author ? `<author>noreply@theforgejournal.com (${post.author.name})</author>` : ''}
       ${post.cover_image_url ? `<enclosure url="${post.cover_image_url}" type="image/jpeg" />` : ''}
     </item>`
     }).join('')
@@ -47,8 +47,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     <language>en-us</language>
     <lastBuildDate>${currentDate}</lastBuildDate>
     <atom:link href="${siteUrl}/rss.xml" rel="self" type="application/rss+xml" />
-    <managingEditor>noreply@forgejournal.com (The Forge Journal)</managingEditor>
-    <webMaster>noreply@forgejournal.com (The Forge Journal)</webMaster>
+    <managingEditor>noreply@theforgejournal.com (The Forge Journal)</managingEditor>
+    <webMaster>noreply@theforgejournal.com (The Forge Journal)</webMaster>
     <category>Religion</category>
     <category>Christianity</category>
     <category>Ministry</category>
