@@ -29,7 +29,15 @@ export default function RootLayout({
               });
 
               gtag('js', new Date());
-              gtag('config', 'G-EYML1CVSBS');
+              gtag('config', 'G-EYML1CVSBS', {
+                // Enhanced tracking configuration
+                send_page_view: false, // We'll handle page views manually
+                custom_map: {
+                  'custom_parameter_1': 'marketing_source',
+                  'custom_parameter_2': 'content_group1',
+                  'custom_parameter_3': 'content_group2'
+                }
+              });
             `,
           }}
         />

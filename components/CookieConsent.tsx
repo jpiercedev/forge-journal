@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { initializeAllTracking, trackEnhancedPageView } from 'lib/utils/trackingInit'
 
 interface CookiePreferences {
   necessary: boolean
@@ -74,9 +75,18 @@ export default function CookieConsent() {
       analytics: true,
       marketing: true,
     }
-    
+
     saveConsent(allAccepted)
     applyTrackingPreferences(allAccepted)
+
+    // Initialize enhanced tracking after consent
+    if (allAccepted.analytics) {
+      setTimeout(() => {
+        initializeAllTracking()
+        trackEnhancedPageView()
+      }, 100)
+    }
+
     setIsVisible(false)
   }
 
@@ -95,6 +105,15 @@ export default function CookieConsent() {
   const handleSavePreferences = () => {
     saveConsent(preferences)
     applyTrackingPreferences(preferences)
+
+    // Initialize enhanced tracking if analytics consent given
+    if (preferences.analytics) {
+      setTimeout(() => {
+        initializeAllTracking()
+        trackEnhancedPageView()
+      }, 100)
+    }
+
     setIsVisible(false)
     setShowPreferences(false)
   }

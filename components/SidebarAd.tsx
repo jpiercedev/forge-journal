@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import type { Ad } from '../types/ads'
+import { trackAdView, trackAdClick } from 'lib/utils/analytics'
 
 interface SidebarAdProps {
   className?: string
@@ -24,7 +25,13 @@ export default function SidebarAd({ className = '' }: SidebarAdProps) {
       if (data.success && data.data && data.data.length > 0) {
         // Randomly select a sidebar ad from all active sidebar ads
         const randomIndex = Math.floor(Math.random() * data.data.length)
-        setSidebarAd(data.data[randomIndex])
+        const selectedAd = data.data[randomIndex]
+        setSidebarAd(selectedAd)
+
+        // Track ad view
+        if (selectedAd) {
+          trackAdView(selectedAd.id, 'sidebar', 'sidebar_ad')
+        }
       }
     } catch (error) {
 
@@ -36,7 +43,10 @@ export default function SidebarAd({ className = '' }: SidebarAdProps) {
   const handleAdClick = async () => {
     if (!sidebarAd?.cta_link) return
 
-    // Track the click
+    // Track the click with analytics
+    trackAdClick(sidebarAd.id, 'sidebar', 'sidebar_ad', sidebarAd.cta_link)
+
+    // Track the click in database
     try {
       await fetch('/api/ads/track-click', {
         method: 'POST',

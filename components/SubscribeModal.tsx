@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useMarketingSource } from 'hooks/useMarketingSource'
 import { US_STATES } from 'lib/constants/states'
+import { trackFormStart, trackFormSubmit, trackNewsletterSignup } from 'lib/utils/analytics'
 
 interface SubscribeModalProps {
   isOpen: boolean
@@ -22,11 +23,18 @@ export default function SubscribeModal({ isOpen, onClose }: SubscribeModalProps)
   const [errorMessage, setErrorMessage] = useState('')
   const [isExistingSubscriber, setIsExistingSubscriber] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
+  const [hasTrackedFormStart, setHasTrackedFormStart] = useState(false)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     const type = (e.target as HTMLInputElement).type
     const checked = (e.target as HTMLInputElement).checked
+
+    // Track form start on first interaction
+    if (!hasTrackedFormStart) {
+      trackFormStart('newsletter_signup', 'subscribe_modal')
+      setHasTrackedFormStart(true)
+    }
 
     if (type === 'checkbox') {
       setFormData(prev => ({
@@ -72,6 +80,13 @@ export default function SubscribeModal({ isOpen, onClose }: SubscribeModalProps)
       if (response.ok) {
         setSubmitStatus('success')
         setIsExistingSubscriber(result.isExisting || false)
+
+        // Track successful form submission
+        trackFormSubmit('newsletter_signup', true, undefined, marketingSource)
+
+        // Track newsletter signup with marketing attribution
+        trackNewsletterSignup('subscribe_modal', result.isExisting || false, marketingSource)
+
         // Reset form
         setFormData({
           firstName: '',
@@ -84,12 +99,18 @@ export default function SubscribeModal({ isOpen, onClose }: SubscribeModalProps)
       } else {
         setSubmitStatus('error')
         setErrorMessage(result.error || 'Failed to submit form')
+
+        // Track failed form submission
+        trackFormSubmit('newsletter_signup', false, result.error || 'Failed to submit form', marketingSource)
       }
     } catch (error) {
       setSubmitStatus('error')
       setErrorMessage('Network error. Please try again.')
       setIsExistingSubscriber(false)
       console.error('Form submission error:', error)
+
+      // Track network error
+      trackFormSubmit('newsletter_signup', false, 'Network error', marketingSource)
     } finally {
       setIsSubmitting(false)
     }

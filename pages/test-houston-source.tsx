@@ -81,7 +81,7 @@ export default function TestHoustonSource({ posts }: PageProps) {
                   Test Houston Source (?src=houston)
                 </a>
                 <p className="text-xs text-gray-600 mt-2">
-                  This will set the marketing source to "houston" and store it for 30 days.
+                  This will set the marketing source to &quot;houston&quot; and store it for 30 days.
                 </p>
               </div>
 
@@ -92,7 +92,7 @@ export default function TestHoustonSource({ posts }: PageProps) {
                 </p>
                 <ul className="text-xs space-y-1 list-disc list-inside">
                   <li>Houston tag (ID: 31) will be applied in Virtuous</li>
-                  <li>Base tags "The Forge Journal" and "FJ Welcome Series" will also be applied</li>
+                  <li>Base tags &quot;The Forge Journal&quot; and &quot;FJ Welcome Series&quot; will also be applied</li>
                   <li>Source will be tracked in the local database</li>
                 </ul>
               </div>
@@ -158,8 +158,8 @@ export default function TestHoustonSource({ posts }: PageProps) {
               How to Verify
             </h3>
             <ol className="text-sm space-y-1 list-decimal list-inside">
-              <li>Click the "Test Houston Source" button above</li>
-              <li>Check that the marketing source shows as "houston"</li>
+              <li>Click the &quot;Test Houston Source&quot; button above</li>
+              <li>Check that the marketing source shows as &quot;houston&quot;</li>
               <li>Go to the contact form and submit a test subscription</li>
               <li>Verify in Virtuous that the contact has the Houston tag applied</li>
             </ol>

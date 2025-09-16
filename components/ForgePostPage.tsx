@@ -9,6 +9,8 @@ import Script from 'next/script'
 import { useState } from 'react'
 import { useMarketingSource } from 'hooks/useMarketingSource'
 import { US_STATES } from 'lib/constants/states'
+import { useBlogEngagement } from 'hooks/useBlogEngagement'
+import SocialShare from 'components/SocialShare'
 
 // Settings type for compatibility
 interface Settings {
@@ -32,6 +34,17 @@ export default function ForgePostPage(props: ForgePostPageProps) {
 
   const slug = post?.slug
   const { source: marketingSource } = useMarketingSource()
+
+  // Blog engagement tracking
+  const engagementData = useBlogEngagement({
+    postSlug: post?.slug || '',
+    postTitle: post?.title || '',
+    author: post?.author?.name,
+    category: post?.categories?.[0]?.title,
+    estimatedReadingTime: post?.reading_time,
+    enableScrollTracking: true,
+    enableReadingTimeTracking: true,
+  })
 
   // Contact form state - matching exact Virtuous iframe form fields
   const [formData, setFormData] = useState({
@@ -165,6 +178,25 @@ export default function ForgePostPage(props: ForgePostPageProps) {
             {/* Article Content */}
             <div className="prose max-w-none prose-p:text-base prose-p:leading-relaxed">
               <PostBody content={post.content} />
+            </div>
+
+            {/* Social Sharing */}
+            <div className="border-t border-gray-200 pt-6 mt-8">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <h4 className="text-lg font-semibold text-gray-900" style={{ fontFamily: 'Proxima Nova, sans-serif' }}>
+                  Share this article
+                </h4>
+                <SocialShare
+                  url={typeof window !== 'undefined' ? window.location.href : `https://theforgejournal.com/posts/${post.slug}`}
+                  title={post.title}
+                  description={post.excerpt || ''}
+                  hashtags={['ForgeJournal', 'Leadership', 'Ministry']}
+                  contentType="blog_post"
+                  contentId={post.slug}
+                  size="medium"
+                  variant="default"
+                />
+              </div>
             </div>
 
             {/* Custom Contact Form */}

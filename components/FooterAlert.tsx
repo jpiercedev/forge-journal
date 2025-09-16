@@ -2,6 +2,7 @@ import { useEffect,useState } from 'react'
 import { useMarketingSource } from 'hooks/useMarketingSource'
 import { useCookieConsent } from 'hooks/useCookieConsent'
 import { US_STATES } from 'lib/constants/states'
+import { trackFormStart, trackFormSubmit, trackNewsletterSignup } from 'lib/utils/analytics'
 
 export default function FooterAlert() {
   const { source: marketingSource } = useMarketingSource()
@@ -20,6 +21,7 @@ export default function FooterAlert() {
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = useState('')
   const [isExistingSubscriber, setIsExistingSubscriber] = useState(false)
+  const [hasTrackedFormStart, setHasTrackedFormStart] = useState(false)
 
   useEffect(() => {
     // Don't show anything while cookie consent is still loading
@@ -94,6 +96,12 @@ export default function FooterAlert() {
     const type = (e.target as HTMLInputElement).type
     const checked = (e.target as HTMLInputElement).checked
 
+    // Track form start on first interaction
+    if (!hasTrackedFormStart) {
+      trackFormStart('newsletter_signup', 'footer_alert')
+      setHasTrackedFormStart(true)
+    }
+
     if (type === 'checkbox') {
       setFormData(prev => ({
         ...prev,
@@ -138,6 +146,13 @@ export default function FooterAlert() {
       if (response.ok) {
         setSubmitStatus('success')
         setIsExistingSubscriber(result.isExisting || false)
+
+        // Track successful form submission
+        trackFormSubmit('newsletter_signup', true, undefined, marketingSource)
+
+        // Track newsletter signup with marketing attribution
+        trackNewsletterSignup('footer_alert', result.isExisting || false, marketingSource)
+
         // Reset form
         setFormData({
           firstName: '',
@@ -155,12 +170,18 @@ export default function FooterAlert() {
       } else {
         setSubmitStatus('error')
         setErrorMessage(result.error || 'Failed to submit form')
+
+        // Track failed form submission
+        trackFormSubmit('newsletter_signup', false, result.error || 'Failed to submit form', marketingSource)
       }
     } catch (error) {
       setSubmitStatus('error')
       setErrorMessage('Network error. Please try again.')
       setIsExistingSubscriber(false)
       console.error('Form submission error:', error)
+
+      // Track network error
+      trackFormSubmit('newsletter_signup', false, 'Network error', marketingSource)
     } finally {
       setIsSubmitting(false)
     }

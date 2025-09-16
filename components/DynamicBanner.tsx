@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import type { Ad } from '../types/ads'
+import { trackAdView, trackAdClick } from 'lib/utils/analytics'
 
 interface DynamicBannerProps {
   className?: string
@@ -26,6 +27,11 @@ export default function DynamicBanner({ className = '' }: DynamicBannerProps) {
         const selectedAd = data.data[randomIndex]
 
         setBannerAd(selectedAd)
+
+        // Track ad view
+        if (selectedAd) {
+          trackAdView(selectedAd.id, 'banner', 'header_banner')
+        }
       }
     } catch (error) {
 
@@ -37,7 +43,10 @@ export default function DynamicBanner({ className = '' }: DynamicBannerProps) {
   const handleAdClick = async () => {
     if (!bannerAd?.cta_link) return
 
-    // Track the click
+    // Track the click with analytics
+    trackAdClick(bannerAd.id, 'banner', 'header_banner', bannerAd.cta_link)
+
+    // Track the click in database
     try {
       await fetch('/api/ads/track-click', {
         method: 'POST',
