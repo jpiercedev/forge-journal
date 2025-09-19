@@ -62,7 +62,7 @@ export default function ForgePostHeader({ post, volumeInfo }: ForgePostHeaderPro
 
               {/* Article Title - Center */}
               <div className="flex-1 flex items-center min-h-0">
-                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black text-white leading-tight tracking-tight font-sans">
+                <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black text-white leading-tight tracking-tight font-sans">
                   {title}
                 </h1>
               </div>
@@ -70,7 +70,7 @@ export default function ForgePostHeader({ post, volumeInfo }: ForgePostHeaderPro
               {/* Author Info - Bottom */}
               {author && (
                 <div className="space-y-1 sm:space-y-2 flex-shrink-0">
-                  <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white font-sans">
+                  <h2 className="text-base sm:text-xl md:text-2xl font-bold text-white font-sans">
                     {author.name}
                   </h2>
                   <p className="text-sm sm:text-base font-medium font-sans" style={{ color: '#be9d58' }}>

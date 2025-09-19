@@ -89,7 +89,7 @@ export default function ForgeIndexPage(props: ForgeIndexPageProps) {
                     <div className="absolute inset-0 flex items-end">
                       <div className="p-4 sm:p-6 md:p-8 lg:p-12 max-w-2xl w-full pb-6 sm:pb-6 md:pb-8 lg:pb-12 min-h-0">
                         {/* Article Title */}
-                        <h1 className="text-base sm:text-lg md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl font-black text-white leading-tight mb-2 sm:mb-3 md:mb-4 tracking-tight font-sans">
+                        <h1 className="text-sm sm:text-lg md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl font-black text-white leading-tight mb-2 sm:mb-3 md:mb-4 tracking-tight font-sans">
                           {featuredPost.title}
                         </h1>
 
