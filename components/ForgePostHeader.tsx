@@ -53,21 +53,23 @@ export default function ForgePostHeader({ post, volumeInfo }: ForgePostHeaderPro
           </div>
 
           {/* Content Overlay */}
-          <div className="absolute inset-0 flex items-end">
-            <div className="p-4 sm:p-6 md:p-8 lg:p-12 w-full">
-              {/* Volume and Issue Info */}
-              <div className="text-xs sm:text-sm text-gray-300 uppercase tracking-wider mb-3 sm:mb-4 font-medium font-serif">
+          <div className="absolute inset-0 flex flex-col justify-between">
+            <div className="p-4 sm:p-6 md:p-8 lg:p-12 w-full flex flex-col justify-between h-full min-h-0">
+              {/* Volume and Issue Info - Top */}
+              <div className="text-xs sm:text-sm text-gray-300 uppercase tracking-wider font-medium font-serif flex-shrink-0">
                 {displayVolumeInfo}
               </div>
 
-              {/* Article Title */}
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black text-white leading-tight mb-4 sm:mb-6 tracking-tight font-sans">
-                {title}
-              </h1>
+              {/* Article Title - Center */}
+              <div className="flex-1 flex items-center min-h-0">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black text-white leading-tight tracking-tight font-sans">
+                  {title}
+                </h1>
+              </div>
 
-              {/* Author Info */}
+              {/* Author Info - Bottom */}
               {author && (
-                <div className="space-y-1 sm:space-y-2">
+                <div className="space-y-1 sm:space-y-2 flex-shrink-0">
                   <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white font-sans">
                     {author.name}
                   </h2>
