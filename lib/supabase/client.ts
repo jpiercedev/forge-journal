@@ -70,6 +70,7 @@ export interface Post {
   excerpt?: string
   cover_image_url?: string
   cover_image_alt?: string
+  og_image_url?: string // Static OG image for social media sharing
   video_url?: string
   hide_featured_image?: boolean
   author_id?: string

@@ -25,6 +25,8 @@ interface Post {
   author_id?: string
   video_url?: string
   hide_featured_image?: boolean
+  cover_image_url?: string
+  og_image_url?: string
   author?: {
     id: string
     name: string
@@ -37,7 +39,6 @@ interface Post {
   }>
   word_count: number
   reading_time: number
-  cover_image_url?: string
 }
 
 interface Author {
@@ -80,6 +81,7 @@ function PostEditPage() {
     author_id: '',
     category_ids: [] as string[],
     cover_image: '',
+    og_image: '',
     video_url: '',
     hide_featured_image: false,
   })
@@ -130,6 +132,7 @@ function PostEditPage() {
         author_id: post.author_id || '',
         category_ids: post.categories?.map(c => c.id) || [],
         cover_image: post.cover_image_url || '',
+        og_image: post.og_image_url || '',
         video_url: post.video_url || '',
         hide_featured_image: post.hide_featured_image || false,
       })
@@ -204,12 +207,14 @@ function PostEditPage() {
         ...formData,
         content: formData.content, // Lexical provides HTML content
         cover_image_url: formData.cover_image, // Map cover_image to cover_image_url for database
+        og_image_url: formData.og_image || null, // Map og_image to og_image_url for database
         video_url: formData.video_url || null,
         hide_featured_image: formData.hide_featured_image,
       }
 
-      // Remove the cover_image field since we're using cover_image_url
+      // Remove the form fields since we're using database field names
       delete updateData.cover_image
+      delete updateData.og_image
 
       const response = await fetch(`/api/content/posts/${id}`, {
         method: 'PUT',
@@ -669,6 +674,24 @@ function PostEditPage() {
                     Need an image for your post?
                   </a>
                 </div>
+              </div>
+
+              <div>
+                <ImageUpload
+                  label="Social Media Image (OG Image)"
+                  value={formData.og_image}
+                  onChange={(url) => setFormData(prev => ({ ...prev, og_image: url }))}
+                  onError={(error) => setError(error)}
+                  onSuccess={(message) => setSuccess(message)}
+                  folder="posts"
+                  placeholder="Upload a custom image for social media sharing (optional - will use cover image if not set)"
+                  maxSize={5 * 1024 * 1024} // 5MB
+                  showPreview={true}
+                  showOptimizationStats={true}
+                />
+                <p className="text-xs text-gray-500 mt-1 font-sans">
+                  Recommended size: 1200x630px. If not set, the system will use the cover image or generate one automatically.
+                </p>
               </div>
 
               <div>

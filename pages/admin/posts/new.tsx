@@ -46,6 +46,7 @@ function NewPostPage() {
     author_id: '',
     category_ids: [] as string[],
     cover_image: '',
+    og_image: '',
     video_url: '',
     hide_featured_image: false,
     scheduled_publish_at: null as string | null,
@@ -150,12 +151,14 @@ function NewPostPage() {
         ...formData,
         content: parsedContent,
         cover_image_url: formData.cover_image, // Map cover_image to cover_image_url for database
+        og_image_url: formData.og_image || null, // Map og_image to og_image_url for database
         video_url: formData.video_url || null,
         hide_featured_image: formData.hide_featured_image,
       }
 
-      // Remove the cover_image field since we're using cover_image_url
+      // Remove the form fields since we're using database field names
       delete createData.cover_image
+      delete createData.og_image
 
       console.log('Creating post with data:', createData)
 
@@ -461,6 +464,24 @@ function NewPostPage() {
                     Need an image for your post?
                   </a>
                 </div>
+              </div>
+
+              <div>
+                <ImageUpload
+                  label="Social Media Image (OG Image)"
+                  value={formData.og_image}
+                  onChange={(url) => setFormData(prev => ({ ...prev, og_image: url }))}
+                  onError={(error) => setError(error)}
+                  onSuccess={(message) => setSuccess(message)}
+                  folder="posts"
+                  placeholder="Upload a custom image for social media sharing (optional - will use cover image if not set)"
+                  maxSize={5 * 1024 * 1024} // 5MB
+                  showPreview={true}
+                  showOptimizationStats={true}
+                />
+                <p className="text-xs text-gray-500 mt-1 font-sans">
+                  Recommended size: 1200x630px. If not set, the system will use the cover image or generate one automatically.
+                </p>
               </div>
 
               <div>

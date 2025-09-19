@@ -30,17 +30,39 @@ export default function PostPageHead({ settings, post }: PostPageHeadProps) {
   const postUrl = `${siteUrl}/posts/${post.slug}`
   const postDescription = post.excerpt || 'Read this article on The Forge Journal - Shaping leaders and pastors who shape the nation.'
 
-  // Use direct JPEG cover image URL for better iOS Messenger compatibility
-  // Fall back to generated OG image if no cover image or if it's not JPEG
-  const isJpegCoverImage = post.cover_image_url && post.cover_image_url.includes('.jpg')
-  const ogImageUrl = isJpegCoverImage
-    ? post.cover_image_url
-    : `${siteUrl}/api/og-post?slug=${encodeURIComponent(post.slug)}`
+  // Priority order for OG images:
+  // 1. Static OG image (og_image_url) - highest priority
+  // 2. Cover image if it's JPEG/JPG format - for iOS Messenger compatibility
+  // 3. Dynamic OG image generation - fallback
+  const hasStaticOgImage = post.og_image_url && post.og_image_url.trim() !== ''
+  const isJpegCoverImage = post.cover_image_url && (
+    post.cover_image_url.includes('.jpg') || post.cover_image_url.includes('.jpeg')
+  )
 
-  // Set appropriate image type and dimensions based on source
-  const ogImageType = isJpegCoverImage ? 'image/jpeg' : 'image/png'
-  const ogImageWidth = isJpegCoverImage ? '1920' : '1200'
-  const ogImageHeight = isJpegCoverImage ? '1080' : '630'
+  let ogImageUrl: string
+  let ogImageType: string
+  let ogImageWidth: string
+  let ogImageHeight: string
+
+  if (hasStaticOgImage) {
+    // Use static OG image (highest priority)
+    ogImageUrl = post.og_image_url
+    ogImageType = 'image/jpeg' // Assume JPEG for static OG images
+    ogImageWidth = '1200'
+    ogImageHeight = '630'
+  } else if (isJpegCoverImage) {
+    // Use cover image if it's JPEG format
+    ogImageUrl = post.cover_image_url
+    ogImageType = 'image/jpeg'
+    ogImageWidth = '1920'
+    ogImageHeight = '1080'
+  } else {
+    // Fall back to dynamic OG image generation
+    ogImageUrl = `${siteUrl}/api/og-post?slug=${encodeURIComponent(post.slug)}`
+    ogImageType = 'image/png'
+    ogImageWidth = '1200'
+    ogImageHeight = '630'
+  }
 
   return (
     <Head>
