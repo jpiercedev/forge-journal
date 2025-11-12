@@ -89,9 +89,9 @@ export default function PDFDownloadAlternate({ posts, author }: PageProps) {
         setSubmitStatus('success')
         setIsUpdate(result.isUpdate || false)
 
-        // Trigger PDF download
+        // Trigger PDF download via API endpoint
         const link = document.createElement('a')
-        link.href = '/holy-spirit.pdf'
+        link.href = '/api/pdf-download'
         link.download = 'The Forge Journal – Who Is The Holy Spirit.pdf'
         document.body.appendChild(link)
         link.click()
