@@ -12,6 +12,12 @@ interface PageProps {
 }
 
 export default function PDFDownloadAlternate({ posts, author }: PageProps) {
+  const siteUrl = typeof window !== 'undefined'
+    ? window.location.origin
+    : (process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : 'https://theforgejournal.com')
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -123,15 +129,15 @@ export default function PDFDownloadAlternate({ posts, author }: PageProps) {
         <meta property="og:title" content="Download Free PDF: Who Is The Holy Spirit? - The Forge Journal" />
         <meta property="og:description" content="Download your free copy of 'Who Is The Holy Spirit?' - A comprehensive guide to understanding the Holy Spirit's role in your life and ministry." />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://forgejournal.com/download-mockup.jpeg" />
-        <meta property="og:image:secure_url" content="https://forgejournal.com/download-mockup.jpeg" />
+        <meta property="og:image" content={`${siteUrl}/download-mockup.jpeg`} />
+        <meta property="og:image:secure_url" content={`${siteUrl}/download-mockup.jpeg`} />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:image:type" content="image/jpeg" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Download Free PDF: Who Is The Holy Spirit? - The Forge Journal" />
         <meta name="twitter:description" content="Download your free copy of 'Who Is The Holy Spirit?' - A comprehensive guide to understanding the Holy Spirit's role in your life and ministry." />
-        <meta name="twitter:image" content="https://forgejournal.com/download-mockup.jpeg" />
+        <meta name="twitter:image" content={`${siteUrl}/download-mockup.jpeg`} />
       </Head>
 
       {/* Main Split Layout - Salesforce Style */}
