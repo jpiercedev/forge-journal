@@ -3,6 +3,9 @@ import type { NextRequest } from 'next/server'
 
 export const config = { runtime: 'edge' }
 
+const width = 1200
+const height = 630
+
 export default async function ogPdfDownload(req: NextRequest) {
   const { searchParams } = new URL(req.url)
 
@@ -62,7 +65,6 @@ export default async function ogPdfDownload(req: NextRequest) {
                 fontWeight: 'bold',
                 color: 'white',
                 letterSpacing: '2px',
-                fontFamily: 'Proxima Nova, sans-serif',
                 textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
               }}
             >
@@ -74,7 +76,6 @@ export default async function ogPdfDownload(req: NextRequest) {
                 fontWeight: 'normal',
                 color: 'white',
                 letterSpacing: '3px',
-                fontFamily: 'Proxima Nova, sans-serif',
                 textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
                 marginTop: '4px',
               }}
@@ -90,7 +91,6 @@ export default async function ogPdfDownload(req: NextRequest) {
               fontWeight: 'bold',
               color: 'white',
               marginBottom: '20px',
-              fontFamily: 'Proxima Nova, sans-serif',
               textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
               maxWidth: '900px',
               lineHeight: 1.2,
@@ -104,7 +104,6 @@ export default async function ogPdfDownload(req: NextRequest) {
             style={{
               fontSize: '28px',
               color: '#be9d58',
-              fontFamily: 'Proxima Nova, sans-serif',
               textShadow: '1px 1px 2px rgba(0,0,0,0.3)',
               marginBottom: '40px',
             }}
@@ -117,7 +116,6 @@ export default async function ogPdfDownload(req: NextRequest) {
             style={{
               fontSize: '20px',
               color: 'rgba(255, 255, 255, 0.9)',
-              fontFamily: 'Proxima Nova, sans-serif',
               textShadow: '1px 1px 2px rgba(0,0,0,0.3)',
             }}
           >
@@ -127,8 +125,8 @@ export default async function ogPdfDownload(req: NextRequest) {
       </div>
     ),
     {
-      width: 1200,
-      height: 630,
+      width,
+      height,
     },
   )
 }
