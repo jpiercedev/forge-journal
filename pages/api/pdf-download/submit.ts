@@ -303,8 +303,8 @@ export default async function handler(
       })
     }
 
-    // Send admin notification
-    await sendAdminNotificationEmail(formData, virtuousResult, isUpdate)
+    // Note: Admin notification email disabled for PDF downloads
+    // await sendAdminNotificationEmail(formData, virtuousResult, isUpdate)
 
     return res.status(200).json({
       success: true,

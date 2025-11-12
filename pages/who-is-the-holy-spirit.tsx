@@ -85,7 +85,7 @@ export default function PDFDownloadAlternate({ posts, author }: PageProps) {
 
         // Trigger PDF download
         const link = document.createElement('a')
-        link.href = '/The Forge Journal – Who Is The Holy Spirit?.pdf'
+        link.href = '/holy-spirit.pdf'
         link.download = 'The Forge Journal – Who Is The Holy Spirit.pdf'
         document.body.appendChild(link)
         link.click()
