@@ -9,14 +9,10 @@ import { getMarketingSource } from 'lib/utils/cookieUtils'
 interface PageProps {
   posts: Post[]
   author: Author | null
+  siteUrl: string
 }
 
-export default function PDFDownloadAlternate({ posts, author }: PageProps) {
-  const siteUrl = typeof window !== 'undefined'
-    ? window.location.origin
-    : (process.env.VERCEL_URL
-        ? `https://${process.env.VERCEL_URL}`
-        : 'https://theforgejournal.com')
+export default function PDFDownloadAlternate({ posts, author, siteUrl }: PageProps) {
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -882,7 +878,8 @@ export async function getStaticProps() {
     return {
       props: {
         posts,
-        author
+        author,
+        siteUrl: 'https://theforgejournal.com'
       },
       revalidate: 3600
     }
@@ -891,7 +888,8 @@ export async function getStaticProps() {
     return {
       props: {
         posts: [],
-        author: null
+        author: null,
+        siteUrl: 'https://theforgejournal.com'
       },
       revalidate: 60
     }
