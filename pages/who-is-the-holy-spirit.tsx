@@ -452,7 +452,7 @@ export default function PDFDownloadAlternate({ posts, author }: PageProps) {
             {/* Visual Element - PDF Preview (Mobile/Tablet - Above Form) */}
             <div className="mb-8 flex justify-center lg:hidden">
               <img
-                src="/download mockup.jpeg"
+                src="/download-mockup.jpeg"
                 alt="Who Is The Holy Spirit? PDF Guide"
                 className="w-3/4 md:w-2/3 h-auto shadow-2xl border-4"
                 style={{ borderColor: '#be9d58' }}
