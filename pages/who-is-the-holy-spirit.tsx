@@ -282,6 +282,38 @@ export default function PDFDownloadAlternate({ posts, author, siteUrl }: PagePro
                 </p>
               </div>
             </div>
+
+            {/* Recent Articles Section */}
+            {posts && posts.length > 0 && (
+              <div className="mt-12 pt-8 border-t" style={{ borderColor: '#e5e7eb' }}>
+                <h2 className="text-lg font-bold mb-6" style={{ color: '#1e4356', fontFamily: 'proxima-nova, sans-serif' }}>
+                  Recent Articles
+                </h2>
+                <div className="space-y-6">
+                  {posts.slice(0, 3).map((post) => (
+                    <div key={post.slug} className="pb-6 border-b" style={{ borderColor: '#e5e7eb' }}>
+                      <Link href={`/posts/${post.slug}`} className="group">
+                        <h3 className="text-base font-semibold mb-2 transition-colors" style={{ color: '#1e4356', fontFamily: 'proxima-nova, sans-serif' }}>
+                          {post.title}
+                        </h3>
+                        <p className="text-xs uppercase tracking-wider font-medium" style={{ color: '#be9d58' }}>
+                          {post.published_at ? new Date(post.published_at).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                          }) : 'Draft'}
+                        </p>
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-6 pt-6 border-t" style={{ borderColor: '#e5e7eb' }}>
+                  <Link href="/" className="font-semibold text-sm uppercase tracking-wider transition-colors" style={{ color: '#1e4356', fontFamily: 'proxima-nova, sans-serif' }}>
+                    View All Articles →
+                  </Link>
+                </div>
+              </div>
+            )}
           </div>
           </div>
 

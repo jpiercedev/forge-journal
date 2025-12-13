@@ -186,15 +186,10 @@ export default function PostBody({ content }) {
     return null
   }
 
-  // Debug: Log the content to see what format it's in
-  console.log('PostBody content:', content)
-  console.log('PostBody content type:', typeof content)
-
   // If content is a string that looks like JSON, try to parse it
   if (typeof content === 'string' && (content.startsWith('{') || content.startsWith('['))) {
     try {
       const parsedContent = JSON.parse(content)
-      console.log('Parsed content:', parsedContent)
 
       // Check if it's the new Supabase format after parsing
       if (parsedContent.type === 'doc' && parsedContent.content && Array.isArray(parsedContent.content)) {

@@ -22,7 +22,8 @@ export default function RecentArticlesSidebar({ posts }: RecentArticlesSidebarPr
             {recentPosts.map((post, index) => (
             <div key={post.slug}>
               <article className="group">
-              <Link href={`/posts/${post.slug}`}>
+              {/* Use regular anchor tag to force full page reload */}
+              <a href={`/posts/${post.slug}`}>
                 <div className="space-y-3">
                   {/* Article Image - Hidden from social media crawlers but visible to users */}
                   <div className="aspect-square overflow-hidden bg-gray-200">
@@ -67,7 +68,7 @@ export default function RecentArticlesSidebar({ posts }: RecentArticlesSidebarPr
                     }) : 'Draft'}
                   </div>
                 </div>
-              </Link>
+              </a>
               </article>
 
               {/* Subtle Divider - only show between articles, not after the last one */}

@@ -24,6 +24,9 @@ interface BlogEngagementData {
   hasCompletedReading: boolean
 }
 
+// Default thresholds as a stable reference
+const DEFAULT_SCROLL_THRESHOLDS = [25, 50, 75, 90, 100]
+
 export function useBlogEngagement(options: BlogEngagementOptions) {
   const {
     postSlug,
@@ -34,7 +37,7 @@ export function useBlogEngagement(options: BlogEngagementOptions) {
     contentSelector = 'article, .post-content, main',
     enableScrollTracking = true,
     enableReadingTimeTracking = true,
-    scrollDepthThresholds = [25, 50, 75, 90, 100]
+    scrollDepthThresholds = DEFAULT_SCROLL_THRESHOLDS
   } = options
 
   const [engagementData, setEngagementData] = useState<BlogEngagementData>({
@@ -44,6 +47,10 @@ export function useBlogEngagement(options: BlogEngagementOptions) {
     hasStartedReading: false,
     hasCompletedReading: false
   })
+
+  // Store thresholds in a ref to avoid recreating callbacks
+  const scrollDepthThresholdsRef = useRef(scrollDepthThresholds)
+  scrollDepthThresholdsRef.current = scrollDepthThresholds
 
   const startTimeRef = useRef<number>(Date.now())
   const lastActiveTimeRef = useRef<number>(Date.now())
@@ -89,12 +96,12 @@ export function useBlogEngagement(options: BlogEngagementOptions) {
     return Math.round(scrollDepthPercentage)
   }, [contentSelector])
 
-  // Handle scroll tracking
+  // Handle scroll tracking - use refs to avoid dependency issues
   const handleScroll = useCallback(() => {
     if (!enableScrollTracking) return
 
     const currentScrollDepth = calculateScrollDepth()
-    
+
     setEngagementData(prev => ({
       ...prev,
       scrollDepth: currentScrollDepth,
@@ -102,8 +109,8 @@ export function useBlogEngagement(options: BlogEngagementOptions) {
       hasCompletedReading: prev.hasCompletedReading || currentScrollDepth >= 90
     }))
 
-    // Track scroll depth milestones
-    scrollDepthThresholds.forEach(threshold => {
+    // Track scroll depth milestones - use ref to avoid recreating callback
+    scrollDepthThresholdsRef.current.forEach(threshold => {
       if (currentScrollDepth >= threshold && !trackedScrollDepthsRef.current.has(threshold)) {
         trackedScrollDepthsRef.current.add(threshold)
         trackScrollDepth(threshold, 'blog_post', postSlug)
@@ -112,7 +119,7 @@ export function useBlogEngagement(options: BlogEngagementOptions) {
 
     // Update last active time when scrolling
     lastActiveTimeRef.current = Date.now()
-  }, [enableScrollTracking, calculateScrollDepth, scrollDepthThresholds, postSlug])
+  }, [enableScrollTracking, calculateScrollDepth, postSlug])
 
   // Handle visibility change (tab switching, etc.)
   const handleVisibilityChange = useCallback(() => {
@@ -199,24 +206,35 @@ export function useBlogEngagement(options: BlogEngagementOptions) {
     }
   }, []) // Empty dependency array - only run on unmount
 
+  // Use refs to track reading state without causing re-renders
+  const hasStartedReadingRef = useRef(false)
+  const hasCompletedReadingRef = useRef(false)
+
+  // Keep refs in sync with state
+  useEffect(() => {
+    hasStartedReadingRef.current = engagementData.hasStartedReading
+    hasCompletedReadingRef.current = engagementData.hasCompletedReading
+  }, [engagementData.hasStartedReading, engagementData.hasCompletedReading])
+
   // Periodic reading time tracking (every 30 seconds for active readers)
   useEffect(() => {
     if (!enableReadingTimeTracking) return
 
     const interval = setInterval(() => {
       const currentTimeSpent = (Date.now() - startTimeRef.current) / 1000
-      
+
       // Track reading time every 30 seconds for engaged users
-      if (currentTimeSpent > 30 && 
-          engagementData.hasStartedReading && 
-          !engagementData.hasCompletedReading &&
+      // Use refs instead of state to avoid dependency loop
+      if (currentTimeSpent > 30 &&
+          hasStartedReadingRef.current &&
+          !hasCompletedReadingRef.current &&
           isVisibleRef.current) {
         trackReadingTime(currentTimeSpent, 'blog_post', postSlug, false)
       }
     }, 30000) // Every 30 seconds
 
     return () => clearInterval(interval)
-  }, [enableReadingTimeTracking, engagementData.hasStartedReading, engagementData.hasCompletedReading, postSlug])
+  }, [enableReadingTimeTracking, postSlug])
 
   return engagementData
 }
