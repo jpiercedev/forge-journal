@@ -27,10 +27,7 @@ const config: NextConfig = {
     // Set this to false if you want production builds to abort if there's type errors
     ignoreBuildErrors: process.env.VERCEL_ENV === 'production',
   },
-  eslint: {
-    /// Set this to false if you want production builds to abort if there's lint errors
-    ignoreDuringBuilds: process.env.VERCEL_ENV === 'production',
-  },
+  // Note: eslint config removed in Next.js 16 - use eslint.config.js instead
 }
 
 export default config
