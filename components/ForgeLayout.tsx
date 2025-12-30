@@ -134,14 +134,12 @@ export default function ForgeLayout({
                 >
                   Subscribe
                 </button>
-                <a
-                  href="https://gracewoodlands.givevirtuous.org/donate/the-forge-journal"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  href="/support"
                   className="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors font-sans"
                 >
                   Support
-                </a>
+                </Link>
               </div>
             </div>
 

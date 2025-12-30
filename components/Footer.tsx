@@ -78,14 +78,12 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a
-                  href="https://gracewoodlands.givevirtuous.org/donate/the-forge-journal"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  href="/support"
                   className="text-gray-600 hover:text-gray-900"
                 >
                   Support
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

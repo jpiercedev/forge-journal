@@ -86,17 +86,15 @@ export default function ForgeHeader() {
 
           {/* Support Button */}
           <div className="hidden lg:block">
-            <a
-              href="https://gracewoodlands.givevirtuous.org/donate/the-forge-journal"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/support"
               className="text-white px-4 xl:px-6 py-2 xl:py-3 text-xs xl:text-sm font-bold uppercase tracking-wider transition-colors duration-200 font-sans"
               style={{ backgroundColor: '#B91C1C' }}
               onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#991B1B'}
               onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#B91C1C'}
             >
               SUPPORT THE MISSION
-            </a>
+            </Link>
           </div>
 
           {/* Mobile menu button */}
@@ -169,15 +167,13 @@ export default function ForgeHeader() {
               >
                 SUBSCRIBE
               </button>
-              <a
-                href="https://gracewoodlands.givevirtuous.org/donate/the-forge-journal"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/support"
                 className="text-white block px-3 py-2 text-sm font-bold uppercase tracking-wider transition-colors duration-200 mt-4 font-sans"
                 style={{ backgroundColor: '#B91C1C' }}
               >
                 SUPPORT THE MISSION
-              </a>
+              </Link>
           </div>
         </div>
       </div>

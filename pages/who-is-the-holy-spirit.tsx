@@ -334,14 +334,12 @@ export default function PDFDownloadAlternate({ posts, author, siteUrl }: PagePro
                     Shaping leaders and pastors who shape the nation. Biblical insights and practical wisdom for ministry leadership.
                   </p>
                   <div className="flex space-x-4">
-                    <a
-                      href="https://gracewoodlands.givevirtuous.org/donate/the-forge-journal"
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <Link
+                      href="/support"
                       className="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors font-sans"
                     >
                       Support
-                    </a>
+                    </Link>
                   </div>
                 </div>
 
@@ -744,14 +742,12 @@ export default function PDFDownloadAlternate({ posts, author, siteUrl }: PagePro
                 Shaping leaders and pastors who shape the nation. Biblical insights and practical wisdom for ministry leadership.
               </p>
               <div className="flex space-x-4">
-                <a
-                  href="https://gracewoodlands.givevirtuous.org/donate/the-forge-journal"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  href="/support"
                   className="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors font-sans"
                 >
                   Support
-                </a>
+                </Link>
               </div>
             </div>
 
