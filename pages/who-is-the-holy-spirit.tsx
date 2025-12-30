@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import Image from 'next/image'
+import VideoPopup from 'components/VideoPopup'
 import { db } from 'lib/supabase/client'
 import type { Post, Author } from 'lib/supabase/client'
 import { getMarketingSource } from 'lib/utils/cookieUtils'
@@ -11,6 +12,9 @@ interface PageProps {
   author: Author | null
   siteUrl: string
 }
+
+// Test email that bypasses API calls
+const TEST_EMAIL = 'test@theforgejournal.com'
 
 export default function PDFDownloadAlternate({ posts, author, siteUrl }: PageProps) {
 
@@ -29,6 +33,7 @@ export default function PDFDownloadAlternate({ posts, author, siteUrl }: PagePro
   const [errorMessage, setErrorMessage] = useState('')
   const [showDownloadButton, setShowDownloadButton] = useState(true)
   const [isUpdate, setIsUpdate] = useState(false)
+  const [showVideoPopup, setShowVideoPopup] = useState(false)
 
   // Hide download button when form is in view on mobile
   useEffect(() => {
@@ -65,6 +70,37 @@ export default function PDFDownloadAlternate({ posts, author, siteUrl }: PagePro
     setSubmitStatus('idle')
     setErrorMessage('')
 
+    // Check if test email - bypass API calls and show video
+    const isTestEmail = formData.email.trim().toLowerCase() === TEST_EMAIL
+
+    if (isTestEmail) {
+      // Simulate success for test email without API calls
+      setSubmitStatus('success')
+      setIsUpdate(false)
+      setShowVideoPopup(true)
+
+      // Still trigger PDF download for test
+      const link = document.createElement('a')
+      link.href = '/api/pdf-download'
+      link.download = 'The Forge Journal – Who Is The Holy Spirit.pdf'
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+
+      setFormData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        street: '',
+        city: '',
+        state: '',
+        zip: ''
+      })
+      setIsSubmitting(false)
+      return
+    }
+
     try {
       const marketingSource = getMarketingSource()
 
@@ -84,6 +120,7 @@ export default function PDFDownloadAlternate({ posts, author, siteUrl }: PagePro
       if (response.ok) {
         setSubmitStatus('success')
         setIsUpdate(result.isUpdate || false)
+        setShowVideoPopup(true) // Show video popup on success
 
         // Trigger PDF download via API endpoint
         const link = document.createElement('a')
@@ -877,6 +914,9 @@ export default function PDFDownloadAlternate({ posts, author, siteUrl }: PagePro
           </div>
         </div>
       </footer>
+
+      {/* Video Popup */}
+      <VideoPopup isOpen={showVideoPopup} onClose={() => setShowVideoPopup(false)} />
     </>
   )
 }

@@ -47,18 +47,18 @@ export default function SupportPage(props: PageProps) {
         <div>
           {/* Header Banner - Desktop: Partner with FORGE, Mobile: Donate Button */}
           <div className="mb-8">
-            {/* Desktop Header */}
-            <div className="hidden md:block py-4 px-6 mb-8 border-t-4 border-b-4 shadow-lg" style={{ backgroundColor: '#B91C1C', borderColor: '#991B1B' }}>
+            {/* Desktop Header - Teal */}
+            <div className="hidden md:block py-4 px-6 mb-8 border-t-4 border-b-4 shadow-lg" style={{ backgroundColor: '#1e4356', borderColor: '#163344' }}>
               <h2 className="text-xl md:text-2xl font-bold text-center font-sans uppercase tracking-wide text-white">
                 Partner with FORGE
               </h2>
             </div>
-            {/* Mobile Donate Button */}
+            {/* Mobile Donate Button - Red */}
             <div className="md:hidden mb-8">
               <button
                 onClick={handleDonateClick}
                 className="w-full text-white px-6 py-4 text-lg font-bold uppercase tracking-wider transition-all duration-200 font-sans border-2 shadow-lg"
-                style={{ backgroundColor: '#1e4356', borderColor: '#1e4356' }}
+                style={{ backgroundColor: '#B91C1C', borderColor: '#B91C1C' }}
               >
                 Click to Donate
               </button>
@@ -93,18 +93,18 @@ export default function SupportPage(props: PageProps) {
             </div>
           </div>
 
-          {/* Donate Button - Uses teal to differentiate from header */}
+          {/* Donate Button - Uses red to differentiate from header */}
           <div className="mb-8">
             <button
               onClick={handleDonateClick}
               className="w-full text-white px-8 py-5 text-xl font-bold uppercase tracking-wider transition-all duration-200 font-sans border-2 shadow-lg hover:bg-transparent"
-              style={{ backgroundColor: '#1e4356', borderColor: '#1e4356' }}
+              style={{ backgroundColor: '#B91C1C', borderColor: '#B91C1C' }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = 'transparent';
-                e.currentTarget.style.color = '#1e4356';
+                e.currentTarget.style.color = '#B91C1C';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#1e4356';
+                e.currentTarget.style.backgroundColor = '#B91C1C';
                 e.currentTarget.style.color = 'white';
               }}
             >

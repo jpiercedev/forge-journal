@@ -2,11 +2,15 @@ import { useState, useEffect } from 'react'
 import { useMarketingSource } from 'hooks/useMarketingSource'
 import { US_STATES } from 'lib/constants/states'
 import { trackFormStart, trackFormSubmit, trackNewsletterSignup } from 'lib/utils/analytics'
+import VideoPopup from './VideoPopup'
 
 interface SubscribeModalProps {
   isOpen: boolean
   onClose: () => void
 }
+
+// Test email that bypasses API calls
+const TEST_EMAIL = 'test@theforgejournal.com'
 
 export default function SubscribeModal({ isOpen, onClose }: SubscribeModalProps) {
   const { source: marketingSource } = useMarketingSource()
@@ -24,6 +28,7 @@ export default function SubscribeModal({ isOpen, onClose }: SubscribeModalProps)
   const [isExistingSubscriber, setIsExistingSubscriber] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
   const [hasTrackedFormStart, setHasTrackedFormStart] = useState(false)
+  const [showVideoPopup, setShowVideoPopup] = useState(false)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -55,6 +60,26 @@ export default function SubscribeModal({ isOpen, onClose }: SubscribeModalProps)
     setSubmitStatus('idle')
     setErrorMessage('')
 
+    // Check if test email - bypass API calls and show video
+    const isTestEmail = formData.email.trim().toLowerCase() === TEST_EMAIL
+
+    if (isTestEmail) {
+      // Simulate success for test email without API calls
+      setSubmitStatus('success')
+      setIsExistingSubscriber(false)
+      setShowVideoPopup(true)
+      setFormData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        state: '',
+        smsOptIn: false
+      })
+      setIsSubmitting(false)
+      return
+    }
+
     try {
       const response = await fetch('/api/contact/submit', {
         method: 'POST',
@@ -80,6 +105,7 @@ export default function SubscribeModal({ isOpen, onClose }: SubscribeModalProps)
       if (response.ok) {
         setSubmitStatus('success')
         setIsExistingSubscriber(result.isExisting || false)
+        setShowVideoPopup(true) // Show video popup on success
 
         // Track successful form submission
         trackFormSubmit('newsletter_signup', true, undefined, marketingSource)
@@ -131,8 +157,14 @@ export default function SubscribeModal({ isOpen, onClose }: SubscribeModalProps)
       setErrorMessage('')
       setIsExistingSubscriber(false)
       setIsClosing(false)
+      setShowVideoPopup(false)
       onClose()
     }, 200) // Match animation duration
+  }
+
+  const handleVideoPopupClose = () => {
+    setShowVideoPopup(false)
+    handleClose()
   }
 
   // Reset closing state when modal opens
@@ -340,6 +372,9 @@ export default function SubscribeModal({ isOpen, onClose }: SubscribeModalProps)
           </div>
         </div>
       </div>
+
+      {/* Video Popup */}
+      <VideoPopup isOpen={showVideoPopup} onClose={handleVideoPopupClose} />
     </div>
   )
 }
