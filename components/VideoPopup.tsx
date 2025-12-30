@@ -80,8 +80,11 @@ export default function VideoPopup({ isOpen, onClose }: VideoPopupProps) {
           </video>
         </div>
 
-        {/* Partner Button */}
+        {/* Thank You Message and Partner Button */}
         <div className="p-6 bg-white">
+          <p className="text-center text-gray-700 mb-4 font-serif text-lg leading-relaxed">
+            Thank you for subscribing to the Forge Journal and for supporting the Forge mission: Shaping pastors who will shape the nation.
+          </p>
           <Link
             href="/support"
             onClick={handleClose}
