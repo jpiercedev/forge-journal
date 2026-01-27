@@ -161,6 +161,26 @@ async function handleUpdatePost(req: any, res: NextApiResponse<ApiResponse>, id:
     // Fetch the updated post with relations
     const updatedPost = await db.getPostById(id, true, true)
 
+    // Trigger revalidation for published posts
+    if (status === 'published' && updatedPost.data) {
+      const postSlug = (updatedPost.data as any).slug
+      try {
+        // Revalidate the post page, homepage, and topics
+        const pathsToRevalidate = [
+          `/posts/${postSlug}`,
+          '/',
+          '/topics'
+        ]
+        for (const path of pathsToRevalidate) {
+          await res.revalidate(path)
+        }
+        console.log(`Revalidated paths for post: ${postSlug}`)
+      } catch (revalidateError) {
+        // Log but don't fail the request if revalidation fails
+        console.error('Revalidation error:', revalidateError)
+      }
+    }
+
     return res.status(200).json({
       success: true,
       data: updatedPost.data,

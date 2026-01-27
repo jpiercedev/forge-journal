@@ -198,6 +198,24 @@ async function handleCreatePost(req: any, res: NextApiResponse<ApiResponse>) {
       }
     }
 
+    // Trigger revalidation for published posts
+    if (postData.status === 'published' && result.data?.slug) {
+      try {
+        const pathsToRevalidate = [
+          `/posts/${result.data.slug}`,
+          '/',
+          '/topics'
+        ]
+        for (const path of pathsToRevalidate) {
+          await res.revalidate(path)
+        }
+        console.log(`Revalidated paths for new post: ${result.data.slug}`)
+      } catch (revalidateError) {
+        // Log but don't fail the request if revalidation fails
+        console.error('Revalidation error:', revalidateError)
+      }
+    }
+
     return res.status(201).json({
       success: true,
       data: result.data,
@@ -272,6 +290,24 @@ async function handleUpdatePost(req: any, res: NextApiResponse<ApiResponse>) {
       if (categoryResult.error) {
         console.error('Error updating post categories:', categoryResult.error)
         // Don't fail the entire operation, just log the error
+      }
+    }
+
+    // Trigger revalidation for published posts
+    if (updateData.status === 'published' && result.data?.slug) {
+      try {
+        const pathsToRevalidate = [
+          `/posts/${result.data.slug}`,
+          '/',
+          '/topics'
+        ]
+        for (const path of pathsToRevalidate) {
+          await res.revalidate(path)
+        }
+        console.log(`Revalidated paths for updated post: ${result.data.slug}`)
+      } catch (revalidateError) {
+        // Log but don't fail the request if revalidation fails
+        console.error('Revalidation error:', revalidateError)
       }
     }
 
