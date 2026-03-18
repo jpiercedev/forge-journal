@@ -1,13 +1,21 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { Resend } from 'resend'
 import { supabaseAdmin } from '../../../lib/supabase/client'
-import { getNotificationRecipients } from '../../../lib/notifications/recipients'
-import { applyVirtuousTags } from '../admin/virtuous-tags'
+import crypto from 'crypto'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
+// Mailchimp configuration
+const MAILCHIMP_API_KEY = process.env.MAILCHIMP_API_KEY || ''
+const MAILCHIMP_SERVER_PREFIX = process.env.MAILCHIMP_SERVER_PREFIX || 'us14'
+const MAILCHIMP_AUDIENCE_ID = process.env.MAILCHIMP_AUDIENCE_ID || ''
+
+function getSubscriberHash(email: string): string {
+  return crypto.createHash('md5').update(email.toLowerCase().trim()).digest('hex')
+}
+
 // Helper function to send admin notification email
-async function sendAdminNotificationEmail(formData: PDFDownloadFormData, virtuousResult: any, isUpdate: boolean = false) {
+async function sendAdminNotificationEmail(formData: PDFDownloadFormData, mailchimpStatus: string, isUpdate: boolean = false) {
   try {
     if (!process.env.RESEND_API_KEY) {
       console.warn('RESEND_API_KEY not configured - skipping email notification')
@@ -156,16 +164,12 @@ async function sendAdminNotificationEmail(formData: PDFDownloadFormData, virtuou
               </div>
 
               <div class="section">
-                <h2>CRM Status</h2>
-                <div class="info-row">
-                  <div class="info-label">Virtuous ID:</div>
-                  <div class="info-value">${virtuousResult?.id || 'N/A'}</div>
-                </div>
+                <h2>Mailchimp Status</h2>
                 <div class="info-row">
                   <div class="info-label">Status:</div>
                   <div class="info-value">
-                    ${isUpdate ? 'Existing contact updated with address' : 'New contact created'}
-                    <div class="status-badge">${isUpdate ? 'Updated' : 'New'}</div>
+                    ${isUpdate ? 'Existing subscriber updated' : 'New subscriber added to Mailchimp'}
+                    <div class="status-badge">${mailchimpStatus}</div>
                   </div>
                 </div>
               </div>
@@ -193,9 +197,9 @@ City: ${formData.city}
 State: ${formData.state}
 ZIP: ${formData.zip}
 
-CRM STATUS
-Virtuous Contact ID: ${virtuousResult?.id || 'N/A'}
-Status: ${isUpdate ? 'Existing contact updated with address' : 'New contact created'}
+MAILCHIMP STATUS
+Status: ${isUpdate ? 'Existing subscriber updated' : 'New subscriber added'}
+Mailchimp Status: ${mailchimpStatus}
     `
 
     const emailResult = await resend.emails.send({
@@ -247,244 +251,59 @@ export default async function handler(
       })
     }
 
-    // Check if Virtuous API key is configured
-    if (!process.env.VIRTUOUS_API_KEY) {
-      console.error('VIRTUOUS_API_KEY environment variable is not set')
-      return res.status(500).json({
-        error: 'Server configuration error',
-        details: 'Virtuous API key not configured'
-      })
+    // Submit to Mailchimp via upsert (PUT) so existing subscribers are updated, not rejected
+    const subscriberHash = getSubscriberHash(formData.email)
+    const mailchimpUrl = `https://${MAILCHIMP_SERVER_PREFIX}.api.mailchimp.com/3.0/lists/${MAILCHIMP_AUDIENCE_ID}/members/${subscriberHash}`
+
+    const mailchimpPayload: any = {
+      email_address: formData.email.trim().toLowerCase(),
+      status_if_new: 'subscribed',
+      merge_fields: {
+        FNAME: formData.firstName.trim(),
+        LNAME: formData.lastName.trim(),
+        STATE: formData.state.trim(),
+        PHONE: formData.phone?.trim() || '',
+        ADDRESS: {
+          addr1: formData.street.trim(),
+          city: formData.city.trim(),
+          state: formData.state.trim(),
+          zip: formData.zip.trim(),
+          country: 'US',
+        },
+      },
     }
 
-    // First, search for existing contact by email
-    const searchResponse = await fetch(
-      `https://api.virtuoussoftware.com/api/Contact/Find?email=${encodeURIComponent(formData.email.trim())}`,
-      {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${process.env.VIRTUOUS_API_KEY}`,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        }
-      }
-    )
-
-    let existingContact = null
-    if (searchResponse.ok) {
-      const searchResult = await searchResponse.json()
-      if (searchResult && searchResult.id) {
-        existingContact = searchResult
-        console.log('Found existing contact:', existingContact.id)
-      }
+    if (formData.marketingSource) {
+      mailchimpPayload.tags = [formData.marketingSource]
     }
 
-    // Prepare contact methods
-    const contactMethods = [
-      {
-        type: 'Email',
-        value: formData.email.trim(),
-        isOptedIn: true,
-        isPrimary: true
-      }
-    ]
+    console.log('Submitting to Mailchimp:', formData.email)
 
-    if (formData.phone) {
-      contactMethods.push({
-        type: 'Mobile Phone',
-        value: formData.phone.trim(),
-        isOptedIn: true,
-        isPrimary: false
-      })
-    }
-
-    // Prepare address
-    const address = {
-      type: 'Home',
-      address1: formData.street.trim(),
-      city: formData.city.trim(),
-      state: formData.state.trim(),
-      postalCode: formData.zip.trim(),
-      isPrimary: true
-    }
-
-    let virtuousResult
+    let mailchimpStatus = 'subscribed'
     let isUpdate = false
 
-    if (existingContact) {
-      // Update existing contact with new address information
-      isUpdate = true
-
-      const updatePayload = {
-        id: existingContact.id,
-        contactType: existingContact.contactType || 'Household',
-        contactIndividuals: existingContact.contactIndividuals?.map((individual: any, index: number) => {
-          if (index === 0 || individual.isPrimary) {
-            // Update primary individual with new address
-            // Preserve existing addresses and add/update the new one
-            const existingAddresses = individual.addresses || []
-            const addressExists = existingAddresses.some((addr: any) =>
-              addr.address1 === address.address1 &&
-              addr.city === address.city &&
-              addr.state === address.state
-            )
-
-            const updatedAddresses = addressExists
-              ? existingAddresses.map((addr: any) =>
-                  (addr.address1 === address.address1 && addr.city === address.city && addr.state === address.state)
-                    ? address
-                    : addr
-                )
-              : [...existingAddresses, address]
-
-            return {
-              ...individual,
-              addresses: updatedAddresses
-            }
-          }
-          return individual
-        }) || [{
-          firstName: formData.firstName.trim(),
-          lastName: formData.lastName.trim(),
-          isPrimary: true,
-          contactMethods: contactMethods,
-          addresses: [address]
-        }]
-      }
-
-      console.log('Updating existing contact:', JSON.stringify(updatePayload, null, 2))
-
-      const updateResponse = await fetch(`https://api.virtuoussoftware.com/api/Contact/${existingContact.id}`, {
+    try {
+      const mailchimpResponse = await fetch(mailchimpUrl, {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${process.env.VIRTUOUS_API_KEY}`,
+          'Authorization': `Basic ${Buffer.from(`anystring:${MAILCHIMP_API_KEY}`).toString('base64')}`,
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
         },
-        body: JSON.stringify(updatePayload)
+        body: JSON.stringify(mailchimpPayload),
       })
 
-      const updateText = await updateResponse.text()
-      console.log('Virtuous update response status:', updateResponse.status)
-      console.log('Virtuous update response body:', updateText)
+      const mailchimpResult = await mailchimpResponse.json()
+      console.log('Mailchimp response status:', mailchimpResponse.status)
 
-      if (!updateResponse.ok) {
-        console.error('Failed to update contact:', updateResponse.status, updateText)
-        return res.status(500).json({
-          error: 'Failed to update contact in Virtuous',
-          details: updateText
-        })
+      // 200 = existing subscriber updated, 201 = new subscriber created
+      isUpdate = mailchimpResponse.status === 200
+      mailchimpStatus = mailchimpResult.status || 'subscribed'
+
+      if (!mailchimpResponse.ok && mailchimpResponse.status !== 200) {
+        console.error('Mailchimp API error:', mailchimpResult)
       }
-
-      virtuousResult = updateText ? JSON.parse(updateText) : { id: existingContact.id }
-      console.log('Contact updated successfully. Response:', JSON.stringify(virtuousResult, null, 2))
-
-      // Now add/update the address via ContactAddress endpoint
-      try {
-        const primaryIndividual = existingContact.contactIndividuals?.[0]
-        if (primaryIndividual) {
-          const existingAddresses = primaryIndividual.addresses || []
-
-          // Check if an address already exists
-          const existingAddress = existingAddresses.find((addr: any) => addr.type === 'Home')
-
-          if (existingAddress) {
-            // Update existing address - we need the address ID from the contact fetch
-            // Since we don't have the ID, we'll need to fetch the contact with full details
-            console.log('Found existing Home address, attempting to update it')
-
-            // For now, log that we found an existing address
-            console.log('Existing address:', JSON.stringify(existingAddress, null, 2))
-          } else {
-            // Create new address via POST to ContactAddress endpoint
-            const newAddressPayload = {
-              contactId: existingContact.id,
-              label: 'Home',
-              address1: formData.street.trim(),
-              address2: '',
-              city: formData.city.trim(),
-              state: formData.state.trim(),
-              postal: formData.zip.trim(),
-              country: 'US',
-              setAsPrimary: true
-            }
-
-            console.log('Creating new address via ContactAddress endpoint:', JSON.stringify(newAddressPayload, null, 2))
-
-            const addressResponse = await fetch(
-              'https://api.virtuoussoftware.com/api/ContactAddress',
-              {
-                method: 'POST',
-                headers: {
-                  'Authorization': `Bearer ${process.env.VIRTUOUS_API_KEY}`,
-                  'Content-Type': 'application/json',
-                  'Accept': 'application/json'
-                },
-                body: JSON.stringify(newAddressPayload)
-              }
-            )
-
-            const addressText = await addressResponse.text()
-            console.log('ContactAddress create response status:', addressResponse.status)
-            console.log('ContactAddress create response body:', addressText)
-
-            if (!addressResponse.ok) {
-              console.error('Failed to create address:', addressResponse.status, addressText)
-            } else {
-              console.log('Address created successfully')
-            }
-          }
-        }
-      } catch (addressError) {
-        console.error('Error managing address:', addressError)
-      }
-
-    } else {
-      // Create new contact
-      const tags = ['The Forge Journal', 'FJ Welcome Series']
-      if (formData.marketingSource) {
-        tags.push(formData.marketingSource)
-      }
-
-      const contact = {
-        contactType: 'Household',
-        referenceSource: 'Forge Journal PDF Download',
-        name: `${formData.firstName.trim()} ${formData.lastName.trim()}`,
-        description: 'Contact from Forge Journal PDF download - Who Is The Holy Spirit?',
-        tags: tags,
-        contactIndividuals: [
-          {
-            firstName: formData.firstName.trim(),
-            lastName: formData.lastName.trim(),
-            isPrimary: true,
-            contactMethods: contactMethods,
-            addresses: [address]
-          }
-        ]
-      }
-
-      console.log('Creating new contact:', JSON.stringify(contact, null, 2))
-
-      const createResponse = await fetch('https://api.virtuoussoftware.com/api/Contact', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${process.env.VIRTUOUS_API_KEY}`,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify(contact)
-      })
-
-      const createText = await createResponse.text()
-
-      if (!createResponse.ok) {
-        console.error('Failed to create contact:', createResponse.status, createText)
-        return res.status(500).json({
-          error: 'Failed to create contact in Virtuous',
-          details: createText
-        })
-      }
-
-      virtuousResult = createText ? JSON.parse(createText) : null
+    } catch (mailchimpError) {
+      console.error('Mailchimp request failed:', mailchimpError)
     }
 
     // Save to our database
@@ -501,7 +320,6 @@ export default async function handler(
           state: formData.state.trim(),
           zip: formData.zip.trim(),
           pdf_name: 'Who Is The Holy Spirit?',
-          virtuous_contact_id: virtuousResult?.id || null,
           is_update: isUpdate,
           source: formData.marketingSource || 'website'
         })
@@ -517,33 +335,13 @@ export default async function handler(
       console.error('Database error:', dbError)
     }
 
-    // Apply tags for new contacts
-    if (!isUpdate && virtuousResult?.id) {
-      const tagsToApply = ['The Forge Journal', 'FJ Welcome Series']
-      if (formData.marketingSource) {
-        tagsToApply.push(formData.marketingSource)
-      }
-
-      Promise.resolve().then(async () => {
-        try {
-          await applyVirtuousTags(virtuousResult.id, tagsToApply)
-          console.log(`Successfully applied tags to contact ${virtuousResult.id}`)
-        } catch (error) {
-          console.error(`Error applying tags to contact ${virtuousResult.id}:`, error)
-        }
-      }).catch(error => {
-        console.error(`Async tag processing failed:`, error)
-      })
-    }
-
     // Send admin notification email
-    await sendAdminNotificationEmail(formData, virtuousResult, isUpdate)
+    await sendAdminNotificationEmail(formData, mailchimpStatus, isUpdate)
 
     return res.status(200).json({
       success: true,
       message: isUpdate ? 'Thank you! Your information has been updated.' : 'Thank you! Your download will begin shortly.',
-      isUpdate: isUpdate,
-      virtuousId: virtuousResult?.id
+      isUpdate,
     })
 
   } catch (error) {
@@ -554,4 +352,3 @@ export default async function handler(
     })
   }
 }
-

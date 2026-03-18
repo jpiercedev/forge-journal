@@ -2,12 +2,22 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { Resend } from 'resend'
 import { supabaseAdmin } from '../../../lib/supabase/client'
 import { getNotificationRecipients } from '../../../lib/notifications/recipients'
-import { applyVirtuousTags } from '../admin/virtuous-tags'
+import crypto from 'crypto'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
+// Mailchimp configuration
+const MAILCHIMP_API_KEY = process.env.MAILCHIMP_API_KEY || ''
+const MAILCHIMP_SERVER_PREFIX = process.env.MAILCHIMP_SERVER_PREFIX || 'us14'
+const MAILCHIMP_AUDIENCE_ID = process.env.MAILCHIMP_AUDIENCE_ID || ''
+
+// Helper to create MD5 hash for Mailchimp subscriber
+function getSubscriberHash(email: string): string {
+  return crypto.createHash('md5').update(email.toLowerCase().trim()).digest('hex')
+}
+
 // Helper function to send admin notification email
-async function sendAdminNotificationEmail(formData: ContactFormData, virtuousResult: any, isExisting: boolean = false) {
+async function sendAdminNotificationEmail(formData: ContactFormData, mailchimpResult: any, isExisting: boolean = false) {
   try {
     if (!process.env.RESEND_API_KEY) {
       console.warn('RESEND_API_KEY not configured - skipping email notification')
@@ -179,18 +189,16 @@ async function sendAdminNotificationEmail(formData: ContactFormData, virtuousRes
               <div class="divider"></div>
 
               <div class="tags">
-                <div class="field-label">✅ Successfully ${isExisting ? 'Updated in' : 'Added to'} Virtuous CRM</div>
+                <div class="field-label">✅ Successfully ${isExisting ? 'Updated in' : 'Added to'} Mailchimp</div>
                 <div class="field-value">
-                  <strong>Tags Applied:</strong><br>
-                  • The Forge Journal<br>
-                  • FJ Welcome Series
+                  <strong>Status:</strong> ${isExisting ? 'Existing subscriber updated' : 'New subscriber added'}
                 </div>
               </div>
             </div>
 
             <div class="footer">
-              <p>This subscriber has been successfully ${isExisting ? 'updated in' : 'added to'} Virtuous CRM with the appropriate tags.</p>
-              <p>Virtuous Contact ID: <span class="contact-id">${virtuousResult?.id || virtuousResult?.transactionId || 'N/A'}</span></p>
+              <p>This subscriber has been successfully ${isExisting ? 'updated in' : 'added to'} Mailchimp and saved locally.</p>
+              <p>Mailchimp Status: <span class="contact-id">${mailchimpResult?.status || 'subscribed'}</span></p>
             </div>
           </div>
         </body>
@@ -207,11 +215,8 @@ State: ${formData.state}
 SMS Opt-in: ${formData.smsOptIn ? 'Yes' : 'No'}
 Status: ${isExisting ? 'Existing Subscriber (Updated)' : 'New Subscriber'}
 
-✅ Successfully ${isExisting ? 'updated in' : 'added to'} Virtuous CRM with tags:
-• The Forge Journal
-• FJ Welcome Series
-
-Virtuous Contact ID: ${virtuousResult?.id || virtuousResult?.transactionId || 'N/A'}
+✅ Successfully ${isExisting ? 'updated in' : 'added to'} Mailchimp and saved locally.
+Mailchimp Status: ${mailchimpResult?.status || 'subscribed'}
     `
 
     // Get notification recipients from database
@@ -245,30 +250,6 @@ interface ContactFormData {
   marketingSource?: string
 }
 
-interface VirtuousContact {
-  contactType: string
-  referenceSource?: string
-  name?: string
-  description?: string
-  tags?: string[]
-  contactIndividuals: Array<{
-    firstName: string
-    lastName: string
-    isPrimary: boolean
-    contactMethods: Array<{
-      type: string
-      value: string
-      isOptedIn: boolean
-      isPrimary: boolean
-    }>
-    addresses?: Array<{
-      type: string
-      state: string
-      isPrimary: boolean
-    }>
-  }>
-}
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -287,162 +268,60 @@ export default async function handler(
       })
     }
 
-    // Check if Virtuous API key is configured
-    if (!process.env.VIRTUOUS_API_KEY) {
-      console.error('VIRTUOUS_API_KEY environment variable is not set')
-      return res.status(500).json({
-        error: 'Server configuration error',
-        details: 'Virtuous API key not configured'
-      })
-    }
+    // Submit to Mailchimp via upsert (PUT) so existing subscribers are updated, not rejected
+    const subscriberHash = getSubscriberHash(formData.email)
+    const mailchimpUrl = `https://${MAILCHIMP_SERVER_PREFIX}.api.mailchimp.com/3.0/lists/${MAILCHIMP_AUDIENCE_ID}/members/${subscriberHash}`
 
-    // Prepare the contact for Virtuous API using the correct structure
-    const contactMethods = [
-      {
-        type: 'Email',
-        value: formData.email.trim(),
-        isOptedIn: true,
-        isPrimary: true
-      }
-    ]
-
-    // Add phone number if provided
-    if (formData.phone && formData.phone.trim()) {
-      contactMethods.push({
-        type: 'Phone',
-        value: formData.phone.trim(),
-        isOptedIn: formData.smsOptIn, // Use the SMS consent for phone opt-in
-        isPrimary: false
-      })
-    }
-
-    // Prepare tags array with base tag and marketing source if available
-    const tags = ['forge-journal-submission']
-    if (formData.marketingSource) {
-      tags.push(formData.marketingSource)
-    }
-
-    const contact: VirtuousContact = {
-      contactType: 'Household', // Use 'Household' as it's the working contact type
-      referenceSource: 'Forge Journal Website',
-      name: `${formData.firstName.trim()} ${formData.lastName.trim()}`,
-      description: 'Contact from Forge Journal website newsletter signup',
-      tags: tags,
-      contactIndividuals: [
-        {
-          firstName: formData.firstName.trim(),
-          lastName: formData.lastName.trim(),
-          isPrimary: true,
-          contactMethods: contactMethods,
-          addresses: [
-            {
-              type: 'Home',
-              state: formData.state.trim(),
-              isPrimary: true
-            }
-          ]
-        }
-      ]
-    }
-
-    console.log('Submitting contact to Virtuous:', JSON.stringify(contact, null, 2))
-
-    const virtuousResponse = await fetch('https://api.virtuoussoftware.com/api/Contact', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.VIRTUOUS_API_KEY}`,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
+    const mailchimpPayload: any = {
+      email_address: formData.email.trim().toLowerCase(),
+      status_if_new: 'subscribed',
+      merge_fields: {
+        FNAME: formData.firstName.trim(),
+        LNAME: formData.lastName.trim(),
+        STATE: formData.state.trim(),
+        PHONE: formData.phone?.trim() || '',
       },
-      body: JSON.stringify(contact)
+    }
+
+    if (formData.marketingSource) {
+      mailchimpPayload.tags = [formData.marketingSource]
+    }
+
+    console.log('Submitting to Mailchimp:', formData.email)
+
+    const mailchimpResponse = await fetch(mailchimpUrl, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Basic ${Buffer.from(`anystring:${MAILCHIMP_API_KEY}`).toString('base64')}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(mailchimpPayload),
     })
 
-    console.log('Virtuous API response status:', virtuousResponse.status)
-    console.log('Virtuous API response headers:', Object.fromEntries(virtuousResponse.headers.entries()))
+    const mailchimpResult = await mailchimpResponse.json()
+    console.log('Mailchimp response status:', mailchimpResponse.status)
 
-    // Read response body once
-    const responseText = await virtuousResponse.text()
+    const isExisting = mailchimpResult.status === 'subscribed' && mailchimpResponse.status === 200
 
-    if (!virtuousResponse.ok) {
-      console.error('Virtuous API error:', {
-        status: virtuousResponse.status,
-        statusText: virtuousResponse.statusText,
-        body: responseText
-      })
-
-      // Check if it's a duplicate email error
-      if (responseText.includes('email address already exists')) {
-        console.log('Email already exists in Virtuous - treating as success')
-
-        // Save/update subscriber in our database even if they exist in Virtuous
-        try {
-          const { data: subscriber, error: dbError } = await supabaseAdmin
-            .from('subscribers')
-            .upsert({
-              first_name: formData.firstName.trim(),
-              last_name: formData.lastName.trim(),
-              email: formData.email.trim().toLowerCase(),
-              phone: formData.phone?.trim() || null,
-              state: formData.state.trim(),
-              sms_opt_in: formData.smsOptIn,
-              is_existing: true,
-              source: 'website'
-            }, {
-              onConflict: 'email'
-            })
-            .select()
-            .single()
-
-          if (dbError) {
-            console.error('Error saving existing subscriber to database:', dbError)
-          } else {
-            console.log('Existing subscriber saved/updated in database:', subscriber)
-          }
-        } catch (dbError) {
-          console.error('Database error for existing subscriber:', dbError)
-        }
-
-        // Send admin notification email for existing subscriber
-        await sendAdminNotificationEmail(formData, { id: null }, true)
-
-        return res.status(200).json({
-          success: true,
-          message: 'Welcome back! You\'re already part of The Forge Journal family and will continue receiving bold biblical leadership insights and updates from the movement. Thank you for your continued support as we raise up leaders for this critical hour.',
-          isExisting: true
-        })
-      }
-
-      return res.status(500).json({
-        error: 'Failed to submit to Virtuous CRM',
-        details: `${virtuousResponse.status}: ${virtuousResponse.statusText}`,
-        body: responseText
-      })
+    if (!mailchimpResponse.ok && mailchimpResponse.status !== 200) {
+      console.error('Mailchimp API error:', mailchimpResult)
+      // Don't block the user — log and continue to save locally
     }
 
-    // Parse successful response
-    let virtuousResult
-    try {
-      virtuousResult = JSON.parse(responseText)
-    } catch (e) {
-      virtuousResult = { message: 'Contact created successfully' }
-    }
-    console.log('Virtuous API success:', virtuousResult)
-
-    // Save subscriber to our database
+    // Save/upsert subscriber locally in Supabase
     try {
       const { data: subscriber, error: dbError } = await supabaseAdmin
         .from('subscribers')
-        .insert({
+        .upsert({
           first_name: formData.firstName.trim(),
           last_name: formData.lastName.trim(),
           email: formData.email.trim().toLowerCase(),
           phone: formData.phone?.trim() || null,
           state: formData.state.trim(),
           sms_opt_in: formData.smsOptIn,
-          virtuous_contact_id: virtuousResult?.id || null,
-          is_existing: false,
-          source: formData.marketingSource || 'website'
-        })
+          is_existing: isExisting,
+          source: formData.marketingSource || 'website',
+        }, { onConflict: 'email' })
         .select()
         .single()
 
@@ -453,47 +332,17 @@ export default async function handler(
       }
     } catch (dbError) {
       console.error('Database error:', dbError)
-      // Don't fail the request if database save fails
     }
 
-    // Apply tags to the contact using dynamic tagging system
-    const contactId = virtuousResult.id
-    if (contactId) {
-      // Build list of tags to apply - include both base tags
-      const tagsToApply = [
-        'The Forge Journal',        // Base tag: "The Forge Journal" (ID: 25)
-        'FJ Welcome Series'         // Base tag: "FJ Welcome Series" (ID: 26)
-      ]
-
-      // Add marketing source tag if present
-      if (formData.marketingSource) {
-        tagsToApply.push(formData.marketingSource)
-      }
-
-      // Apply tags asynchronously to avoid blocking user response
-      Promise.resolve().then(async () => {
-        try {
-          console.log(`Starting tag application for contact ${contactId}:`, tagsToApply)
-          await applyVirtuousTags(contactId, tagsToApply)
-          console.log(`Successfully processed tags for contact ${contactId}:`, tagsToApply)
-        } catch (error) {
-          console.error(`Error applying tags to contact ${contactId}:`, error)
-        }
-      }).catch(error => {
-        console.error(`Async tag processing failed for contact ${contactId}:`, error)
-      })
-    }
-
-    // Send admin notification email for new subscriber
-    await sendAdminNotificationEmail(formData, virtuousResult, false)
-
-
+    // Send admin notification email
+    await sendAdminNotificationEmail(formData, mailchimpResult, isExisting)
 
     return res.status(200).json({
       success: true,
-      message: 'Contact submitted successfully',
-      virtuousId: virtuousResult.id || virtuousResult.transactionId,
-      isExisting: false
+      message: isExisting
+        ? "Welcome back! You're already part of The Forge Journal family. Thank you for your continued support."
+        : 'Contact submitted successfully',
+      isExisting,
     })
 
   } catch (error) {
