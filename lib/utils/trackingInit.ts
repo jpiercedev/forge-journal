@@ -59,6 +59,10 @@ export function initializeEnhancedTracking(): void {
       em: 'auto', // Enable automatic advanced matching
       external_id: 'auto'
     })
+    window.fbq('init', '85784459726552', {
+      em: 'auto', // Enable automatic advanced matching
+      external_id: 'auto'
+    })
 
     // Track enhanced events
     window.fbq('track', 'PageView')

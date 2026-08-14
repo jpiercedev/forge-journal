@@ -33,6 +33,7 @@ export default function Document() {
               s.parentNode.insertBefore(t,s)}(window, document,'script',
               'https://connect.facebook.net/en_US/fbevents.js');
               fbq('init', '4064782077097627');
+              fbq('init', '85784459726552');
               fbq('track', 'PageView');
             `,
           }}
@@ -43,6 +44,13 @@ export default function Document() {
             width="1"
             style={{ display: 'none' }}
             src="https://www.facebook.com/tr?id=4064782077097627&ev=PageView&noscript=1"
+            alt=""
+          />
+          <img
+            height="1"
+            width="1"
+            style={{ display: 'none' }}
+            src="https://www.facebook.com/tr?id=85784459726552&ev=PageView&noscript=1"
             alt=""
           />
         </noscript>
